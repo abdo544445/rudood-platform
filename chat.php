@@ -1,216 +1,9 @@
-﻿<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة ردود - إدارة المحادثات والعملاء (عرض تجريبي)</title>
-  
-  <link rel="stylesheet" href="css/bootstrap.rtl.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="css/mystyle.css">
-  <!-- Google Fonts (Cairo) -->
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
-
-  <style>
-    body {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background-color: #0b0f19;
-      color: #ffffff;
-      font-family: 'Cairo', sans-serif;
-    }
-
-    /* الستايل الزجاجي للحاوية الرئيسية */
-    .chat-container {
-      flex: 1;
-      overflow: hidden;
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(212, 175, 55, 0.2);
-      border-radius: 20px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    }
-
-    /* الشريط الجانبي للمحادثات */
-    .chat-sidebar {
-      border-left: 1px solid rgba(255, 255, 255, 0.1);
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      background: rgba(15, 23, 42, 0.4);
-    }
-
-    .chat-user-item {
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .chat-user-item:hover {
-      background-color: rgba(212, 175, 55, 0.08);
-    }
-
-    .chat-user-item.active {
-      background-color: rgba(212, 175, 55, 0.15);
-      border-right: 3px solid #d4af37;
-    }
-
-    /* منطقة المحادثة الرئيسية */
-    .chat-main {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      background: rgba(11, 15, 25, 0.6);
-    }
-
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-    }
-
-    /* فقاعات الرسائل */
-    .message-bubble {
-      max-width: 75%;
-      padding: 12px 18px;
-      border-radius: 16px;
-      margin-bottom: 15px;
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-
-    /* رسائل العميل الواردة */
-    .message-incoming {
-      background: rgba(255, 255, 255, 0.08);
-      color: #f8fafc;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-bottom-right-radius: 2px;
-      margin-left: auto;
-    }
-
-    /* رسائل البوت/المنصة الصادرة */
-    .message-outgoing {
-      background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
-      color: #000000;
-      font-weight: 600;
-      border-bottom-left-radius: 2px;
-      margin-right: auto;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
-    }
-
-    /* ملف العميل الجانبي */
-    .customer-profile {
-      border-right: 1px solid rgba(255, 255, 255, 0.1);
-      height: 100%;
-      background: rgba(15, 23, 42, 0.4);
-      overflow-y: auto;
-    }
-
-    .avatar-circle {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: rgba(212, 175, 55, 0.2);
-      color: #d4af37;
-      border: 1px solid #d4af37;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-    }
-
-    /* تخصيص الحقول والأزرار Dark-Gold */
-    .form-control-dark {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #fff;
-    }
-
-    .form-control-dark:focus {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: #d4af37;
-      color: #fff;
-      box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
-    }
-
-    .text-gold {
-      color: #d4af37 !important;
-    }
-
-    .btn-gold {
-      background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
-      color: #000;
-      font-weight: 700;
-      border: none;
-    }
-
-    .btn-gold:hover {
-      background: linear-gradient(135deg, #e5be3b 0%, #c4970c 100%);
-      color: #000;
-    }
-
-    .btn-outline-gold {
-      border: 1px solid #d4af37;
-      color: #d4af37;
-    }
-
-    .btn-outline-gold:hover {
-      background-color: #d4af37;
-      color: #000;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Navbar الشريط العلوي الزجاجي -->
-  <nav class="navbar navbar-expand-lg navbar-dark glass-nav border-bottom border-secondary border-opacity-25 py-2">
-    <div class="container-fluid px-4">
-      
-      <a class="navbar-brand d-flex align-items-center me-3" href="index.html">
-      <img src="images/img.png" alt="شعار منصة ردود" class="nav-logo-img">
-    </a>
-
-      <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarRodood">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarRodood">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
-          <li class="nav-item">
-            <a class="nav-link px-3" href="index.html">الرئيسية</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link px-3" href="index.html#features">المميزات</a>
-          </li>
-           <li class="nav-item">
-            <a class="nav-link px-3" href="blog.html">المدونة</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle px-3 active text-gold fw-bold" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              أقسام المنصة
-            </a>
-            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow border border-secondary border-opacity-25 rounded-3 mt-2">
-              <li><a class="dropdown-item py-2" href="auto.html"><i class="bi bi-robot me-2 text-gold"></i>خدمات الرد الآلي</a></li>
-              <li><a class="dropdown-item py-2 active text-gold fw-bold" href="chat.html"><i class="bi bi-chat-dots me-2 text-gold"></i>إدارة المحادثات (العرض التجريبي)</a></li>
-              <li><a class="dropdown-item py-2" href="ai.html"><i class="bi bi-cpu me-2 text-gold"></i>الذكاء الاصطناعي 24/7</a></li>
-            </ul>
-          </li>
-        </ul>
-         
-
-        <div class="d-flex align-items-center gap-2">
-          <span class="badge bg-gold text-dark px-3 py-2 rounded-pill d-none d-md-inline-block">
-            <i class="bi bi-play-circle-fill me-1"></i> وضع العرض التجريبي
-          </span>
-          <a href="login.html" class="btn btn-gold px-4 py-2 rounded-pill">ابدأ التجربة المجانية</a>
-        </div>
-      </div>
-
-    </div>
-  </nav>
+﻿<?php
+$pageTitle = "منصة ردود - إدارة المحادثات والعملاء (عرض تجريبي)";
+$currentPage = "chat";
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/navbar.php';
+?>
 
   <!-- Main Container المحتوى الرئيسي -->
   <div class="container-fluid px-3 px-md-4 py-3 flex-grow-1 overflow-hidden">
@@ -318,7 +111,7 @@
 
         <!-- حقل إدخال الرسالة -->
         <div class="p-3 bg-dark bg-opacity-50 border-top border-secondary border-opacity-25">
-          <form id="chatForm" action="api/send_message.html" method="POST" class="d-flex align-items-center gap-2">
+          <form id="chatForm" action="api/send_message.php" method="POST" class="d-flex align-items-center gap-2">
             <button type="button" class="btn btn-outline-secondary text-white-50 rounded-circle"><i class="bi bi-paperclip fs-5"></i></button>
             <input type="text" id="messageInput" name="message" class="form-control form-control-dark rounded-pill px-4 py-2 border-secondary border-opacity-25" placeholder="اكتب رسالتك أو ردك الآلي هنا..." required autocomplete="off">
             <button type="submit" class="btn btn-gold rounded-circle p-2 px-3"><i class="bi bi-send-fill"></i></button>
@@ -356,7 +149,7 @@
         <!-- ملاحظات الموظفين -->
         <div class="py-3">
           <h6 class="fw-bold text-gold fs-7 mb-2">ملاحظات الموظفين</h6>
-          <form id="notesForm" action="api/save_note.html" method="POST">
+          <form id="notesForm" action="api/save_note.php" method="POST">
             <textarea id="noteText" name="note" class="form-control form-control-dark border-secondary border-opacity-25 fs-7 mb-2" rows="3" placeholder="أضف ملاحظة خاصة بهذا العميل..."></textarea>
             <button type="submit" class="btn btn-sm btn-gold w-100 fs-7 rounded-pill">حفظ الملاحظة</button>
           </form>
@@ -370,3 +163,4 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

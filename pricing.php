@@ -1,42 +1,9 @@
-﻿<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>خطط الأسعار  - منصة ردود</title>
-  
-  <link rel="stylesheet" href="css/bootstrap.rtl.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="css/mystyle.css">
-</head>
-<body>
-
-  <!-- الهيدر / شريط التنقل -->
-  <nav class="navbar navbar-expand-lg navbar-rodood sticky-top">
-    <div class="container">
-      <a class="navbar-brand d-flex align-items-center gap-2 m-0" href="index.html">
-        <img src="images/img.png" alt="شعار منصة ردود" class="nav-logo-img">
-      </a>
-      
-      <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <i class="bi bi-list fs-2"></i>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-semibold">
-          <li class="nav-item"><a class="nav-link text-white-50" href="index.html">الرئيسية</a></li>
-          <li class="nav-item"><a class="nav-link text-white-50" href="features.html">المميزات</a></li>
-          <li class="nav-item"><a class="nav-link active text-gold" href="pricing.html">التسعيرة</a></li>
-          <li class="nav-item"><a class="nav-link text-white-50" href="chat.html">المدونة</a></li>
-          <li class="nav-item"><a class="nav-link text-white-50" href="try.html">تواصل معنا</a></li>
-        </ul>
-        <div class="d-flex gap-2">
-          <a href="login.html" class="btn btn-outline-light rounded-pill px-4">تسجيل الدخول</a>
-          <a href="register.html" class="btn btn-gold rounded-pill px-4 fw-bold">طلب استشارة</a>
-        </div>
-      </div>
-    </div>
-  </nav>
+﻿<?php
+$pageTitle = "خطط الأسعار  - منصة ردود";
+$currentPage = "pricing";
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/navbar.php';
+?>
 
   <!-- قسم العنوان الرئيسي للأسعار -->
   <section class="py-5 text-center position-relative">
@@ -73,7 +40,7 @@
               <li class="d-flex align-items-center gap-2 text-white-50 opacity-50"><i class="bi bi-x-circle fs-5"></i> تخصيص الذكاء الاصطناعي المتقدم</li>
             </ul>
 
-            <a href="register.html" class="btn btn-outline-light rounded-pill py-2.5 fw-bold w-100">ابدأ الآن</a>
+            <a href="register.php" class="btn btn-outline-light rounded-pill py-2.5 fw-bold w-100">ابدأ الآن</a>
           </div>
         </div>
 
@@ -97,7 +64,7 @@
               <li class="d-flex align-items-center gap-2"><i class="bi bi-check-circle-fill text-gold fs-5"></i> دعم فني مباشر 24/7</li>
             </ul>
 
-            <a href="register.html" class="btn btn-gold rounded-pill py-2.5 fw-bold w-100 shadow-gold">اشترك الآن</a>
+            <a href="register.php" class="btn btn-gold rounded-pill py-2.5 fw-bold w-100 shadow-gold">اشترك الآن</a>
           </div>
         </div>
 
@@ -119,7 +86,7 @@
               <li class="d-flex align-items-center gap-2"><i class="bi bi-check-circle-fill text-gold fs-5"></i> تخصيص برمجي كامل للهوية</li>
             </ul>
 
-            <a href="try.html" class="btn btn-outline-light rounded-pill py-2.5 fw-bold w-100">تواصل مع المبيعات</a>
+            <a href="try.php" class="btn btn-outline-light rounded-pill py-2.5 fw-bold w-100">تواصل مع المبيعات</a>
           </div>
         </div>
 
@@ -188,3 +155,4 @@
 
 </body>
 </html>
+

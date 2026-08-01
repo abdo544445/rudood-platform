@@ -1,118 +1,9 @@
-﻿
- <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة ردود - المميزات</title>
-    
-    <!-- Bootstrap 5 RTL CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
-    
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
-    <!-- Google Fonts (Cairo) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- ملف CSS الخاص بك (تأكدي من صحة مسار الملف) -->
-    <link rel="stylesheet" href="mystyle.css">
-
-    <!-- CSS إضافي لضمان ظهور التصميم الزجاجي والذهبي بشكل مثالي -->
-    <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #0b0f19; /* لون الخلفية الداكن */
-            color: #ffffff;
-            min-height: 100vh;
-            /* يمكنك إضافة صورة خلفية داكنة هنا إذا كان لديك واحدة في مجلد الصور */
-            /* background-image: url('images/bg-dark.jpg'); */
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-
-        /* شريط التنقل الزجاجي */
-        .navbar-glass {
-            background: rgba(11, 15, 25, 0.7);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
-        }
-
-        /* تنسيق البطاقات الزجاجية */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(212, 175, 55, 0.15); /* إطار ذهبي ناعم جدًا */
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-
-        .glass-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(212, 175, 55, 0.5); /* إضاءة الإطار عند التمرير */
-        }
-
-        /* الألوان المخصصة */
-        .text-gold {
-            color: #D4AF37 !important;
-        }
-        
-        .btn-gold {
-            background-color: #D4AF37 !important;
-            color: #0b0f19 !important;
-            border: none;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-gold:hover {
-            background-color: #f1c40f !important;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-            transform: scale(1.05);
-        }
-    </style>
-</head>
-<body>
-
-    <!-- شريط التنقل (Navbar) -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-glass sticky-top py-3">
-        <div class="container">
-             <!-- 1. الشعار (جهة اليمين) -->
-    <a class="navbar-brand d-flex align-items-center me-3" href="index.html">
-      <img src="images/img.png" alt="شعار منصة ردود" class="nav-logo-img">
-    </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">الرئيسية</a>
-                    </li>
-                    <li class="nav-item">
-                        <!-- الصفحة النشطة -->
-                        <a class="nav-link active text-gold fw-bold" href="features.html">المميزات</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            أقسام المنصة
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark glass-card border-0">
-                            <li><a class="dropdown-item text-white" href="ai.html">الذكاء الاصطناعي</a></li>
-                            <li><a class="dropdown-item text-white" href="auto.html">الردود الآلية</a></li>
-                            <li><a class="dropdown-item text-white" href="chat.html">المحادثات</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <div class="d-flex">
-                    <a href="login.html" class="btn btn-outline-light rounded-pill px-4">تسجيل الدخول</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+﻿<?php
+$pageTitle = "منصة ردود - المميزات";
+$currentPage = "features";
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/navbar.php';
+?>
 
     <!-- قسم العنوان الرئيسي للصفحة -->
     <header class="container text-center mt-5 pt-5 mb-5">
@@ -210,7 +101,7 @@
         <div class="glass-card p-5 rounded-4 mx-auto" style="max-width: 800px;">
             <h2 class="fw-bold text-white mb-3">جاهز لتطوير خدمة عملائك؟</h2>
             <p class="text-white-50 mb-4 fs-5">ابدأ الآن واجعل منصة ردود تجعل دعم العملاء لديك أكثر سهولة وسرعة.</p>
-            <a href="login.html" class="btn btn-gold px-5 py-3 fs-5 fw-bold rounded-pill">جرب المنصة الآن</a>
+            <a href="login.php" class="btn btn-gold px-5 py-3 fs-5 fw-bold rounded-pill">جرب المنصة الآن</a>
         </div>
     </section>
 
@@ -223,3 +114,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

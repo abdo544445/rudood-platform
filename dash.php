@@ -1,166 +1,37 @@
-﻿<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة التحكم | منصة ردود</title>
-  
-  <link rel="stylesheet" href="css/bootstrap.rtl.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/mystyle.css">
-
-  <style>
-    body {
-      background-color: #0b0f19 !important;
-      color: #ffffff !important;
-      font-family: 'Cairo', sans-serif;
-      min-height: 100vh;
-    }
-
-    /* الشريط الجانبي */
-    .sidebar {
-      width: 260px;
-      background: rgba(15, 23, 42, 0.95) !important;
-      backdrop-filter: blur(16px);
-      border-left: 1px solid rgba(212, 175, 55, 0.2);
-      min-height: 100vh;
-      position: fixed;
-      top: 0;
-      right: 0;
-      z-index: 1000;
-    }
-
-    .sidebar .nav-link {
-      color: rgba(255, 255, 255, 0.7) !important;
-      padding: 12px 18px;
-      border-radius: 10px;
-      margin: 4px 10px;
-      transition: all 0.3s ease;
-    }
-
-    .sidebar .nav-link:hover, .sidebar .nav-link.active {
-      color: #000000 !important;
-      background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%) !important;
-      font-weight: bold;
-    }
-
-    /* المحتوى الرئيسي */
-    .main-content {
-      margin-right: 260px;
-      padding: 30px;
-    }
-
-    /* البطاقات الزجاجية */
-    .stat-card {
-      background: rgba(255, 255, 255, 0.03) !important;
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(212, 175, 55, 0.2) !important;
-      border-radius: 16px;
-      padding: 20px;
-    }
-
-    .icon-box-dash {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      background: rgba(212, 175, 55, 0.15);
-      color: #d4af37;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-    }
-
-    /* إصلاح الجدول */
-    .custom-dark-table {
-      width: 100%;
-      border-collapse: collapse;
-      color: #ffffff !important;
-      background: transparent !important;
-    }
-
-    .custom-dark-table th {
-      background: rgba(212, 175, 55, 0.15) !important;
-      color: #d4af37 !important;
-      padding: 15px;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-      text-align: right;
-    }
-
-    .custom-dark-table td {
-      background: rgba(15, 23, 42, 0.6) !important;
-      color: #ffffff !important;
-      padding: 15px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .custom-dark-table tr:hover td {
-      background: rgba(212, 175, 55, 0.08) !important;
-    }
-
-    /* حل مشكلة اختفاء النصوص داخل الشارات (Badges) */
-    .badge-auto {
-      background-color: #d4af37 !important;
-      color: #0b0f19 !important;
-      font-weight: 700 !important;
-      padding: 6px 14px !important;
-      border-radius: 50px !important;
-      font-size: 0.8rem !important;
-      display: inline-block !important;
-    }
-
-    .badge-human {
-      background-color: #0ea5e9 !important;
-      color: #000000 !important;
-      font-weight: 700 !important;
-      padding: 6px 14px !important;
-      border-radius: 50px !important;
-      font-size: 0.8rem !important;
-      display: inline-block !important;
-    }
-
-    /* شارة حالة البوت بالعلوي */
-    .status-badge {
-      background: rgba(46, 204, 113, 0.15) !important;
-      color: #2ecc71 !important;
-      border: 1px solid #2ecc71;
-      padding: 8px 16px;
-      border-radius: 50px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-  </style>
-</head>
-<body>
+﻿<?php
+$pageTitle = "لوحة التحكم | منصة ردود";
+$currentPage = "dash";
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/navbar.php';
+?>
 
   <!-- الشريط الجانبي -->
   <aside class="sidebar d-flex flex-column justify-content-between py-3">
     <div>
       <div class="px-4 mb-4 text-center">
-        <a href="index.html">
+        <a href="index.php">
           <img src="images/img.png" alt="شعار منصة ردود" style="max-height: 45px;">
         </a>
       </div>
 
       <ul class="nav nav-pills flex-column">
         <li class="nav-item">
-          <a href="dash.html" class="nav-link active d-flex align-items-center gap-3">
+          <a href="dash.php" class="nav-link active d-flex align-items-center gap-3">
             <i class="bi bi-grid-1x2-fill"></i> الرئيسية
           </a>
         </li>
         <li class="nav-item">
-          <a href="ai-manage.html" class="nav-link d-flex align-items-center gap-3">
+          <a href="ai-manage.php" class="nav-link d-flex align-items-center gap-3">
             <i class="bi bi-cpu-fill"></i> تدريب الذكاء الاصطناعي
           </a>
         </li>
         <li class="nav-item">
-          <a href="live-chat.html" class="nav-link d-flex align-items-center gap-3">
+          <a href="live-chat.php" class="nav-link d-flex align-items-center gap-3">
             <i class="bi bi-chat-dots-fill"></i> المحادثات المباشرة
           </a>
         </li>
         <li class="nav-item">
-          <a href="settings.html" class="nav-link d-flex align-items-center gap-3">
+          <a href="settings.php" class="nav-link d-flex align-items-center gap-3">
             <i class="bi bi-gear-fill"></i> الإعدادات والقنوات
           </a>
         </li>
@@ -168,7 +39,7 @@
     </div>
 
     <div class="px-3">
-      <a href="login.html" class="btn btn-outline-danger w-100 rounded-pill d-flex align-items-center justify-content-center gap-2">
+      <a href="login.php" class="btn btn-outline-danger w-100 rounded-pill d-flex align-items-center justify-content-center gap-2">
         <i class="bi bi-box-arrow-right"></i> تسجيل الخروج
       </a>
     </div>
@@ -279,3 +150,4 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

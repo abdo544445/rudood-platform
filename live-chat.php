@@ -1,4 +1,4 @@
-﻿ <?php @include('layout/header.html'); ?>
+﻿ <?php @include('layout/header.php'); ?>
 
 
   <style>
@@ -309,5 +309,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
- <?php @include('layout/footer.html'); ?>
+ <?php @include('layout/footer.php'); ?>
+
 

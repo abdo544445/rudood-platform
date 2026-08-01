@@ -1,160 +1,37 @@
-﻿<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تدريب الذكاء الاصطناعي | منصة ردود</title>
-  
-  <link rel="stylesheet" href="css/bootstrap.rtl.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/mystyle.css">
-
-  <style>
-    body {
-      background-color: #0b0f19 !important;
-      color: #ffffff !important;
-      font-family: 'Cairo', sans-serif;
-      min-height: 100vh;
-    }
-
-    /* الشريط الجانبي */
-    .sidebar {
-      width: 260px;
-      background: rgba(15, 23, 42, 0.95) !important;
-      backdrop-filter: blur(16px);
-      border-left: 1px solid rgba(212, 175, 55, 0.2);
-      min-height: 100vh;
-      position: fixed;
-      top: 0;
-      right: 0;
-      z-index: 1000;
-    }
-
-    .sidebar .nav-link {
-      color: rgba(255, 255, 255, 0.7) !important;
-      padding: 12px 18px;
-      border-radius: 10px;
-      margin: 4px 10px;
-      transition: all 0.3s ease;
-    }
-
-    .sidebar .nav-link:hover, .sidebar .nav-link.active {
-      color: #000000 !important;
-      background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%) !important;
-      font-weight: bold;
-    }
-
-    /* المحتوى الرئيسي */
-    .main-content {
-      margin-right: 260px;
-      padding: 30px;
-    }
-
-    /* البطاقات الزجاجية */
-    .stat-card {
-      background: rgba(255, 255, 255, 0.03) !important;
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(212, 175, 55, 0.2) !important;
-      border-radius: 16px;
-    }
-
-    .text-gold {
-      color: #d4af37 !important;
-    }
-
-    /* منطقة رفع الملفات */
-    .upload-zone {
-      border: 2px dashed rgba(212, 175, 55, 0.4);
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 16px;
-      padding: 30px;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-
-    .upload-zone:hover {
-      border-color: #d4af37;
-      background: rgba(212, 175, 55, 0.05);
-    }
-
-    /* حل مشكلة شارة الملف المكتمل */
-    .file-item {
-      background: rgba(15, 23, 42, 0.7) !important;
-      border: 1px solid rgba(212, 175, 55, 0.2);
-      border-radius: 10px;
-      padding: 12px 16px;
-    }
-
-    .file-status-badge {
-      background: rgba(46, 204, 113, 0.2) !important;
-      color: #2ecc71 !important;
-      border: 1px solid #2ecc71;
-      padding: 4px 14px;
-      border-radius: 50px;
-      font-size: 0.8rem;
-      font-weight: 700;
-    }
-
-    /* حقول الإدخال الداكنة */
-    .custom-input {
-      background: rgba(15, 23, 42, 0.8) !important;
-      border: 1px solid rgba(212, 175, 55, 0.3) !important;
-      color: #ffffff !important;
-      border-radius: 10px;
-      padding: 12px;
-    }
-
-    .custom-input:focus {
-      border-color: #d4af37 !important;
-      box-shadow: 0 0 10px rgba(212, 175, 55, 0.2) !important;
-    }
-
-    .custom-input::placeholder {
-      color: rgba(255, 255, 255, 0.4) !important;
-    }
-
-    .btn-gold {
-      background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%) !important;
-      color: #000000 !important;
-      border: none;
-      font-weight: bold;
-    }
-
-    .btn-gold:hover {
-      opacity: 0.9;
-    }
-  </style>
-</head>
-<body>
+﻿<?php
+$pageTitle = "تدريب الذكاء الاصطناعي | منصة ردود";
+$currentPage = "ai-manage";
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/navbar.php';
+?>
 
   <!-- الشريط الجانبي -->
   <aside class="sidebar d-flex flex-column justify-content-between py-3">
     <div>
       <div class="px-4 mb-4 text-center">
-        <a href="index.html">
+        <a href="index.php">
           <img src="images/img.png" alt="شعار منصة ردود" style="max-height: 45px;">
         </a>
       </div>
 
       <ul class="nav nav-pills flex-column">
         <li class="nav-item">
-          <a href="dash.html" class="nav-link d-flex align-items-center gap-3">
+          <a href="dash.php" class="nav-link d-flex align-items-center gap-3">
             <i class="bi bi-grid-1x2-fill"></i> الرئيسية
           </a>
         </li>
         <li class="nav-item">
-          <a href="ai-manage.html" class="nav-link active d-flex align-items-center gap-3">
+          <a href="ai-manage.php" class="nav-link active d-flex align-items-center gap-3">
             <i class="bi bi-cpu-fill"></i> تدريب الذكاء الاصطناعي
           </a>
         </li>
         <li class="nav-item">
-          <a href="live-chat.html" class="nav-link d-flex align-items-center gap-3">
+          <a href="live-chat.php" class="nav-link d-flex align-items-center gap-3">
             <i class="bi bi-chat-dots-fill"></i> المحادثات المباشرة
           </a>
         </li>
         <li class="nav-item">
-          <a href="settings.html" class="nav-link d-flex align-items-center gap-3">
+          <a href="settings.php" class="nav-link d-flex align-items-center gap-3">
             <i class="bi bi-gear-fill"></i> الإعدادات والقنوات
           </a>
         </li>
@@ -162,7 +39,7 @@
     </div>
 
     <div class="px-3">
-      <a href="login.html" class="btn btn-outline-danger w-100 rounded-pill d-flex align-items-center justify-content-center gap-2">
+      <a href="login.php" class="btn btn-outline-danger w-100 rounded-pill d-flex align-items-center justify-content-center gap-2">
         <i class="bi bi-box-arrow-right"></i> تسجيل الخروج
       </a>
     </div>
@@ -191,7 +68,7 @@
             <p class="text-white-50 fs-7 mb-4">ارفع ملفات PDF أو Word تحتوي على تفاصيل المنتجات، الأسعار، أو سياسة المتجر.</p>
 
             <!-- منطقة الرفع -->
-            <form id="uploadDocForm" action="api/upload_doc.html" method="POST" enctype="multipart/form-data">
+            <form id="uploadDocForm" action="api/upload_doc.php" method="POST" enctype="multipart/form-data">
               <div class="upload-zone mb-3 position-relative" style="cursor: pointer;" onclick="document.getElementById('docFileInput').click();">
                 <i class="bi bi-cloud-arrow-up-fill text-gold display-5 d-block mb-2"></i>
                 <p class="fw-bold text-white mb-1 fs-6">اضغط هنا لرفع الملف أو اسحبه إلى هنا</p>
@@ -229,7 +106,7 @@
           </div>
           <p class="text-white-50 fs-7 mb-4">أدخل الأسئلة المتكررة وإجاباتها النموذجية مباشرة للنظام.</p>
 
-          <form id="faqForm" action="api/add_faq.html" method="POST" class="d-flex flex-column justify-content-between" style="height: calc(100% - 70px);">
+          <form id="faqForm" action="api/add_faq.php" method="POST" class="d-flex flex-column justify-content-between" style="height: calc(100% - 70px);">
             <div>
               <div class="mb-3">
                 <label for="faqQuestion" class="form-label text-white fs-7 fw-bold">السؤال المتوقع من العميل</label>
@@ -256,3 +133,4 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

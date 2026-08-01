@@ -1,65 +1,22 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة ردود - تسجيل الدخول</title>
-  
-  <link rel="stylesheet" href="css/bootstrap.rtl.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="css/mystyle.css">
-  <style>
-    .auth-bg {
-      background: url('images/photo_2026-07-28_19-16-05.jpg') no-repeat center center/cover;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-    .auth-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(135deg, rgba(79, 70, 229, 0.4) 0%, rgba(6, 182, 212, 0.4) 100%);
-      backdrop-filter: blur(4px);
-      z-index: 1;
-    }
-    .auth-card {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      max-width: 450px;
-      padding: 40px;
-      text-align: center;
-    }
-    .form-control-custom {
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(0,0,0,0.1);
-      border-radius: 12px;
-      padding: 12px 20px;
-      transition: all 0.3s ease;
-    }
-    .form-control-custom:focus {
-      background: #ffffff;
-      border-color: var(--primary-indigo);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-    }
-  </style>
-</head>
-<body>
+﻿<?php
+$pageTitle = "منصة ردود - تسجيل الدخول";
+$currentPage = "login copy";
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/navbar.php';
+?>
 
   <div class="auth-bg">
     <div class="auth-overlay"></div>
     
     <div class="rodood-glass-card auth-card">
-      <a href="index.html" class="d-inline-block mb-4">
+      <a href="index.php" class="d-inline-block mb-4">
         <img src="images/photo_2026-07-28_19-16-05.jpg" alt="شعار ردود" class="nav-logo" style="height: 60px;">
       </a>
       
       <h2 class="fw-bold text-dark mb-2">مرحباً بعودتك! 👋</h2>
       <p class="text-muted mb-4">سجل دخولك للمتابعة إلى لوحة التحكم</p>
       
-      <form action="index.html" method="get">
+      <form action="index.php" method="get">
         <div class="mb-3 text-start">
           <label class="form-label fw-bold text-dark small">البريد الإلكتروني</label>
           <div class="input-group">
@@ -85,10 +42,11 @@
       </form>
       
       <p class="text-muted small mb-0">
-        ليس لديك حساب؟ <a href="register.html" class="text-navy fw-bold text-decoration-none">إنشاء حساب جديد</a>
+        ليس لديك حساب؟ <a href="register.php" class="text-navy fw-bold text-decoration-none">إنشاء حساب جديد</a>
       </p>
     </div>
   </div>
 
-</body>
-</html>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>
+

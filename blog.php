@@ -1,48 +1,9 @@
-﻿<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المدونة - منصة ردود</title>
-    <link rel="stylesheet" href="css/bootstrap.rtl.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="css/mystyle.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
-</head>
-<body class="bg-dark text-white font-cairo">
-
-    <!-- Navbar الشريط العلوي -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-nav border-bottom border-secondary border-opacity-25 py-3">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center me-3" href="index.html">
-      <img src="images/img.png" alt="شعار منصة ردود" class="nav-logo-img">
-    </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto gap-lg-3">
-                    <li class="nav-item"><a class="nav-link" href="index.html">الرئيسية</a></li>
-                    <li class="nav-item"><a class="nav-link" href="index.html#features">المميزات</a></li>
-                    <li class="nav-item"><a class="nav-link" href="pricing.html">التسعيرة</a></li>
-                    <li class="nav-item"><a class="nav-link active fw-bold text-gold" href="blog.html">المدونة</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">أقسام المنصة</a>
-                        <ul class="dropdown-menu dropdown-menu-dark glass-card border-secondary">
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-robot text-gold ms-2"></i>الرد الآلي</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-chat-dots text-gold ms-2"></i>المحادثات</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-cpu text-gold ms-2"></i>الذكاء الاصطناعي</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">تواصل معنا</a></li>
-                </ul>
-                <div class="d-flex gap-2">
-                    <a href="#" class="btn btn-gold text-dark fw-bold rounded-pill px-4">تجربة مجانية</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+﻿<?php
+$pageTitle = "المدونة - منصة ردود";
+$currentPage = "blog";
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/navbar.php';
+?>
 
     <!-- Header قسم العنوان الرئيسي -->
     <section class="py-5 text-center hero-bg border-bottom border-secondary border-opacity-25">
@@ -78,7 +39,7 @@
                             </p>
                             <div class="d-flex align-items-center justify-content-between">
                                 <small class="text-white-50"><i class="bi bi-calendar3 ms-1"></i> 30 يوليو 2026</small>
-                                <a href="articlel.html" class="btn btn-outline-gold rounded-pill px-4">اقرأ المقال <i class="bi bi-arrow-left me-1"></i></a>
+                                <a href="articlel.php" class="btn btn-outline-gold rounded-pill px-4">اقرأ المقال <i class="bi bi-arrow-left me-1"></i></a>
                             </div>
                         </div>
                     </div>
@@ -102,7 +63,7 @@
                             </p>
                             <div class="d-flex align-items-center justify-content-between border-top border-secondary border-opacity-25 pt-3">
                                 <small class="text-white-50 fs-7"><i class="bi bi-clock me-1"></i> قراءة 4 دقائق</small>
-                                <a href="articlel.html" class="text-gold text-decoration-none fw-bold fs-7">اقرأ المزيد <i class="bi bi-chevron-left"></i></a>
+                                <a href="articlel.php" class="text-gold text-decoration-none fw-bold fs-7">اقرأ المزيد <i class="bi bi-chevron-left"></i></a>
                             </div>
                         </div>
                     </div>
@@ -122,7 +83,7 @@
                             </p>
                             <div class="d-flex align-items-center justify-content-between border-top border-secondary border-opacity-25 pt-3">
                                 <small class="text-white-50 fs-7"><i class="bi bi-clock me-1"></i> قراءة 6 دقائق</small>
-                                <a href="articlel.html" class="text-gold text-decoration-none fw-bold fs-7">اقرأ المزيد <i class="bi bi-chevron-left"></i></a>
+                                <a href="articlel.php" class="text-gold text-decoration-none fw-bold fs-7">اقرأ المزيد <i class="bi bi-chevron-left"></i></a>
                             </div>
                         </div>
                     </div>
@@ -142,7 +103,7 @@
                             </p>
                             <div class="d-flex align-items-center justify-content-between border-top border-secondary border-opacity-25 pt-3">
                                 <small class="text-white-50 fs-7"><i class="bi bi-clock me-1"></i> قراءة 5 دقائق</small>
-                                <a href="articlel.html" class="text-gold text-decoration-none fw-bold fs-7">اقرأ المزيد <i class="bi bi-chevron-left"></i></a>
+                                <a href="articlel.php" class="text-gold text-decoration-none fw-bold fs-7">اقرأ المزيد <i class="bi bi-chevron-left"></i></a>
                             </div>
                         </div>
                     </div>
@@ -163,3 +124,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

@@ -1,67 +1,9 @@
-﻿
-  <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الذكاء الاصطناعي 24/7 - منصة ردود</title>
-  
-  <link rel="stylesheet" href="css/bootstrap.rtl.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="css/mystyle.css">
-  <!-- Google Fonts (Cairo) -->
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
-  
-</head>
-  <style>
-    .nav-logo-img { height: 42px; width: auto; object-fit: contain; }
-    .glass-navbar {
-      background: rgba(11, 15, 25, 0.75) !important;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-    }
-  </style>
-</head>
-<body class="bg-dark text-white font-cairo">
-
-  <!-- Navbar الهيدر -->
-  <nav class="navbar navbar-expand-lg navbar-dark glass-navbar sticky-top py-2">
-    <div class="container-fluid px-4">
-      <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
-        <img src="images/img.png" alt="شعار ردود" class="nav-logo-img">
-        <span class="fw-bold fs-3 text-gold"></span>
-      </a>
-
-      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAiPage">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarAiPage">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
-          <li class="nav-item"><a class="nav-link px-3" href="index.html">الرئيسية</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="index.html#features">المميزات</a></li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle px-3 active text-gold fw-bold" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown">
-              أقسام المنصة
-            </a>
-            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow border border-secondary border-opacity-25 rounded-3 mt-2">
-              <li><a class="dropdown-item py-2" href="auto.html"><i class="bi bi-robot me-2 text-gold"></i>خدمات الرد الآلي</a></li>
-              <li><a class="dropdown-item py-2" href="chat.html"><i class="bi bi-chat-dots me-2 text-gold"></i>إدارة المحادثات</a></li>
-              <li><a class="dropdown-item py-2 active text-gold fw-bold" href="ai.html"><i class="bi bi-cpu me-2 text-gold"></i>الذكاء الاصطناعي 24/7</a></li>
-            </ul>
-          </li>
-          <li class="nav-item"><a class="nav-link px-3" href="blog.html">المدونة</a></li>
-        </ul>
-
-        <div class="d-flex align-items-center gap-3">
-          <a href="login.html" class="nav-link text-white-50 hover-gold">تسجيل الدخول</a>
-          <a href="login.html" class="btn btn-gold text-dark fw-bold rounded-pill px-4 py-2">ابدأ مجاناً</a>
-        </div>
-      </div>
-    </div>
-  </nav>
+﻿<?php
+$pageTitle = "الذكاء الاصطناعي 24/7 - منصة ردود";
+$currentPage = "ai";
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/navbar.php';
+?>
 
   <!-- Hero Section -->
   <section class="py-5 text-center position-relative">
@@ -74,8 +16,8 @@
         درب مساعدك الذكي عبر رفع ملفات المنتجات والكتالوجات. يفهم الاستفسارات المعقدة باللهجة المحلية ويقدم إجابات دقيقة دون تدخل بشري.
       </p>
       <div class="d-flex justify-content-center gap-3">
-        <a href="chat.html" class="btn btn-gold text-dark fw-bold rounded-pill px-4 py-3">تجربة المساعد الذكي</a>
-        <a href="login.html" class="btn btn-outline-light rounded-pill px-4 py-3">درب بوتك الآن</a>
+        <a href="chat.php" class="btn btn-gold text-dark fw-bold rounded-pill px-4 py-3">تجربة المساعد الذكي</a>
+        <a href="login.php" class="btn btn-outline-light rounded-pill px-4 py-3">درب بوتك الآن</a>
       </div>
     </div>
   </section>
@@ -138,3 +80,4 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
