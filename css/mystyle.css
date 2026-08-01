@@ -1,0 +1,393 @@
+:root {
+  --gold-primary: #d4a359;
+  --gold-gradient: linear-gradient(135deg, #f3d082 0%, #c49346 100%);
+  --text-gold: #e2b767;
+  --card-border: rgba(255, 255, 255, 0.7);
+}
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background-color: #76c7ff;
+  
+  /* المسار هنا يوجه للمجلد log */
+  background-image: url('../images/log22.png'); 
+  
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color:#ffffff;
+  overflow-x: hidden;
+  direction: rtl;
+}
+
+/* 2. الهيدر وشعار الصورة جهة اليسار */
+.navbar-rodood {
+  background-color: rgba(8, 13, 25, 0.75);
+  backdrop-filter: blur(12px);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.nav-logo-img {
+  height: 45px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+}
+
+.nav-link {
+  color: #a0aec0 !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.8rem !important;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--text-gold) !important;
+}
+
+.nav-link.active {
+  border-bottom: 2px solid var(--gold-primary);
+}
+
+.nav-login-link {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.btn-outline-gold {
+  border: 1px solid var(--gold-primary);
+  color: #ffffff;
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 8px 18px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-outline-gold:hover {
+  background: var(--gold-gradient);
+  color: #000000;
+}
+
+.dropdown-menu {
+  background-color: #0d1527;
+  border: 1px solid var(--card-border);
+}
+
+.dropdown-item {
+  color: #a0aec0;
+  font-weight: 600;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(212, 163, 89, 0.1);
+  color: var(--text-gold);
+}
+
+/* 3. قسم الهيدر الرئيسي وتنسيق الكلام في الجهة اليسرى */
+.hero-section {
+  min-height: calc(100vh - 180px);
+  display: flex;
+  align-items: center;
+  padding: 60px 0 30px 0;
+  padding-right: 100px; 
+  background: transparent;
+}
+.hero-section {
+    min-height: calc(100vh - 180px);
+    display: flex;
+    align-items: center;
+    padding: 60px 0 30px 0;
+    padding-right: 100px;
+    background: transparent;
+}
+
+.hero-content-wrapper {
+    margin-right: auto !important;
+    margin-left: 3rem !important;
+}
+
+
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.text-gold-gradient {
+  background: var(--gold-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  color: #cbd5e1;
+  font-size: 1.25rem;
+}
+
+/* البطاقة الشفافة الوصفية */
+.rodood-glass-card {
+  background: rgba(8, 13, 25, 0.5);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  max-width: 540px;
+  backdrop-filter: blur(8px);
+}
+
+.rodood-glass-text {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* الأزرار الرئيسية */
+.btn-gold-action {
+  background: var(--gold-gradient);
+  color: #0d1322;
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 12px 38px;
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 4px 20px rgba(212, 163, 89, 0.25);
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+/* ==========================================
+   تنسيقات محاكي الشات والباقات الزجاجية (الرد الآلي)
+   ========================================== */
+
+/* كارت المحادثة الزجاجي */
+.chat-sim-card {
+    background: rgba(15, 23, 42, 0.6) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* فقاعات رسائل العميل (الرمادية الشفافة) */
+.chat-bubble-incoming {
+    background: rgba(80, 72, 72, 0.08) !important;
+    color: #18191a !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 14px 14px 2px 14px;
+}
+
+/* فقاعات رسائل البوت (الذهبية) */
+.chat-bubble-outgoing {
+    background: var(--gold-gradient, linear-gradient(135deg, #d4af37 0%, #aa820a 100%)) !important;
+    color: #0d1322 !important;
+    font-weight: 600;
+    border-radius: 14px 14px 14px 2px;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+}
+
+/* نصوص التفاصيل الرمادية الشفافة لتسهيل القراءة */
+.text-subtle {
+    color: #94a3b8 !important;
+}
+
+.btn-gold-action:hover {
+  transform: translateY(-2px);
+  color: #000000;
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1.05rem;
+  padding: 12px 32px;
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+/* 4. الشريط السفلي للمميزات */
+.features-bar {
+  background: rgba(8, 13, 25, 0.8);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--card-border);
+  padding: 22px 0;
+}
+
+.feature-icon {
+  font-size: 1.6rem;
+  color: var(--text-gold);
+}
+
+.feature-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+}
+
+.feature-desc {
+  font-size: 0.75rem;
+  color: #718096;
+  margin: 0;
+}
+
+
+
+/* ==================== تنسيقات صفحة الأسعار والتعريفة ==================== */
+
+/* كارت الباقة الأساسي */
+.pricing-card {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(226, 183, 103, 0.4);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* الباقة المميزة (الاحترافية) */
+.pricing-card.featured {
+  background: rgba(20, 30, 55, 0.85);
+  border: 2px solid var(--gold-primary) !important;
+  box-shadow: 0 10px 30px rgba(212, 163, 89, 0.15);
+}
+
+/* شارة الباقة الأكثر طلباً */
+.popular-badge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--gold-gradient);
+  color: #080d19;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 4px 16px;
+  border-radius: 50px;
+  text-transform: uppercase;
+}
+
+/* أزرار وتفاصيل الباقة الذهبية */
+.btn-gold {
+  background: var(--gold-gradient);
+  color: #080d19;
+  border: none;
+}
+
+.btn-gold:hover {
+  opacity: 0.9;
+  color: #000;
+}
+
+.shadow-gold {
+  box-shadow: 0 4px 15px rgba(243, 208, 130, 0.3);
+}
+
+.bg-gold-subtle {
+  background-color: rgba(212, 163, 89, 0.1) !important;
+}
+
+.text-gold {
+  color: var(--text-gold) !important;
+}
+
+/* تنسيق الأسئلة الشائعة (Accordion) */
+.custom-accordion .accordion-button {
+  box-shadow: none !important;
+}
+
+.custom-accordion .accordion-button:not(.collapsed) {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: var(--text-gold) !important;
+}
+
+.custom-accordion .accordion-button::after {
+  filter: invert(1);
+}
+/* إصلاح خلفية ونص الأسئلة الشائعة */
+.custom-accordion .accordion-item {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(10px);
+}
+
+.custom-accordion .accordion-button {
+  background-color: transparent !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.custom-accordion .accordion-button:not(.collapsed) {
+  background-color: rgba(212, 163, 89, 0.15) !important;
+  color: var(--text-gold, #d4a359) !important;
+}
+
+/* تغيير لون سهم الأكورديون إلى الأبيض/الذهبي */
+.custom-accordion .accordion-button::after {
+  filter: brightness(0) invert(1);
+}
+
+/* Styling for Blog Page */
+.text-gold {
+    color: #dfb15b !important; /* اللون الذهبي الخاص بالمنصة */
+}
+
+.btn-gold {
+    background-color: #dfb15b;
+    border-color: #dfb15b;
+}
+
+.btn-gold:hover {
+    background-color: #c99c46;
+    border-color: #c99c46;
+}
+
+.btn-outline-gold {
+    color: #dfb15b;
+    border-color: #dfb15b;
+}
+
+.btn-outline-gold:hover {
+    background-color: #dfb15b;
+    color: #121212 !important;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(223, 177, 91, 0.4) !important;
+}
+
+.bg-gold-subtle {
+    background-color: rgba(223, 177, 91, 0.1);
+}
+
+.fs-7 {
+    font-size: 0.875rem;
+}
