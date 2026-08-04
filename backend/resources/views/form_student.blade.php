@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="container">
+        <div class="row text-center">
+            
+    <form class="form">
+        <div class="col-md-6">
+            <label>Name :</label>
+            <input type="text" id="name"  class="form-control">
+        </div>
+<br>
+<div class="col-md-6">
+    <input type="submit" id="btn" value="Add" class="btn btn-primary">
+</div>
+
+</form>
+<ul>
+
+</ul>
+
+
+        </div>
+
+        
+    </div>
+<script>
+let nameStu = document.getElementById("name");
+let listStu = document.querySelector("ul");
+let btn = document.getElementById("btn");
+
+btn.addEventListener("click",function(){
+ if(nameStu.value==""){
+    alert('eroore ')
+ }else{
+    let li = document.createElement("li");
+    li.appendChild(document.createTextNode( nameStu.value ));
+    listStu.appendChild(li);
+    nameStu.value="";
+ }
+})
+
+</script>
+</body>
+</html>

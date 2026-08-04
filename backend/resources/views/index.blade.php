@@ -1,0 +1,164 @@
+﻿
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة ردود - الرئيسية | خدمة العملاء بالذكاء الاصطناعي</title>
+  
+  <link rel="stylesheet" href="{{ asset('css/bootstrap.rtl.min.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{{ asset('css/mystyle.css') }}">
+  <!-- Google Fonts (Cairo) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  
+</head>
+<body>
+
+  <!-- شريط التنقل العلوي (Navbar) -->
+<nav class="navbar navbar-expand-lg navbar-rodood sticky-top">
+  <div class="container">
+    
+    <!-- 1. الشعار (جهة اليمين) -->
+    <a class="navbar-brand d-flex align-items-center me-3" href="{{ url('/index') }}">
+      <img src="{{ asset('images/img.png') }}" alt="شعار منصة ردود" class="nav-logo-img">
+    </a>
+
+    <!-- زر القائمة للشاشات الصغيرة -->
+    <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarRodood" aria-controls="navbarRodood" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="bi bi-list fs-2 text-gold"></i>
+    </button>
+
+    <!-- محتوى الهيدر -->
+    <div class="collapse navbar-collapse" id="navbarRodood">
+      
+      <!-- 2. روابط التنقل (الترتيب: الرئيسية -> المميزات -> التعريفة -> المدونة -> أقسام المنصة -> تواصل معنا) -->
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-semibold align-items-center">
+        <li class="nav-item"><a class="nav-link active" href="{{ url('/index') }}">الرئيسية</a></li>
+        <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/features') }}">المميزات</a></li>
+        <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/pricing') }}">التسعيرة</a></li>
+        <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/blog') }}">المدونة</a></li>
+        
+        <!-- قائمة أقسام المنصة المنسدلة (قبل تواصل معنا) -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white-50" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            أقسام المنصة
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow rounded-3 mt-2" aria-labelledby="servicesDropdown">
+            <li><a class="dropdown-item py-2" href="{{ url('/auto') }}"><i class="bi bi-robot me-2 text-gold"></i>الرد الآلي</a></li>
+            <li><a class="dropdown-item py-2" href="{{ url('/chat') }}"><i class="bi bi-chat-dots me-2 text-gold"></i>المحادثات</a></li>
+            <li><a class="dropdown-item py-2" href="{{ url('/ai') }}"><i class="bi bi-cpu me-2 text-gold"></i>الذكاء الاصطناعي</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/try') }}">تواصل معنا</a></li>
+      </ul>
+
+      <!-- 3. الأزرار (جهة اليسار: تسجيل الدخول أولاً ثم طلب استشارة) -->
+      <div class="d-flex align-items-center gap-2">
+        <a href="{{ url('/login') }}" class="btn btn-outline-light rounded-pill px-4">تسجيل الدخول</a>
+        <a href="{{ url('/register') }}" class="btn btn-gold rounded-pill px-3 fw-bold d-flex align-items-center gap-1">
+          <i class="bi bi-headset"></i> طلب استشارة
+        </a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+  <!-- 2. قسم الهيدر الرئيسي (Hero Section) - النصوص في الجهة اليسرى -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="row align-items-center">
+        
+        <!-- المحتوى والكلمات بالكامل مُرحّلة إلى الجهة اليسرى -->
+        <div class="col-lg-7 text-start ms-auto">
+          <h1 class="hero-title mb-3">
+            <span class="text-gold-gradient">تواصل أذكى</span>،<br>
+            <span class="text-white">وعملاء في قمة الرضا</span>
+          </h1>
+
+          <p class="hero-subtitle mb-4">
+           مساعدك الذكي لخدمة العملاء واستقبال الاستفسارات باحترافية تامة24/7         </p>
+
+          
+
+          <!-- البطاقة الوصفية الشفافة -->
+          <div class="rodood-glass-card">
+            <p class="rodood-glass-text mb-0">
+              "ارتقِ بتجربة عميلك من خلال منصة متكاملة تُدير المحادثات، تأتمت الردود الفورية بدقة مذهلة، وتضمن استمرارية الدعم الفني لعلامتك التجارية بلا توقف—دون الحاجة لتدخل بشري مستمر."
+            </p>
+          </div>
+<br>
+
+          <div class="d-flex flex-wrap gap-3 mb-4 justify-content-start">
+            <a href="{{ url('/register') }}" class="btn btn-gold-action">ابدأ الآن</a>
+            <a href="{{ url('/chat') }}" class="btn btn-glass">عرض تجريبي</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+ <!-- شريط المميزات الرئيسية (4 عناصر) -->
+<section class="features-bar-section py-3 border-top border-bottom border-secondary border-opacity-25">
+  <div class="container px-lg-5">
+    <div class="row text-center text-lg-end g-4 justify-content-between align-items-center">
+      
+      <!-- 1. ربط موحد للقنوات -->
+      <div class="col-6 col-md-3">
+        <div class="d-flex align-items-center gap-3 justify-content-center justify-content-lg-start">
+          <i class="bi bi-diagram-3-fill text-gold fs-2"></i>
+          <div>
+            <h6 class="fw-bold text-white mb-1">ربط موحد للقنوات</h6>
+            <small class="text-white-50 d-block fs-7">واتساب، إنستغرام، والموقع</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. ذكاء اصطناعي متكيف -->
+      <div class="col-6 col-md-3">
+        <div class="d-flex align-items-center gap-3 justify-content-center justify-content-lg-start">
+          <i class="bi bi-cpu-fill text-gold fs-2"></i>
+          <div>
+            <h6 class="fw-bold text-white mb-1">ذكاء اصطناعي متكيف</h6>
+            <small class="text-white-50 d-block fs-7">يفهم السياق ويحل المشكلات</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. أمان وموثوقية -->
+      <div class="col-6 col-md-3">
+        <div class="d-flex align-items-center gap-3 justify-content-center justify-content-lg-start">
+          <i class="bi bi-shield-lock-fill text-gold fs-2"></i>
+          <div>
+            <h6 class="fw-bold text-white mb-1">أمان وموثوقية عالية</h6>
+            <small class="text-white-50 d-block fs-7">تشفير تام وحماية للبيانات</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. دعم متواصل 24/7 -->
+      <div class="col-6 col-md-3">
+        <div class="d-flex align-items-center gap-3 justify-content-center justify-content-lg-start">
+          <i class="bi bi-clock-history text-gold fs-2"></i>
+          <div>
+            <h6 class="fw-bold text-white mb-1">دعم متواصل 24/7</h6>
+            <small class="text-white-50 d-block fs-7">استجابة فورية بلا توقف</small>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+
+

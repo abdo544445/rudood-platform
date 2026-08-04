@@ -1,0 +1,225 @@
+﻿
+ <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة ردود - المميزات</title>
+    
+    <!-- Bootstrap 5 RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- ملف CSS الخاص بك (تأكدي من صحة مسار الملف) -->
+    <link rel="stylesheet" href="mystyle.css">
+
+    <!-- CSS إضافي لضمان ظهور التصميم الزجاجي والذهبي بشكل مثالي -->
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0b0f19; /* لون الخلفية الداكن */
+            color: #ffffff;
+            min-height: 100vh;
+            /* يمكنك إضافة صورة خلفية داكنة هنا إذا كان لديك واحدة في مجلد الصور */
+            /* background-image: url('images/bg-dark.jpg'); */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* شريط التنقل الزجاجي */
+        .navbar-glass {
+            background: rgba(11, 15, 25, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        /* تنسيق البطاقات الزجاجية */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.15); /* إطار ذهبي ناعم جدًا */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(212, 175, 55, 0.5); /* إضاءة الإطار عند التمرير */
+        }
+
+        /* الألوان المخصصة */
+        .text-gold {
+            color: #D4AF37 !important;
+        }
+        
+        .btn-gold {
+            background-color: #D4AF37 !important;
+            color: #0b0f19 !important;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gold:hover {
+            background-color: #f1c40f !important;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شريط التنقل (Navbar) -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-glass sticky-top py-3">
+        <div class="container">
+             <!-- 1. الشعار (جهة اليمين) -->
+    <a class="navbar-brand d-flex align-items-center me-3" href="{{ url('/index') }}">
+      <img src="{{ asset('images/img.png') }}" alt="شعار منصة ردود" class="nav-logo-img">
+    </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/index') }}">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <!-- الصفحة النشطة -->
+                        <a class="nav-link active text-gold fw-bold" href="{{ url('/features') }}">المميزات</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            أقسام المنصة
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark glass-card border-0">
+                            <li><a class="dropdown-item text-white" href="{{ url('/ai') }}">الذكاء الاصطناعي</a></li>
+                            <li><a class="dropdown-item text-white" href="{{ url('/auto') }}">الردود الآلية</a></li>
+                            <li><a class="dropdown-item text-white" href="{{ url('/chat') }}">المحادثات</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a href="{{ url('/login') }}" class="btn btn-outline-light rounded-pill px-4">تسجيل الدخول</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- قسم العنوان الرئيسي للصفحة -->
+    <header class="container text-center mt-5 pt-5 mb-5">
+        <h1 class="display-4 fw-bold text-gold mb-3">مميزات منصة ردود</h1>
+        <p class="lead text-white-50">حلول متكاملة وأدوات ذكية لتطوير خدمة عملاء عملك والارتقاء بها</p>
+    </header>
+
+    <!-- قسم شبكة المميزات -->
+    <main class="container mb-5 pb-5">
+        <div class="row g-4">
+            
+            <!-- كارت 1 -->
+            <div class="col-md-4">
+                <div class="glass-card p-4 h-100 rounded-4 text-center text-white">
+                    <div class="icon-box mb-3 text-gold display-5">
+                        <i class="bi bi-robot"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3 text-gold">ردود آلية ذكية 24/7</h4>
+                    <p class="text-white-50 fs-6 lh-lg">
+                        تقديم إجابات فورية ودقيقة لاستفسارات العملاء على مدار الساعة دون الحاجة للانتظار أو التدخل البشري.
+                    </p>
+                </div>
+            </div>
+
+            <!-- كارت 2 -->
+            <div class="col-md-4">
+                <div class="glass-card p-4 h-100 rounded-4 text-center text-white">
+                    <div class="icon-box mb-3 text-gold display-5">
+                        <i class="bi bi-chat-dots"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3 text-gold">إدارة المحادثات الموحدة</h4>
+                    <p class="text-white-50 fs-6 lh-lg">
+                        تجميع واستقبال محادثات العملاء من مختلف القنوات والمنصات في لوحة تحكم واحدة وسلسة الاستخدام.
+                    </p>
+                </div>
+            </div>
+
+            <!-- كارت 3 -->
+            <div class="col-md-4">
+                <div class="glass-card p-4 h-100 rounded-4 text-center text-white">
+                    <div class="icon-box mb-3 text-gold display-5">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3 text-gold">تحليلات وتقارير أداء</h4>
+                    <p class="text-white-50 fs-6 lh-lg">
+                        متابعة إحصائيات الدعم الفني، معدل سرعة الاستجابة، ورضا العملاء عبر تقارير تفاعلية شاملة.
+                    </p>
+                </div>
+            </div>
+
+            <!-- كارت 4 -->
+            <div class="col-md-4">
+                <div class="glass-card p-4 h-100 rounded-4 text-center text-white">
+                    <div class="icon-box mb-3 text-gold display-5">
+                        <i class="bi bi-cpu"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3 text-gold">تدريب المساعد الذكي</h4>
+                    <p class="text-white-50 fs-6 lh-lg">
+                        إمكانية رفع ملفاتك وتدريب الذكاء الاصطناعي على بيانات شركتك أو خدماتك للإجابة وفق سياق عملك تماماً.
+                    </p>
+                </div>
+            </div>
+
+            <!-- كارت 5 -->
+            <div class="col-md-4">
+                <div class="glass-card p-4 h-100 rounded-4 text-center text-white">
+                    <div class="icon-box mb-3 text-gold display-5">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3 text-gold">أمان وحماية البيانات</h4>
+                    <p class="text-white-50 fs-6 lh-lg">
+                        تشفير كامل للبيانات والمحادثات للحفاظ على خصوصية عملاء المنصة والشركات بشكل صارم.
+                    </p>
+                </div>
+            </div>
+
+            <!-- كارت 6 -->
+            <div class="col-md-4">
+                <div class="glass-card p-4 h-100 rounded-4 text-center text-white">
+                    <div class="icon-box mb-3 text-gold display-5">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3 text-gold">تحويل سلس للدعم البشري</h4>
+                    <p class="text-white-50 fs-6 lh-lg">
+                        تحويل التذاكر أو المحادثات المعقدة بسلاسة إلى موظفي الدعم البشري عند الحاجة مع توفير التاريخ الكامل.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- قسم الدعوة للإجراء الختامي (CTA) -->
+    <section class="container text-center my-5 pb-5">
+        <div class="glass-card p-5 rounded-4 mx-auto" style="max-width: 800px;">
+            <h2 class="fw-bold text-white mb-3">جاهز لتطوير خدمة عملائك؟</h2>
+            <p class="text-white-50 mb-4 fs-5">ابدأ الآن واجعل منصة ردود تجعل دعم العملاء لديك أكثر سهولة وسرعة.</p>
+            <a href="{{ url('/login') }}" class="btn btn-gold px-5 py-3 fs-5 fw-bold rounded-pill">جرب المنصة الآن</a>
+        </div>
+    </section>
+
+    <!-- تذييل الصفحة (Footer) بسيط -->
+    <footer class="text-center py-4 mt-auto" style="border-top: 1px solid rgba(255,255,255,0.05);">
+        <p class="text-white-50 mb-0">جميع الحقوق محفوظة &copy; 2026 منصة ردود</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
