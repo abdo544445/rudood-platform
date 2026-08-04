@@ -24,10 +24,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto gap-lg-3">
                     <li class="nav-item"><a class="nav-link" href="{{ url('/index') }}">الرئيسية</a></li>
-                    <li class="nav-item"><a class="nav-link" href="index.html#features">المميزات</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url("/index#features") }}">المميزات</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('/pricing') }}">التسعيرة</a></li>
                     <li class="nav-item"><a class="nav-link active text-gold fw-bold" href="{{ url('/blog') }}">المدونة</a></li>
-                    <li class="nav-item"><a class="nav-link" href="index.html#contact">تواصل معنا</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url("/index#contact") }}">تواصل معنا</a></li>
                 </ul>
                 <div class="d-flex gap-2">
                     <a href="{{ url('/login') }}" class="btn btn-gold text-dark fw-bold rounded-pill px-4">تجربة مجانية</a>

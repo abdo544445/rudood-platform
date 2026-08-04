@@ -183,7 +183,7 @@
             <a class="nav-link px-3" href="{{ url('/index') }}">الرئيسية</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3" href="index.html#features">المميزات</a>
+            <a class="nav-link px-3" href="{{ url("/index#features") }}">المميزات</a>
           </li>
            <li class="nav-item">
             <a class="nav-link px-3" href="{{ url('/blog') }}">المدونة</a>
@@ -318,7 +318,7 @@
 
         <!-- حقل إدخال الرسالة -->
         <div class="p-3 bg-dark bg-opacity-50 border-top border-secondary border-opacity-25">
-          <form id="chatForm" action="api/send_message.html" method="POST" class="d-flex align-items-center gap-2">
+          <form id="chatForm" action="#" method="POST" class="d-flex align-items-center gap-2">
             <button type="button" class="btn btn-outline-secondary text-white-50 rounded-circle"><i class="bi bi-paperclip fs-5"></i></button>
             <input type="text" id="messageInput" name="message" class="form-control form-control-dark rounded-pill px-4 py-2 border-secondary border-opacity-25" placeholder="اكتب رسالتك أو ردك الآلي هنا..." required autocomplete="off">
             <button type="submit" class="btn btn-gold rounded-circle p-2 px-3"><i class="bi bi-send-fill"></i></button>
@@ -356,7 +356,7 @@
         <!-- ملاحظات الموظفين -->
         <div class="py-3">
           <h6 class="fw-bold text-gold fs-7 mb-2">ملاحظات الموظفين</h6>
-          <form id="notesForm" action="api/save_note.html" method="POST">
+          <form id="notesForm" action="#" method="POST">
             <textarea id="noteText" name="note" class="form-control form-control-dark border-secondary border-opacity-25 fs-7 mb-2" rows="3" placeholder="أضف ملاحظة خاصة بهذا العميل..."></textarea>
             <button type="submit" class="btn btn-sm btn-gold w-100 fs-7 rounded-pill">حفظ الملاحظة</button>
           </form>

@@ -51,7 +51,7 @@
             <a class="nav-link px-3" href="{{ url('/index') }}">الرئيسية</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3" href="index.html#features">المميزات</a>
+            <a class="nav-link px-3" href="{{ url("/index#features") }}">المميزات</a>
           </li>
 
           <li class="nav-item">

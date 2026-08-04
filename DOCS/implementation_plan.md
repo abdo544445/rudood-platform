@@ -45,15 +45,11 @@ This document outlines the **"Bigger Picture"** roadmap. Now that the architectu
 
 **Goal:** Make the Bot automatically reply to customer inquiries when active.
 
-- [ ] **Webhook Endpoint**: Create a public API route (`/api/webhook/incoming`) to simulate receiving messages from WhatsApp/Instagram.
-- [ ] **AI Processing Job**: Create a Laravel background queue job (`ProcessCustomerMessage`).
-- [ ] **Logic**:
-  1. Receive incoming message.
-  2. Check if the bot is active for this workspace.
-  3. Search `auto_rules` for exact keyword matches.
-  4. If no match, send the message + `knowledge_bases` context to the **OpenAI API**.
-  5. Save the generated AI reply to the database.
-  6. Trigger the Redis event so the Live Chat UI instantly shows the bot's reply.
+- [x] **Gemini API Key Configured**: API key `AIzaSy...` stored in `.env` as `GEMINI_API_KEY` and synced to database bots.
+- [x] **Multi-Provider AI Service**: `AiService` implemented supporting OpenAI, Google Gemini (`gemini-2.0-flash`), Anthropic Claude, and OpenAI-compatible endpoints.
+- [x] **Background Automation Job**: `ProcessCustomerMessage` queue job implemented. Checks `auto_rules` keyword matches first; if no match, compiles `knowledge_bases` context and routes to `AiService`.
+- [x] **Webhook Endpoint**: `POST /api/webhook/incoming` & `GET /api/webhook/test` built for external platforms (WhatsApp/Instagram/Web) to ingest customer messages.
+- [x] **Real-time Pipeline Verified**: Incoming customer message ➔ DB save ➔ Redis publish ➔ AI Job dispatch ➔ Bot response ➔ DB save ➔ Redis publish ➔ UI auto-refresh.
 
 ---
 

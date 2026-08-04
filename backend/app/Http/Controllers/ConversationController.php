@@ -79,19 +79,19 @@ class ConversationController extends Controller
         $conversation->touch();
 
         // Publish to Redis → Node.js → All connected browsers
-        $payload = json_encode([
-            'conversation_id' => $conversation->id,
-            'workspace_id'    => $this->workspaceId(),
-            'sender_type'     => 'agent',
-            'content'         => $message->content,
-            'time'            => $message->created_at->format('H:i'),
-            'message_id'      => $message->id,
-        ]);
-
         try {
-            Redis::publish('rudood_chat_channel', $payload);
-        } catch (\Exception $e) {
-            // Non-fatal: message still saved to DB even if Redis publish fails
+            if (class_exists('Illuminate\Support\Facades\Redis')) {
+                \Illuminate\Support\Facades\Redis::publish('rudood_chat_channel', json_encode([
+                    'conversation_id' => $conversation->id,
+                    'workspace_id'    => $this->workspaceId(),
+                    'sender_type'     => 'agent',
+                    'content'         => $message->content,
+                    'time'            => $message->created_at->format('H:i'),
+                    'message_id'      => $message->id,
+                ]));
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Redis publish omitted: ' . $e->getMessage());
         }
 
         // Return JSON for AJAX, or redirect for regular form submit

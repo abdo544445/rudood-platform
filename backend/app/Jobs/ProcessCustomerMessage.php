@@ -80,19 +80,19 @@ class ProcessCustomerMessage implements ShouldQueue
         $conversation->touch(); // Float conversation to top of sidebar list
 
         // ── Step 4: Publish to Redis → Node.js → Live Chat UI ────────────────
-        $payload = json_encode([
-            'conversation_id' => $conversation->id,
-            'workspace_id'    => $conversation->workspace_id,
-            'sender_type'     => 'bot',
-            'content'         => $botMessage->content,
-            'time'            => $botMessage->created_at->format('H:i'),
-            'message_id'      => $botMessage->id,
-        ]);
-
         try {
-            Redis::publish('rudood_chat_channel', $payload);
-        } catch (\Exception $e) {
-            \Log::warning('Redis publish failed: ' . $e->getMessage());
+            if (class_exists('Illuminate\Support\Facades\Redis')) {
+                \Illuminate\Support\Facades\Redis::publish('rudood_chat_channel', json_encode([
+                    'conversation_id' => $conversation->id,
+                    'workspace_id'    => $conversation->workspace_id,
+                    'sender_type'     => 'bot',
+                    'content'         => $botMessage->content,
+                    'time'            => $botMessage->created_at->format('H:i'),
+                    'message_id'      => $botMessage->id,
+                ]));
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Redis publish omitted: ' . $e->getMessage());
         }
     }
 

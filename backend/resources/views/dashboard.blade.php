@@ -158,27 +158,30 @@
         </tr>
       </thead>
       <tbody>
+        @forelse ($recent_conversations as $conv)
         <tr>
-          <td class="fw-bold">محمد أحمد</td>
-          <td><i class="bi bi-whatsapp text-success me-1"></i> واتساب</td>
-          <td>هل الباقة الاحترافية تدعم الربط مع المتجر؟</td>
-          <td><span class="badge-auto">تم الرد آلياً</span></td>
-          <td class="text-white-50">قبل 5 دقائق</td>
+          <td class="fw-bold">{{ $conv->customer->name ?? 'عميل جديد' }}</td>
+          <td>
+            <i class="bi bi-{{ $conv->customer->platform === 'whatsapp' ? 'whatsapp text-success' : ($conv->customer->platform === 'instagram' ? 'instagram text-danger' : 'globe text-info') }} me-1"></i>
+            {{ ucfirst($conv->customer->platform ?? 'web') }}
+          </td>
+          <td>{{ Str::limit($conv->messages->first()?->content ?? 'لا توجد رسائل', 45) }}</td>
+          <td>
+            @if ($conv->status === 'human_handling')
+              <span class="badge-human">محول للموظف</span>
+            @else
+              <span class="badge-auto">تم الرد آلياً</span>
+            @endif
+          </td>
+          <td class="text-white-50">{{ $conv->updated_at->diffForHumans() }}</td>
         </tr>
+        @empty
         <tr>
-          <td class="fw-bold">سارة علي</td>
-          <td><i class="bi bi-instagram text-danger me-1"></i> إنستغرام</td>
-          <td>كم يستغرق وقت تفعيل الخدمة؟</td>
-          <td><span class="badge-auto">تم الرد آلياً</span></td>
-          <td class="text-white-50">قبل 12 دقيقة</td>
+          <td colspan="5" class="text-center py-4 text-white-50">
+            <i class="bi bi-chat-square-x me-2 fs-5"></i> لا توجد محادثات حديثة بعد
+          </td>
         </tr>
-        <tr>
-          <td class="fw-bold">شركة الحلول المتقدمة</td>
-          <td><i class="bi bi-globe text-info me-1"></i> ودجت الموقع</td>
-          <td>أريد التحدث مع موظف دعم بشري</td>
-          <td><span class="badge-human">محول للموظف</span></td>
-          <td class="text-white-50">قبل 25 دقيقة</td>
-        </tr>
+        @endforelse
       </tbody>
     </table>
   </div>

@@ -206,7 +206,7 @@
                     <!-- مكان عرض إشعار النجاح أو الخطأ -->
                     <div id="alertBox" class="alert alert-success d-none py-2 fs-7 mb-3" role="alert"></div>
 
-                    <form action="api/contact.html" method="POST" id="contactForm">
+                    <form action="#" method="POST" id="contactForm">
                         <div class="row g-3">
                             <div class="col-md-6 text-start">
                                 <label for="senderName" class="form-label text-white-50 fs-7">الاسم الكامل</label>

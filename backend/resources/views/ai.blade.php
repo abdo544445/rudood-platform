@@ -41,7 +41,7 @@
       <div class="collapse navbar-collapse" id="navbarAiPage">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
           <li class="nav-item"><a class="nav-link px-3" href="{{ url('/index') }}">الرئيسية</a></li>
-          <li class="nav-item"><a class="nav-link px-3" href="index.html#features">المميزات</a></li>
+          <li class="nav-item"><a class="nav-link px-3" href="{{ url("/index#features") }}">المميزات</a></li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle px-3 active text-gold fw-bold" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown">
               أقسام المنصة

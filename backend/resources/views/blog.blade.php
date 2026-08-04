@@ -24,7 +24,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto gap-lg-3">
                     <li class="nav-item"><a class="nav-link" href="{{ url('/index') }}">الرئيسية</a></li>
-                    <li class="nav-item"><a class="nav-link" href="index.html#features">المميزات</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url("/index#features") }}">المميزات</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('/pricing') }}">التسعيرة</a></li>
                     <li class="nav-item"><a class="nav-link active fw-bold text-gold" href="{{ url('/blog') }}">المدونة</a></li>
                     <li class="nav-item dropdown">

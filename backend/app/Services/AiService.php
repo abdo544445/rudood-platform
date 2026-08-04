@@ -24,19 +24,29 @@ class AiService
      */
     public function generateReply(string $userMessage, string $context = ''): string
     {
-        $apiKey = $this->bot->api_key; // Decrypted via model getter
+        $provider = $this->bot->ai_provider ?: 'gemini';
+        $apiKey = $this->bot->api_key;
+
+        if (!$apiKey) {
+            $apiKey = match ($provider) {
+                'gemini'    => env('GEMINI_API_KEY'),
+                'openai'    => env('OPENAI_API_KEY'),
+                'anthropic' => env('ANTHROPIC_API_KEY'),
+                default     => env('GEMINI_API_KEY') ?: env('OPENAI_API_KEY'),
+            };
+        }
 
         if (!$apiKey) {
             return $this->getFallbackReply();
         }
 
         try {
-            return match ($this->bot->ai_provider) {
+            return match ($provider) {
                 'openai'            => $this->callOpenAI($userMessage, $context, $apiKey),
                 'gemini'            => $this->callGemini($userMessage, $context, $apiKey),
                 'anthropic'         => $this->callAnthropic($userMessage, $context, $apiKey),
                 'openai_compatible' => $this->callOpenAiCompatible($userMessage, $context, $apiKey),
-                default             => $this->callOpenAI($userMessage, $context, $apiKey),
+                default             => $this->callGemini($userMessage, $context, $apiKey),
             };
         } catch (\Exception $e) {
             \Log::error('AI Service Error: ' . $e->getMessage());
