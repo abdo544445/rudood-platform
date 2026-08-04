@@ -49,24 +49,30 @@ class SettingsController extends Controller
      */
     public function saveAiKey(Request $request)
     {
+        $bot = $this->getBot();
+
         $request->validate([
             'ai_provider' => 'required|in:openai,gemini,anthropic,openai_compatible',
-            'ai_api_key'  => 'required|string',
+            'ai_api_key'  => $bot->api_key_encrypted ? 'nullable|string' : 'required|string',
             'model_type'  => 'required|string|max:100',
             'api_base_url'=> 'nullable|url',
             'max_tokens'  => 'nullable|integer|min:100|max:8000',
             'temperature' => 'nullable|numeric|min:0|max:1',
         ]);
 
-        $bot = $this->getBot();
-        $bot->update([
+        $data = [
             'ai_provider'  => $request->ai_provider,
-            'api_key'      => $request->ai_api_key, // goes through the setter/encryptor
             'model_type'   => $request->model_type,
             'api_base_url' => $request->api_base_url,
             'max_tokens'   => $request->max_tokens ?? 500,
             'temperature'  => $request->temperature ?? 0.7,
-        ]);
+        ];
+
+        if ($request->filled('ai_api_key')) {
+            $data['api_key'] = $request->ai_api_key;
+        }
+
+        $bot->update($data);
 
         return back()->with('status', 'تم حفظ إعدادات الذكاء الاصطناعي بنجاح ✓');
     }

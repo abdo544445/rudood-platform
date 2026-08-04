@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Models\Bot;
@@ -55,7 +56,7 @@ class AuthController extends Controller
 
     /**
      * Handle registration form submission.
-     * Creates: Workspace → Bot → User (linked together).
+     * Creates: Workspace → Bot → User (linked together atomically).
      */
     public function register(Request $request)
     {
@@ -66,33 +67,35 @@ class AuthController extends Controller
             'password'  => 'required|string|min:8|confirmed',
         ]);
 
-        // 1. Create workspace for this user
-        $workspace = Workspace::create([
-            'company_name' => $request->full_name . "'s Workspace",
-            'status'       => 'active',
-        ]);
+        $user = DB::transaction(function () use ($request) {
+            // 1. Create workspace for this user
+            $workspace = Workspace::create([
+                'company_name' => $request->full_name . "'s Workspace",
+                'status'       => 'active',
+            ]);
 
-        // 2. Create the default Bot for this workspace
-        Bot::create([
-            'workspace_id'  => $workspace->id,
-            'name'          => 'مساعد ردود الذكي',
-            'system_prompt' => 'أنت مساعد ذكاء اصطناعي مفيد ومهني. رد على أسئلة العملاء بدقة ولطف.',
-            'ai_provider'   => 'openai',
-            'model_type'    => 'gpt-4o-mini',
-            'bot_tone'      => 'friendly',
-            'welcome_message' => 'أهلاً بك! 👋 أنا مساعدك الذكي، كيف يمكنني خدمتك اليوم؟',
-            'is_active'     => true,
-        ]);
+            // 2. Create the default Bot for this workspace
+            Bot::create([
+                'workspace_id'  => $workspace->id,
+                'name'          => 'مساعد ردود الذكي',
+                'system_prompt' => 'أنت مساعد ذكاء اصطناعي مفيد ومهني. رد على أسئلة العملاء بدقة ولطف.',
+                'ai_provider'   => 'openai',
+                'model_type'    => 'gpt-4o-mini',
+                'bot_tone'      => 'friendly',
+                'welcome_message' => 'أهلاً بك! 👋 أنا مساعدك الذكي، كيف يمكنني خدمتك اليوم؟',
+                'is_active'     => true,
+            ]);
 
-        // 3. Create the user linked to this workspace
-        $user = User::create([
-            'name'         => $request->full_name,
-            'email'        => $request->email,
-            'phone'        => $request->phone,
-            'password'     => Hash::make($request->password),
-            'workspace_id' => $workspace->id,
-            'role'         => 'owner',
-        ]);
+            // 3. Create the user linked to this workspace
+            return User::create([
+                'name'         => $request->full_name,
+                'email'        => $request->email,
+                'phone'        => $request->phone,
+                'password'     => Hash::make($request->password),
+                'workspace_id' => $workspace->id,
+                'role'         => 'owner',
+            ]);
+        });
 
         // 4. Log the user in
         Auth::login($user);

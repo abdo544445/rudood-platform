@@ -55,8 +55,8 @@ Route::middleware('auth')->group(function () {
     });
 
     // Live Chat
-    Route::get('/live-chat', [ConversationController::class, 'index']);
-    Route::get('/live-chat/{id}', [ConversationController::class, 'show']);
+    Route::get('/live-chat', [ConversationController::class, 'index'])->name('live-chat.index');
+    Route::get('/live-chat/{id}', [ConversationController::class, 'show'])->name('live-chat.show');
     Route::post('/live-chat/{id}/send', [ConversationController::class, 'sendMessage']);
 
     // AI Management

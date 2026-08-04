@@ -35,6 +35,33 @@ class BotController extends Controller
         return view('ai-manage', compact('bot', 'rules', 'docs'));
     }
 
+    /**
+     * Save/update main bot settings (name, system prompt, welcome message, tone).
+     */
+    public function saveBot(Request $request)
+    {
+        $request->validate([
+            'name'            => 'nullable|string|max:255',
+            'bot_name'        => 'nullable|string|max:255',
+            'system_prompt'   => 'nullable|string',
+            'welcome_message' => 'nullable|string',
+            'bot_tone'        => 'nullable|in:formal,friendly,sales',
+        ]);
+
+        $bot = $this->getBot();
+
+        $name = $request->input('name') ?? $request->input('bot_name') ?? $bot->name;
+
+        $bot->update([
+            'name'            => $name,
+            'system_prompt'   => $request->input('system_prompt', $bot->system_prompt),
+            'welcome_message' => $request->input('welcome_message', $bot->welcome_message),
+            'bot_tone'        => $request->input('bot_tone', $bot->bot_tone),
+        ]);
+
+        return back()->with('status', 'تم حفظ إعدادات البوت بنجاح ✓');
+    }
+
     // ─── FAQ / Auto-Rules ─────────────────────────────────────────────────────
 
     /**

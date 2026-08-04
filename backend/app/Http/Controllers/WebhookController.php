@@ -49,17 +49,30 @@ class WebhookController extends Controller
         $platform    = $request->platform ?? 'web';
 
         // ── Find or create the customer ───────────────────────────────────────
-        $customer = Customer::firstOrCreate(
-            [
+        $phone = $request->customer_phone;
+        $email = $request->customer_email;
+
+        if ($phone) {
+            $customer = Customer::firstOrCreate(
+                [
+                    'workspace_id' => $workspaceId,
+                    'phone'        => $phone,
+                ],
+                [
+                    'name'     => $request->customer_name,
+                    'email'    => $email,
+                    'platform' => $platform,
+                ]
+            );
+        } else {
+            $customer = Customer::create([
                 'workspace_id' => $workspaceId,
-                'phone'        => $request->customer_phone ?? null,
-            ],
-            [
-                'name'     => $request->customer_name,
-                'email'    => $request->customer_email ?? null,
-                'platform' => $platform,
-            ]
-        );
+                'name'         => $request->customer_name,
+                'phone'        => null,
+                'email'        => $email,
+                'platform'     => $platform,
+            ]);
+        }
 
         // ── Find an open conversation, or start a new one ─────────────────────
         $conversation = Conversation::where('workspace_id', $workspaceId)

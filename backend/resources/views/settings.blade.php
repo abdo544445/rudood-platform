@@ -251,6 +251,7 @@
       };
       baseUrlSection.style.display = provider === 'openai_compatible' ? 'block' : 'none';
       if (models[provider]) modelInput.placeholder = models[provider];
+    }
   </script>
 </body>
 </html>

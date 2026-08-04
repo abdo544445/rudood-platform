@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AutoRule extends Model
 {
-    protected $fillable = ['workspace_id', 'keywords', 'trigger_condition', 'reply_template', 'is_active'];
+    protected $fillable = ['workspace_id', 'question', 'keywords', 'trigger_condition', 'reply_template', 'is_active'];
 
     protected $casts = [
         'keywords' => 'array',
