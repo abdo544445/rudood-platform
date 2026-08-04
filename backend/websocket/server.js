@@ -7,13 +7,17 @@ const app    = express();
 const server = http.createServer(app);
 const io     = new Server(server, {
   cors: {
-    origin: '*',
+    origin: process.env.CORS_ORIGIN || '*',
     methods: ['GET', 'POST']
   }
 });
 
-// Redis subscriber (separate connection from publisher)
-const redisSub = new Redis();
+// Redis subscriber (configured via environment variables)
+const redisSub = new Redis({
+  host: process.env.REDIS_HOST || '127.0.0.1',
+  port: parseInt(process.env.REDIS_PORT || '6379', 10),
+  password: process.env.REDIS_PASSWORD || undefined,
+});
 
 // Subscribe to the Laravel-published channel
 redisSub.subscribe('rudood_chat_channel', (err, count) => {

@@ -21,3 +21,21 @@ Route::get('/bots', [BotController::class, 'index']);
 Route::post('/webhook/incoming', [WebhookController::class, 'incoming']);
 Route::get('/webhook/test', [WebhookController::class, 'test']);
 Route::post('/webhook/test', [WebhookController::class, 'incoming']);
+
+// Production Health Check Endpoint
+Route::get('/health', function () {
+    try {
+        \Illuminate\Support\Facades\DB::connection()->getPdo();
+        $dbStatus = 'OK';
+    } catch (\Exception $e) {
+        $dbStatus = 'ERROR: ' . $e->getMessage();
+    }
+
+    $statusCode = ($dbStatus === 'OK') ? 200 : 500;
+
+    return response()->json([
+        'status'    => $statusCode === 200 ? 'healthy' : 'unhealthy',
+        'database'  => $dbStatus,
+        'timestamp' => now()->toIso8601String(),
+    ], $statusCode);
+});

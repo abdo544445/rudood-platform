@@ -182,20 +182,21 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Socket.io Client (from Node.js server) -->
-  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <script>
     // ─── Configuration (passed from Laravel) ───────────────────────────────
     const WORKSPACE_ID     = {{ auth()->user()->workspace_id }};
     const ACTIVE_CONV_ID   = {{ $active?->id ?? 'null' }};
     const SEND_URL         = "{{ $active ? url('/live-chat/' . $active->id . '/send') : '' }}";
     const CSRF_TOKEN       = "{{ csrf_token() }}";
+    const WS_URL           = "{{ env('WEBSOCKET_URL', '') }}" || (window.location.protocol + '//' + window.location.hostname + ':3000');
 
     // ─── Socket.io Connection ───────────────────────────────────────────────
     let socket;
     const badge = document.getElementById('connectionBadge');
 
     try {
-      socket = io('http://localhost:3000', { transports: ['websocket', 'polling'] });
+      socket = io(WS_URL, { transports: ['websocket', 'polling'] });
 
       socket.on('connect', () => {
         // Join the workspace-scoped room

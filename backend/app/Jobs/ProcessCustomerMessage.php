@@ -109,10 +109,14 @@ class ProcessCustomerMessage implements ShouldQueue
                          ->get();
 
         foreach ($rules as $rule) {
-            $keywords = is_array($rule->keywords) ? $rule->keywords : json_decode($rule->keywords, true);
+            $keywords = is_array($rule->keywords)
+                ? $rule->keywords
+                : (json_decode($rule->keywords ?? '', true) ?? []);
+
+            if (!is_iterable($keywords)) continue;
 
             foreach ($keywords as $keyword) {
-                if (Str::contains($messageLower, Str::lower($keyword))) {
+                if (!empty($keyword) && Str::contains($messageLower, Str::lower($keyword))) {
                     return $rule->reply_template;
                 }
             }
