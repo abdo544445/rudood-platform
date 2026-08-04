@@ -1,0 +1,23 @@
+# Ignore zip packages
+rudood-platform-clean.zip
+*.zip
+
+# Ignore OS & IDE files
+.DS_Store
+.vscode/
+.idea/
+
+# Ignore sensitive env files
+.env
+backend/.env
+backend/.env.backup
+
+# Ignore node_modules & vendor
+node_modules/
+backend/node_modules/
+backend/websocket/node_modules/
+backend/vendor/
+
+# Ignore logs
+*.log
+backend/storage/logs/*.log
