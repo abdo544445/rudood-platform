@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     
     <!-- ملف CSS الخاص بك -->
-    <link rel="stylesheet" href="mystyle.css">
+    <link rel="stylesheet" href="{{ asset('css/mystyle.css') }}">
 
     <style>
         body {

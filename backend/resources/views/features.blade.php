@@ -1,118 +1,85 @@
-﻿
- <!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة ردود - المميزات</title>
-    
-    <!-- Bootstrap 5 RTL CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
-    
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
-    <!-- Google Fonts (Cairo) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- ملف CSS الخاص بك (تأكدي من صحة مسار الملف) -->
-    <link rel="stylesheet" href="mystyle.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة ردود - المميزات</title>
+  
+  <link rel="stylesheet" href="{{ asset('css/bootstrap.rtl.min.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{{ asset('css/mystyle.css') }}">
+  <!-- Google Fonts (Cairo) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- CSS إضافي لضمان ظهور التصميم الزجاجي والذهبي بشكل مثالي -->
-    <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #0b0f19; /* لون الخلفية الداكن */
-            color: #ffffff;
-            min-height: 100vh;
-            /* يمكنك إضافة صورة خلفية داكنة هنا إذا كان لديك واحدة في مجلد الصور */
-            /* background-image: url('images/bg-dark.jpg'); */
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-
-        /* شريط التنقل الزجاجي */
-        .navbar-glass {
-            background: rgba(11, 15, 25, 0.7);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
-        }
-
-        /* تنسيق البطاقات الزجاجية */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(212, 175, 55, 0.15); /* إطار ذهبي ناعم جدًا */
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-
-        .glass-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(212, 175, 55, 0.5); /* إضاءة الإطار عند التمرير */
-        }
-
-        /* الألوان المخصصة */
-        .text-gold {
-            color: #D4AF37 !important;
-        }
-        
-        .btn-gold {
-            background-color: #D4AF37 !important;
-            color: #0b0f19 !important;
-            border: none;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-gold:hover {
-            background-color: #f1c40f !important;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-            transform: scale(1.05);
-        }
-    </style>
+  <style>
+    /* تنسيق البطاقات الزجاجية للصفحة */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .glass-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(212, 175, 55, 0.5);
+    }
+  </style>
 </head>
 <body>
 
-    <!-- شريط التنقل (Navbar) -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-glass sticky-top py-3">
-        <div class="container">
-             <!-- 1. الشعار (جهة اليمين) -->
-    <a class="navbar-brand d-flex align-items-center me-3" href="{{ url('/index') }}">
-      <img src="{{ asset('images/img.png') }}" alt="شعار منصة ردود" class="nav-logo-img">
-    </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/index') }}">الرئيسية</a>
-                    </li>
-                    <li class="nav-item">
-                        <!-- الصفحة النشطة -->
-                        <a class="nav-link active text-gold fw-bold" href="{{ url('/features') }}">المميزات</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            أقسام المنصة
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark glass-card border-0">
-                            <li><a class="dropdown-item text-white" href="{{ url('/ai') }}">الذكاء الاصطناعي</a></li>
-                            <li><a class="dropdown-item text-white" href="{{ url('/auto') }}">الردود الآلية</a></li>
-                            <li><a class="dropdown-item text-white" href="{{ url('/chat') }}">المحادثات</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <div class="d-flex">
-                    <a href="{{ url('/login') }}" class="btn btn-outline-light rounded-pill px-4">تسجيل الدخول</a>
-                </div>
-            </div>
+  <!-- شريط التنقل العلوي (Navbar) -->
+  <nav class="navbar navbar-expand-lg navbar-rodood sticky-top">
+    <div class="container">
+      
+      <!-- 1. الشعار (جهة اليمين) -->
+      <a class="navbar-brand d-flex align-items-center me-3" href="{{ url('/index') }}">
+        <img src="{{ asset('images/img.png') }}" alt="شعار منصة ردود" class="nav-logo-img">
+      </a>
+
+      <!-- زر القائمة للشاشات الصغيرة -->
+      <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarRodood" aria-controls="navbarRodood" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="bi bi-list fs-2 text-gold"></i>
+      </button>
+
+      <!-- محتوى الهيدر -->
+      <div class="collapse navbar-collapse" id="navbarRodood">
+        
+        <!-- 2. روابط التنقل -->
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-semibold align-items-center">
+          <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/index') }}">الرئيسية</a></li>
+          <li class="nav-item"><a class="nav-link active text-gold fw-bold" href="{{ url('/features') }}">المميزات</a></li>
+          <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/pricing') }}">التسعيرة</a></li>
+          <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/blog') }}">المدونة</a></li>
+          
+          <!-- قائمة أقسام المنصة المنسدلة -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white-50" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              أقسام المنصة
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow rounded-3 mt-2" aria-labelledby="servicesDropdown">
+              <li><a class="dropdown-item py-2" href="{{ url('/auto') }}"><i class="bi bi-robot me-2 text-gold"></i>الرد الآلي</a></li>
+              <li><a class="dropdown-item py-2" href="{{ url('/chat') }}"><i class="bi bi-chat-dots me-2 text-gold"></i>المحادثات</a></li>
+              <li><a class="dropdown-item py-2" href="{{ url('/ai') }}"><i class="bi bi-cpu me-2 text-gold"></i>الذكاء الاصطناعي</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/try') }}">تواصل معنا</a></li>
+        </ul>
+
+        <!-- 3. الأزرار -->
+        <div class="d-flex align-items-center gap-2">
+          <a href="{{ url('/login') }}" class="btn btn-outline-light rounded-pill px-4">تسجيل الدخول</a>
+          <a href="{{ url('/register') }}" class="btn btn-gold rounded-pill px-3 fw-bold d-flex align-items-center gap-1">
+            <i class="bi bi-headset"></i> طلب استشارة
+          </a>
         </div>
-    </nav>
+
+      </div>
+    </div>
+  </nav>
 
     <!-- قسم العنوان الرئيسي للصفحة -->
     <header class="container text-center mt-5 pt-5 mb-5">
