@@ -20,8 +20,9 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Configure working directory
 WORKDIR /var/www/html
 
-# Copy application files
+# Copy application files and Nginx config
 COPY . /var/www/html
+COPY nginx.conf /etc/nginx/http.d/default.conf
 
 # Install Composer dependencies
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
