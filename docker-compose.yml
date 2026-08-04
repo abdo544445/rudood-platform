@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: rudood_app
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_KEY: ${APP_KEY}
+      APP_URL: ${APP_URL:-http://localhost:8080}
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-rudood_db}
+      DB_USERNAME: ${DB_USERNAME:-rudood_user}
+      DB_PASSWORD: ${DB_PASSWORD:-rudood_secret}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      QUEUE_CONNECTION: redis
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - ./backend/storage:/var/www/html/storage
+    networks:
+      - rudood_network
+
+  websocket:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: rudood_websocket
+    restart: always
+    command: node /var/www/html/websocket/server.js
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      CORS_ORIGIN: "*"
+    depends_on:
+      - redis
+    networks:
+      - rudood_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: rudood_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-rudood_db}
+      MYSQL_USER: ${DB_USERNAME:-rudood_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-rudood_secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - rudood_network
+
+  redis:
+    image: redis:alpine
+    container_name: rudood_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - rudood_network
+
+networks:
+  rudood_network:
+    driver: bridge
+
+volumes:
+  db_data:
+  redis_data:
