@@ -29,7 +29,7 @@
 
 ## 1. Executive Summary & Value Proposition
 
-**Rudood (ردود)** is a state-of-the-art AI customer service and sales automation platform tailored for Middle Eastern e-commerce merchants and enterprise stores. It replaces slow, costly human support queues with autonomous AI agents that understand Gulf and Arabic dialects, answer customer queries within milliseconds, recommend products, and escalate complex or frustrated conversations to human agents seamlessly.
+**Rudood (ردود)** is a state-of-the-art AI customer service and sales automation platform tailored for modern e-commerce merchants and enterprise stores worldwide. It replaces slow, costly human support queues with autonomous AI agents that understand Arabic and global languages across diverse dialects, answer customer queries within milliseconds, recommend products, and escalate complex or frustrated conversations to human agents seamlessly.
 
 ### Core Value Drivers:
 - **Instant Response Times**: Reduces first-response latency from hours to < 1.2 seconds.
