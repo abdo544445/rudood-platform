@@ -4,6 +4,36 @@
 @section('page_title', 'مراقبة البنية التحتية والخدمات الحية')
 
 @section('content')
+<!-- بطاقة وضع الصيانة العام -->
+<div class="card card-custom p-4 mb-4 border {{ ($maintenance['is_active'] ?? false) ? 'border-danger' : 'border-warning border-opacity-30' }}" style="background: linear-gradient(145deg, {{ ($maintenance['is_active'] ?? false) ? 'rgba(239, 68, 68, 0.08)' : 'rgba(212, 175, 55, 0.05)' }} 0%, rgba(15, 23, 42, 0.95) 100%);">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge {{ ($maintenance['is_active'] ?? false) ? 'bg-danger text-white' : 'bg-dark border border-secondary border-opacity-40 text-gold' }} px-3 py-1 fs-8 fw-bold">
+                    <i class="bi {{ ($maintenance['is_active'] ?? false) ? 'bi-exclamation-octagon-fill' : 'bi-tools' }} me-1"></i>
+                    {{ ($maintenance['is_active'] ?? false) ? 'وضع الصيانة: نشط حالياً' : 'وضع الصيانة: غير مفعل (النظام متاح للجميع)' }}
+                </span>
+                @if(!empty($maintenance['scheduled_ends_at']))
+                    <span class="badge bg-dark border border-secondary border-opacity-40 text-info fs-8">
+                        <i class="bi bi-clock-history me-1"></i> موعد الانتهاء: {{ date('Y-m-d H:i', strtotime($maintenance['scheduled_ends_at'])) }}
+                    </span>
+                @endif
+            </div>
+            <h4 class="fw-bold text-white mb-1">{{ $maintenance['title'] ?? 'أعمال صيانة وتطوير مجدولة' }}</h4>
+            <p class="text-white-50 fs-8 mb-0" style="max-width: 650px;">{{ $maintenance['message'] ?? 'نقوم حالياً بإجراء تحديثات دورية وتطويرات هامة على أنظمة منصة ردود...' }}</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="/maintenance" target="_blank" class="btn btn-sm btn-outline-secondary text-white-50 rounded-pill px-3 py-2 fs-8">
+                <i class="bi bi-eye me-1"></i> معاينة شاشة الصيانة
+            </a>
+            <button type="button" class="btn btn-sm btn-gold rounded-pill px-4 py-2 fw-bold fs-8 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#maintenanceControlModal">
+                <i class="bi bi-sliders"></i>
+                <span>تعديل إعدادات الصيانة</span>
+            </button>
+        </div>
+    </div>
+</div>
+
 <div class="row g-4 mb-4">
     <!-- 1. حالة قاعدة البيانات -->
     <div class="col-12 col-sm-6 col-xl-3">

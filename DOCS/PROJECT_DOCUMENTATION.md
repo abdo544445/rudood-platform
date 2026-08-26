@@ -257,7 +257,7 @@ The repository features an integrated automated test suite executable via:
 php tests_suite_runner.php
 ```
 
-### Test Suite Coverage (81 Tests, 100% Pass Rate):
+### Test Suite Coverage (88 Tests, 100% Pass Rate):
 - **Suite 1: Auth & Multi-Tenancy (6 tests)**: Super Admin roles, Owner isolation, Atomic registration, Impersonation flow.
 - **Suite 2: Super Admin Command Center (11 tests)**: KPIs, Telemetry stream, Workspace CRUD, User password reset, Articles, System stats, Audit logs, Contact message CRUD & status update.
 - **Suite 3: Store Dashboard & Live Chat (7 tests)**: Metrics calculation, Inbox rendering, Human takeover toggle, Canned replies, CRM notes, CSV export.
@@ -268,5 +268,7 @@ php tests_suite_runner.php
 - **Suite 8: WhatsApp Interactive Messages (7 tests)**: Quick Reply buttons payload builder, Interactive List Menu payload builder, Product catalog carousel cards builder, WhatsApp button click webhook ingestion, WhatsApp list menu row selection webhook ingestion, Agent interactive buttons dispatch, Agent product catalog carousel dispatch.
 - **Suite 9: Live Chat & Agent Experience Enhancements (7 tests)**: Image attachment upload & preview, PDF document upload & download card, Conversation resolution & automated CSAT survey trigger, Customer satisfaction 1-5 rating & feedback storage, Web widget CSAT rating submission, Urgent escalation alarm state detection, Typing indicator simulation latency bounds (800ms–1500ms).
 - **Suite 10: Conversion Analytics & ROI Tracking (7 tests)**: Direct purchase conversion attribution to conversation, Phone heuristic attribution within 72-hour window, Merchant ROI calculation (Revenue Generated, Hours Saved, Deflection Rate, AOV), 6-month monthly deflection trends aggregation for ApexCharts, Dashboard index view ROI metrics delivery, Dynamic ROI analytics endpoint (`GET /dashboard/roi-analytics`), AnalyticsSnapshot model persistence.
+- **Suite 11: System Maintenance Mode & Route Protection (7 tests)**: Default inactive state check, Super Admin maintenance activation with custom schedule, Maintenance view rendering with active schedule, Middleware redirect of protected routes (`/dashboard`, `/login`, etc.) to `/maintenance`, Exemption of public front-end homepage (`/` and `/index`), Super Admin bypass to `/admin/*`, Maintenance deactivation and traffic restoration.
+
 
 

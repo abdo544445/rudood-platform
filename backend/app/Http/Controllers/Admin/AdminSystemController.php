@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\SystemSetting;
+use App\Models\AdminAuditLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Http;
@@ -135,6 +138,9 @@ class AdminSystemController extends Controller
             $recent_logs = array_slice(array_reverse($lines), 0, 30);
         }
 
+        // 7. System Maintenance Mode Configuration
+        $maintenance = SystemSetting::getMaintenanceDetails();
+
         return view('admin.system.index', compact(
             'db_status',
             'db_size_mb',
@@ -150,7 +156,60 @@ class AdminSystemController extends Controller
             'environment',
             'debug_mode',
             'storage_size_mb',
-            'recent_logs'
+            'recent_logs',
+            'maintenance'
         ));
+    }
+
+    /**
+     * Display the public / client maintenance page.
+     */
+    public function showMaintenancePage()
+    {
+        $maintenance = SystemSetting::getMaintenanceDetails();
+        return view('maintenance', compact('maintenance'));
+    }
+
+    /**
+     * Enable or disable platform maintenance mode with scheduled countdown.
+     */
+    public function toggleMaintenance(Request $request)
+    {
+        $active = $request->boolean('is_active');
+        $title = $request->input('title');
+        $message = $request->input('message');
+        $scheduledEndsAt = $request->input('scheduled_ends_at');
+
+        $details = SystemSetting::setMaintenance($active, [
+            'title'             => $title,
+            'message'           => $message,
+            'scheduled_ends_at' => $scheduledEndsAt,
+            'activated_by'      => auth()->id(),
+        ]);
+
+        // Audit log
+        try {
+            AdminAuditLog::create([
+                'user_id'     => auth()->id() ?? 1,
+                'action'      => $active ? 'activate_maintenance' : 'deactivate_maintenance',
+                'target_type' => 'system',
+                'target_id'   => 0,
+                'details'     => $details,
+                'ip_address'  => $request->ip(),
+            ]);
+        } catch (\Throwable $e) {}
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $active ? 'تم تفعيل وضع الصيانة بنجاح.' : 'تم إلغاء تفعيل وضع الصيانة واستئناف المنصة.',
+                'data'    => $details,
+            ]);
+        }
+
+        return redirect()->back()->with(
+            'success',
+            $active ? 'تم تفعيل وضع الصيانة بنجاح وتوجيه الزوار للعد التنازلي المجدول.' : 'تم إيقاف وضع الصيانة واستعادة وصول المتاجر والعملاء بنجاح.'
+        );
     }
 }

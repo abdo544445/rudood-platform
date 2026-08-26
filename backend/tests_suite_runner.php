@@ -26,6 +26,8 @@ use App\Models\Article;
 use App\Models\Channel;
 use App\Models\MockOrder;
 use App\Models\AnalyticsSnapshot;
+use App\Models\SystemSetting;
+use App\Http\Middleware\CheckMaintenanceMode;
 use App\Services\AiService;
 use App\Services\RagService;
 use App\Services\ConversionTrackingService;
@@ -55,6 +57,7 @@ class RudoodPlatformTester
         $this->testSuite8_WhatsAppInteractiveMessages();
         $this->testSuite9_LiveChatAndAgentEnhancements();
         $this->testSuite10_ConversionAnalyticsAndRoiTracking();
+        $this->testSuite11_MaintenanceModeAndScheduledCountdown();
 
         $this->printSummary();
 
@@ -1202,6 +1205,108 @@ class RudoodPlatformTester
             $snapshot->id > 0 &&
             (float)$snapshot->revenue_generated == 18500.00 &&
             (float)$snapshot->deflection_rate == 83.33
+        );
+
+        echo "\n";
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // SUITE 11: System Maintenance Mode & Route Protection
+    // ──────────────────────────────────────────────────────────────────────────
+    private function testSuite11_MaintenanceModeAndScheduledCountdown(): void
+    {
+        echo "🛠️ Suite 11: System Maintenance Mode & Route Protection\n";
+        $suite = 'System Maintenance Mode';
+
+        $sysCtrl = app(\App\Http\Controllers\Admin\AdminSystemController::class);
+        $admin = User::where('role', 'super_admin')->first();
+        $owner = User::where('role', 'owner')->first();
+        $middleware = app(CheckMaintenanceMode::class);
+
+        // 11.1 Default Inactive State
+        SystemSetting::setMaintenance(false);
+        $this->assert($suite, 'SystemSetting::isMaintenanceActive() returns false by default', 
+            SystemSetting::isMaintenanceActive() === false
+        );
+
+        // 11.2 Super Admin Activates Maintenance Mode with Schedule
+        Auth::login($admin);
+        $targetEnd = now()->addHours(3)->format('Y-m-d H:i:s');
+        $toggleReq = Request::create('/system/maintenance', 'POST', [
+            'is_active'         => '1',
+            'title'             => 'ترقية مجدولة لخوادم الذكاء الاصطناعي 🚀',
+            'message'           => 'نقوم حالياً بترقية البنية التحتية لمنصة ردود لتقديم ردود أسرع بنسبة 50%.',
+            'scheduled_ends_at' => $targetEnd,
+        ]);
+
+        $sysCtrl->toggleMaintenance($toggleReq);
+        $details = SystemSetting::getMaintenanceDetails();
+
+        $this->assert($suite, 'AdminSystemController::toggleMaintenance activates maintenance mode with custom schedule', 
+            SystemSetting::isMaintenanceActive() === true &&
+            $details['title'] === 'ترقية مجدولة لخوادم الذكاء الاصطناعي 🚀' &&
+            $details['scheduled_ends_at'] === $targetEnd
+        );
+
+        // 11.3 Maintenance View Rendering
+        $maintView = $sysCtrl->showMaintenancePage();
+        $viewData = $maintView->getData();
+
+        $this->assert($suite, 'AdminSystemController::showMaintenancePage renders maintenance view with active schedule', 
+            isset($viewData['maintenance']) &&
+            $viewData['maintenance']['is_active'] === true &&
+            $viewData['maintenance']['scheduled_ends_at'] === $targetEnd
+        );
+
+        // 11.4 Middleware Blocks Protected Routes & Redirects to /maintenance for Regular Merchants
+        Auth::login($owner);
+        $dashReq = Request::create('/dashboard', 'GET');
+        $dashResp = $middleware->handle($dashReq, function () {
+            return response('OK', 200);
+        });
+
+        $this->assert($suite, 'CheckMaintenanceMode middleware redirects /dashboard to /maintenance for regular users', 
+            $dashResp->isRedirection() &&
+            str_contains($dashResp->getTargetUrl(), 'maintenance')
+        );
+
+        // 11.5 Middleware Allows General Public Index Landing Page (/)
+        Auth::logout();
+        $homeReq = Request::create('/', 'GET');
+        $homeResp = $middleware->handle($homeReq, function () {
+            return response('HOME_OK', 200);
+        });
+
+        $this->assert($suite, 'CheckMaintenanceMode middleware exempts public front-end homepage (/)', 
+            $homeResp->getContent() === 'HOME_OK'
+        );
+
+        // 11.6 Middleware Allows Super Admin Bypass to /admin/*
+        Auth::login($admin);
+        $adminReq = Request::create('/admin/system', 'GET');
+        $adminResp = $middleware->handle($adminReq, function () {
+            return response('ADMIN_OK', 200);
+        });
+
+        $this->assert($suite, 'CheckMaintenanceMode middleware allows Super Admin bypass to /admin/*', 
+            $adminResp->getContent() === 'ADMIN_OK'
+        );
+
+        // 11.7 Super Admin Deactivates Maintenance Mode & Restores Traffic
+        $deactReq = Request::create('/system/maintenance', 'POST', [
+            'is_active' => '0',
+        ]);
+        $sysCtrl->toggleMaintenance($deactReq);
+
+        Auth::login($owner);
+        $restoredReq = Request::create('/dashboard', 'GET');
+        $restoredResp = $middleware->handle($restoredReq, function () {
+            return response('DASHBOARD_OK', 200);
+        });
+
+        $this->assert($suite, 'AdminSystemController::toggleMaintenance deactivates maintenance and restores normal traffic', 
+            SystemSetting::isMaintenanceActive() === false &&
+            $restoredResp->getContent() === 'DASHBOARD_OK'
         );
 
         echo "\n";

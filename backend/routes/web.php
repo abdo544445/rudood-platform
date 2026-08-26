@@ -25,8 +25,9 @@ use App\Models\ContactMessage;
 use App\Models\AuditLog;
 
 // ─── Public Routes (No Auth Required) ────────────────────────────────────────
-Route::get('/', fn() => redirect('/login'));
+Route::get('/', fn() => view('index'))->name('home');
 Route::get('/index', fn() => view('index'));
+Route::get('/maintenance', [AdminSystemController::class, 'showMaintenancePage'])->name('maintenance');
 Route::get('/demo', fn() => view('demo'))->name('demo');
 Route::get('/features', fn() => view('features'));
 Route::get('/pricing', fn() => view('pricing'));
@@ -116,6 +117,7 @@ Route::middleware(['auth', 'super_admin'])->prefix('admin')->name('admin.')->gro
 
     // Infrastructure & System Health
     Route::get('/system', [AdminSystemController::class, 'index'])->name('system.index');
+    Route::post('/system/maintenance', [AdminSystemController::class, 'toggleMaintenance'])->name('system.maintenance');
 });
 
 // Leave Impersonation (Available to authenticated users who were impersonated by an admin)

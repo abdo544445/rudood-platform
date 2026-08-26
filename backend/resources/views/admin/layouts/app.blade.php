@@ -352,6 +352,22 @@
             </div>
             
             <div class="d-flex align-items-center gap-3">
+                @php
+                    $maint = \App\Models\SystemSetting::getMaintenanceDetails();
+                @endphp
+                @if($maint['is_active'])
+                    <button type="button" class="btn btn-sm btn-danger rounded-pill px-3 py-1 fs-8 fw-bold d-flex align-items-center gap-2 pulse-maintenance shadow-sm" data-bs-toggle="modal" data-bs-target="#maintenanceControlModal">
+                        <span class="spinner-grow spinner-grow-sm" role="status"></span>
+                        <i class="bi bi-tools"></i>
+                        <span>وضع الصيانة: نشط الآن</span>
+                    </button>
+                @else
+                    <button type="button" class="btn btn-sm btn-dark border border-secondary border-opacity-50 text-white-50 rounded-pill px-3 py-1 fs-8 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#maintenanceControlModal">
+                        <i class="bi bi-tools text-gold"></i>
+                        <span>وضع الصيانة: معطل</span>
+                    </button>
+                @endif
+
                 <span class="badge-admin-role">
                     <i class="bi-gem me-1"></i> {{ auth()->user()->role ?? 'Super Admin' }}
                 </span>
@@ -388,8 +404,55 @@
         </main>
     </div>
 
-    <!-- Global Command Palette Modal (Cmd + K) -->
-    @include('layouts.partials.command-palette')
+    <!-- Super Admin Maintenance Control Modal -->
+    <div class="modal fade" id="maintenanceControlModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content card-custom border border-warning border-opacity-30">
+                <div class="modal-header border-bottom border-secondary border-opacity-25 p-3">
+                    <h5 class="modal-title text-white fw-bold d-flex align-items-center gap-2">
+                        <i class="bi bi-tools text-gold"></i>
+                        <span>التحكم بوضع الصيانة والجدولة</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('admin.system.maintenance') }}" method="POST">
+                    @csrf
+                    <div class="modal-body p-4">
+                        <div class="form-check form-switch p-3 rounded-3 mb-3 border border-secondary border-opacity-25" style="background: rgba(255,255,255,0.03);">
+                            <input class="form-check-input ms-0 me-3" type="checkbox" role="switch" id="switchMaintenance" name="is_active" value="1" {{ ($maint['is_active'] ?? false) ? 'checked' : '' }} style="cursor: pointer; transform: scale(1.2);">
+                            <label class="form-check-label text-white fw-bold" for="switchMaintenance" style="cursor: pointer;">
+                                تفعيل وضع الصيانة العام للمنصة
+                            </label>
+                            <div class="text-white-50 fs-9 mt-1">عند التفعيل، سيتم تحويل جميع لوحات المتاجر وصفحات التسجيل والدخول إلى صفحة الصيانة والعد التنازلي.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-white fs-8">عنوان رسالة الصيانة</label>
+                            <input type="text" name="title" class="form-control" value="{{ $maint['title'] ?? 'أعمال صيانة وتطوير مجدولة 🛠️' }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-white fs-8">نص الرسالة التوضيحية للزوار والعملاء</label>
+                            <textarea name="message" class="form-control" rows="3" required>{{ $maint['message'] ?? 'نقوم حالياً بإجراء تحديثات دورية وتطويرات هامة على أنظمة منصة ردود لتعزيز استقرار البنية التحتية وتقديم تجربة ردود ذكية فائقة السرعة.' }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-white fs-8 d-flex align-items-center justify-content-between">
+                                <span>الموعد التقديري لانتهاء الصيانة (جدولة العد التنازلي)</span>
+                                <span class="text-gold fs-9">اختياري</span>
+                            </label>
+                            <input type="datetime-local" name="scheduled_ends_at" class="form-control" value="{{ !empty($maint['scheduled_ends_at']) ? date('Y-m-d\TH:i', strtotime($maint['scheduled_ends_at'])) : '' }}">
+                            <small class="text-white-50 fs-9 d-block mt-1">سيظهر هذا التوقيت في شاشة العد التنازلي المباشر (أيام، ساعات، دقائق، ثوانٍ).</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top border-secondary border-opacity-25 p-3">
+                        <button type="button" class="btn btn-secondary btn-sm rounded-pill px-3" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-gold btn-sm rounded-pill px-4 fw-bold">حفظ وتطبيق فوراً</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
