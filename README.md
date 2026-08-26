@@ -11,7 +11,9 @@
 
 ---
 
-## 📖 نظرة عامة (Overview)
+<div dir="rtl">
+
+## 📖 نظرة عامة على المنصة (Platform Overview)
 
 **منصة ردود (Rudood)** هي منصة سعودية ذكية متكاملة لأتمتة خدمة العملاء والمبيعات للمتاجر الإلكترونية والشركات عبر قنوات التواصل المتعددة (**WhatsApp Cloud API**, **Telegram Bot**, **Instagram Direct & Comments**, **Web Live Chat Widget**).
 
@@ -22,6 +24,8 @@
 ## 🏛️ بنية النظام المعمارية (System Architecture)
 
 يعتمد النظام على معمارية الخدمات الموزعة والمتكاملة (Microservices & Event-Driven Architecture) المبنية على الحاويات:
+
+</div>
 
 ```mermaid
 graph TD
@@ -89,9 +93,13 @@ graph TD
 
 ---
 
+<div dir="rtl">
+
 ## 🔄 مسار معالجة الرسائل الذكي (Multi-Tier AI Decision Flow)
 
 لضمان أعلى سرعة وأقل تكلفة لاستهلاك التوكنز، تتبع المنصة معمارية القرار المتسلسل الثلاثي:
+
+</div>
 
 ```mermaid
 flowchart TD
@@ -116,6 +124,8 @@ flowchart TD
 ```
 
 ---
+
+<div dir="rtl">
 
 ## 🛠️ تفاصيل الحزمة التقنية (Tech Stack Breakdown)
 
@@ -176,6 +186,8 @@ flowchart TD
 
 ### 2. خطوات التشغيل السريعة:
 
+</div>
+
 ```bash
 # 1. استنساخ المستودع
 git clone https://github.com/abdo544445/rudood-platform.git
@@ -188,11 +200,17 @@ docker compose up -d --build
 docker compose exec app php artisan migrate --seed
 ```
 
+<div dir="rtl">
+
 المنصة ستعمل فوراً على: **[http://localhost:8000](http://localhost:8000)**.
 
 ---
 
 ## 💻 التشغيل المحلي بدون Docker (Local Setup)
+
+إذا كنت ترغب بالتشغيل المباشر عبر PHP و Composer:
+
+</div>
 
 ```bash
 cd backend
@@ -205,6 +223,8 @@ php artisan serve
 ```
 
 ---
+
+<div dir="rtl">
 
 ## 🔑 بيانات الدخول التجريبية المعتمدة (Default Credentials)
 
@@ -237,6 +257,8 @@ php artisan serve
 
 تحتوي المنصة على جناح اختبارات متكامل يشمل **50 اختباراً** آلياً بنسبة نجاح **100%**:
 
+</div>
+
 ```bash
 php tests_suite_runner.php
 ```
@@ -258,6 +280,8 @@ Total Tests Run : 50 | Passed Tests : 50 | Success Rate : 100%
 
 ---
 
+<div dir="rtl">
+
 ## 📄 التوثيق الإضافي (Documentation)
 
 - 📘 [التوثيق البرمجي والتقني الشامل بالإنجليزية (PROJECT_DOCUMENTATION.md)](./docs/PROJECT_DOCUMENTATION.md)
@@ -268,3 +292,5 @@ Total Tests Run : 50 | Passed Tests : 50 | Success Rate : 100%
 <p align="center">
   صنع بكل فخر لتمكين التجارة الإلكترونية وخدمة العملاء الذكية 🇸🇦 🚀
 </p>
+
+</div>
