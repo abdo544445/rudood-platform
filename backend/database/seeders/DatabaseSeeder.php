@@ -263,5 +263,48 @@ class DatabaseSeeder extends Seeder
                 'created_at'  => now()->subDays(3),
             ]
         );
+
+        // ── 8. Seed Sample Mock Orders for AI Tool Calling ─────────────────────
+        \App\Models\MockOrder::firstOrCreate(
+            ['order_number' => '10492'],
+            [
+                'customer_name'      => 'سارة العتيبي',
+                'customer_phone'     => '+966551122334',
+                'status'             => 'shipped',
+                'courier'            => 'أرامكس (Aramex)',
+                'tracking_number'    => 'ARX-98234190',
+                'items_summary'      => 'سماعات النخبة اللاسلكية + شاحن سريع 3 في 1',
+                'total_amount'       => 348.00,
+                'estimated_delivery' => 'غداً بين الساعة 2 ظهراً و 6 مساءً',
+            ]
+        );
+
+        \App\Models\MockOrder::firstOrCreate(
+            ['order_number' => '10580'],
+            [
+                'customer_name'      => 'فهد الشمري',
+                'customer_phone'     => '+966504455667',
+                'status'             => 'preparing',
+                'courier'            => 'سمسا (SMSA Express)',
+                'tracking_number'    => 'SMSA-7712034',
+                'items_summary'      => 'ساعة النخبة الرياضية الذكية AMOLED',
+                'total_amount'       => 299.00,
+                'estimated_delivery' => 'خلال يومين عمل',
+            ]
+        );
+
+        \App\Models\MockOrder::firstOrCreate(
+            ['order_number' => '10215'],
+            [
+                'customer_name'      => 'محمد الدوسري',
+                'customer_phone'     => '+966567788990',
+                'status'             => 'delivered',
+                'courier'            => 'ريد بوكس (RedBox)',
+                'tracking_number'    => 'RBX-339182',
+                'items_summary'      => 'شاحن لاسلكي سريع 3 في 1',
+                'total_amount'       => 149.00,
+                'estimated_delivery' => 'تم الاستلام بنجاح من خزانة ريد بوكس',
+            ]
+        );
     }
 }

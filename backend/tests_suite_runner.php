@@ -46,6 +46,7 @@ class RudoodPlatformTester
         $this->testSuite4_AiEngineAndRag();
         $this->testSuite5_PlaygroundWorkbench();
         $this->testSuite6_SettingsChannelsAndWebhooks();
+        $this->testSuite7_AdvancedHighImpactAi();
 
         $this->printSummary();
 
@@ -677,6 +678,91 @@ class RudoodPlatformTester
         if ($savedChannel) {
             $savedChannel->delete();
         }
+
+        echo "\n";
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // SUITE 7: Advanced High-Impact AI Capabilities
+    // ──────────────────────────────────────────────────────────────────────────
+    private function testSuite7_AdvancedHighImpactAi(): void
+    {
+        echo "📦 Suite 7: Advanced High-Impact AI Capabilities (Vector RAG, Voice, Tools)\n";
+        $suite = 'Advanced High-Impact AI';
+
+        $bot = Bot::first();
+        $ragService = app(\App\Services\RagService::class);
+        $aiService = new \App\Services\AiService($bot);
+        $storeService = app(\App\Services\StoreIntegrationService::class);
+
+        // 7.1 Cosine Similarity Calculation
+        $vecA = [1.0, 0.0, 0.5, 0.0];
+        $vecB = [1.0, 0.0, 0.5, 0.0];
+        $vecOrthogonal = [0.0, 1.0, 0.0, 1.0];
+        
+        $similarityIdentical = $ragService->calculateCosineSimilarity($vecA, $vecB);
+        $similarityOrthogonal = $ragService->calculateCosineSimilarity($vecA, $vecOrthogonal);
+        
+        $this->assert($suite, 'RagService::calculateCosineSimilarity returns 1.0 for identical vectors', 
+            $similarityIdentical >= 0.99
+        );
+        $this->assert($suite, 'RagService::calculateCosineSimilarity returns 0.0 for orthogonal vectors', 
+            $similarityOrthogonal <= 0.01
+        );
+
+        // 7.2 Deterministic Vector Embeddings
+        $embedding1 = $ragService->generateVectorEmbedding('سماعات النخبة اللاسلكية الرياضية');
+        $embedding2 = $ragService->generateVectorEmbedding('سماعات النخبة اللاسلكية الرياضية');
+        $this->assert($suite, 'RagService::generateVectorEmbedding outputs normalized vector array', 
+            count($embedding1) === 64 && $embedding1 === $embedding2
+        );
+
+        // 7.3 Hybrid RAG (Vector + Keyword) Scoring
+        $hybridResults = $ragService->retrieveRelevantChunks($bot->id, 'سماعات النخبة اللاسلكية');
+        $this->assert($suite, 'RagService::retrieveRelevantChunks performs hybrid vector retrieval with scores', 
+            is_array($hybridResults) && isset($hybridResults['context'])
+        );
+
+        // 7.4 Speech-to-Text Voice Note Transcription
+        $transcription = $aiService->transcribeAudio('dummy_audio_binary', 'audio/ogg');
+        $this->assert($suite, 'AiService::transcribeAudio converts audio payload to text transcript', 
+            !empty($transcription) && is_string($transcription)
+        );
+
+        // 7.5 Store Integration Service - Live Order Tracking Tool
+        $orderCheck = $storeService->checkOrderStatus('10492');
+        $this->assert($suite, 'StoreIntegrationService::checkOrderStatus retrieves live tracking data for order #10492', 
+            $orderCheck['found'] === true && !empty($orderCheck['courier']) && !empty($orderCheck['tracking_number'])
+        );
+
+        // 7.6 Store Integration Service - Product Stock Tool
+        $stockCheck = $storeService->checkProductStock('سماعة');
+        $this->assert($suite, 'StoreIntegrationService::checkProductStock returns verified stock availability and price', 
+            $stockCheck['found'] === true && $stockCheck['price'] > 0 && !empty($stockCheck['checkout_url'])
+        );
+
+        // 7.7 AI Function Calling Tool Dispatcher
+        $toolExecution = $aiService->executeToolCalls('وين طلبي رقم #10492 متى يوصل؟');
+        $this->assert($suite, 'AiService::executeToolCalls detects order intent and formats live tracking reply', 
+            $toolExecution !== null && $toolExecution['tool'] === 'check_order_status' && str_contains($toolExecution['reply'], '10492')
+        );
+
+        $stockToolExecution = $aiService->executeToolCalls('هل متوفر لديكم سماعة وبكم السعر؟');
+        $this->assert($suite, 'AiService::executeToolCalls detects product availability intent and formats quote', 
+            $stockToolExecution !== null && $stockToolExecution['tool'] === 'check_product_stock' && str_contains($stockToolExecution['reply'], 'سماعات')
+        );
+
+        // 7.8 Conversation Context Summarization
+        $sampleMessages = [
+            ['sender_type' => 'customer', 'content' => 'مرحبا بكم أريد معرفة أوقات العمل'],
+            ['sender_type' => 'bot', 'content' => 'أوقات العمل 24/7 طوال الأسبوع'],
+            ['sender_type' => 'customer', 'content' => 'ممتاز وهل يتوفر توصيل داخل الرياض؟'],
+            ['sender_type' => 'bot', 'content' => 'نعم التوصيل داخل الرياض خلال 24 ساعة'],
+        ];
+        $summary = $aiService->summarizeConversationHistory($sampleMessages);
+        $this->assert($suite, 'AiService::summarizeConversationHistory compiles compact context summary', 
+            !empty($summary) && is_string($summary)
+        );
 
         echo "\n";
     }

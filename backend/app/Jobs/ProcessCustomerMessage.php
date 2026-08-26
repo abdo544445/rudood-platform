@@ -99,23 +99,41 @@ class ProcessCustomerMessage implements ShouldQueue
                 ? implode(', ', $ruleMatch['keywords'])
                 : (string) $ruleMatch['keywords'];
         } else {
-            // ── Step 2: Multi-turn Conversational Memory & Knowledge Retrieval ──
-            $history = Message::where('conversation_id', $conversation->id)
-                ->where('id', '<', $customerMessage->id)
-                ->orderByDesc('id')
-                ->limit(6)
-                ->get()
-                ->reverse()
-                ->values()
-                ->toArray();
+            // ── Step 1.5: Check AI Function Calling & E-Commerce Live Tools ────
+            $toolResult = $aiService->executeToolCalls($customerMessage->content, $conversation->workspace_id);
 
-            $ragResult = $ragService->retrieveRelevantChunks($bot->id, $customerMessage->content);
-            $context   = $ragResult['context'];
+            if ($toolResult !== null) {
+                $trigger         = 'ai_tool:' . $toolResult['tool'];
+                $replyText       = $toolResult['reply'];
+                $matchedKeywords = 'Tool: ' . $toolResult['tool'];
+            } else {
+                // ── Step 2: Multi-turn Memory & Context Summarization ─────────
+                $allPriorMessages = Message::where('conversation_id', $conversation->id)
+                    ->where('id', '<', $customerMessage->id)
+                    ->orderBy('id')
+                    ->get();
 
-            $replyText = $aiService->generateReply($customerMessage->content, $context, $history);
+                // If conversation has over 10 messages and no summary yet, create compact summary
+                if ($allPriorMessages->count() > 10 && empty($conversation->context_summary)) {
+                    $olderSlice = $allPriorMessages->slice(0, $allPriorMessages->count() - 6)->toArray();
+                    $summary = $aiService->summarizeConversationHistory($olderSlice);
+                    $conversation->update(['context_summary' => $summary]);
+                }
 
-            if ($replyText === $aiService->getFallbackReply()) {
-                $trigger = 'fallback';
+                $history = $allPriorMessages->slice(-6)->values()->toArray();
+
+                $ragResult = $ragService->retrieveRelevantChunks($bot->id, $customerMessage->content);
+                $context   = $ragResult['context'];
+
+                if (!empty($conversation->context_summary)) {
+                    $context = "سياق سابق للمحادثة: " . $conversation->context_summary . "\n\n" . ($context ?: '');
+                }
+
+                $replyText = $aiService->generateReply($customerMessage->content, $context, $history);
+
+                if ($replyText === $aiService->getFallbackReply()) {
+                    $trigger = 'fallback';
+                }
             }
         }
 

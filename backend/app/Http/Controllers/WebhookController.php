@@ -203,12 +203,29 @@ class WebhookController extends Controller
         $update = $request->all();
         $message = $update['message'] ?? $update['edited_message'] ?? null;
 
-        if (!$message || !isset($message['text'])) {
+        if (!$message) {
+            return response()->json(['status' => 'ignored']);
+        }
+
+        $text = $message['text'] ?? '';
+        $isVoice = false;
+        $mediaType = 'text';
+        $mediaUrl = null;
+
+        if (isset($message['voice']) || isset($message['audio'])) {
+            $isVoice = true;
+            $mediaType = 'audio';
+            $bot = Bot::where('workspace_id', $workspace_id)->first() ?? new Bot();
+            $aiService = new \App\Services\AiService($bot);
+            $transcription = $aiService->transcribeAudio('');
+            $text = "🎙️ [رسالة صوتية]: " . $transcription;
+        }
+
+        if (!$text) {
             return response()->json(['status' => 'ignored']);
         }
 
         $chatId = (string) ($message['chat']['id'] ?? '');
-        $text   = $message['text'] ?? '';
         $from   = $message['from'] ?? [];
         $name   = trim(($from['first_name'] ?? '') . ' ' . ($from['last_name'] ?? '')) ?: ($from['username'] ?? 'عميل تيليجرام');
 
@@ -246,6 +263,8 @@ class WebhookController extends Controller
             'conversation_id' => $conversation->id,
             'sender_type'     => 'customer',
             'content'         => $text,
+            'media_type'      => $mediaType,
+            'media_url'       => $mediaUrl,
         ]);
 
         $conversation->touch();

@@ -160,10 +160,26 @@
 
         <!-- منطقة الرسائل -->
         <div class="chat-messages" id="chatMessages">
+          @if (!empty($active->context_summary))
+          <div class="alert alert-dark border border-gold border-opacity-25 rounded-3 py-2 px-3 mb-3 fs-9 text-gold d-flex align-items-center gap-2" style="background: rgba(212,175,55,0.08);">
+            <i class="bi bi-stars fs-6"></i>
+            <div>
+              <span class="fw-bold">ملخص السياق التراكمي للذكاء الاصطناعي:</span>
+              <span class="text-white-50 ms-1">{{ $active->context_summary }}</span>
+            </div>
+          </div>
+          @endif
+
           @forelse ($messages as $msg)
           <div class="message {{ $msg->sender_type === 'customer' ? 'message-incoming' : ($msg->sender_type === 'bot' ? 'message-bot' : 'message-outgoing') }}"
                data-id="{{ $msg->id }}">
-            {{ $msg->content }}
+            @if (($msg->media_type ?? 'text') === 'audio' || str_contains($msg->content, '🎙️'))
+            <div class="d-inline-flex align-items-center gap-2 mb-1 px-2 py-1 rounded-pill bg-dark border border-secondary border-opacity-50 fs-9 text-gold">
+              <i class="bi bi-mic-fill text-danger"></i>
+              <span>رسالة صوتية مفرّغة بالذكاء الاصطناعي</span>
+            </div>
+            @endif
+            <div>{{ $msg->content }}</div>
             <span class="message-time {{ $msg->sender_type === 'agent' ? 'text-dark' : 'text-white-50' }}">
               {{ $msg->created_at->format('H:i') }}
               @if ($msg->sender_type === 'bot')
