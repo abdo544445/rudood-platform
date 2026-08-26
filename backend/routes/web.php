@@ -140,6 +140,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/live-chat/{id}', [ConversationController::class, 'show'])->name('live-chat.show');
     Route::post('/live-chat/{id}/send', [ConversationController::class, 'sendMessage']);
     Route::post('/live-chat/{id}/send-interactive', [ConversationController::class, 'sendInteractive'])->name('live-chat.send-interactive');
+    Route::post('/live-chat/{id}/attachment', [ConversationController::class, 'uploadAttachment'])->name('live-chat.attachment');
+    Route::post('/live-chat/{id}/resolve', [ConversationController::class, 'resolveConversation'])->name('live-chat.resolve');
+    Route::post('/live-chat/{id}/csat', [ConversationController::class, 'submitCsat'])->name('live-chat.csat');
     Route::post('/live-chat/{id}/toggle-bot', [ConversationController::class, 'toggleBot'])->name('live-chat.toggle-bot');
     Route::post('/live-chat/{id}/notes', [ConversationController::class, 'updateNotes'])->name('live-chat.update-notes');
 

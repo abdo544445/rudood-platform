@@ -8,6 +8,7 @@ use App\Models\Message;
 use App\Models\Customer;
 use App\Models\Channel;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Storage;
 
 class ConversationController extends Controller
 {
@@ -374,6 +375,191 @@ class ConversationController extends Controller
         return response()->json([
             'success' => true,
             'message' => $message,
+        ]);
+    }
+
+    /**
+     * Upload an image or file attachment into the live conversation.
+     */
+    public function uploadAttachment(Request $request, int $id)
+    {
+        $request->validate([
+            'attachment' => 'required|file|max:10240|mimes:jpg,jpeg,png,webp,gif,pdf,doc,docx,txt,csv,xlsx',
+            'caption'    => 'nullable|string|max:500',
+        ]);
+
+        $conversation = Conversation::where('id', $id)
+            ->where('workspace_id', $this->workspaceId())
+            ->firstOrFail();
+
+        $file = $request->file('attachment');
+        $origName = $file->getClientOriginalName();
+        $mime = $file->getMimeType();
+        $fileSize = $file->getSize();
+
+        // Categorize media type
+        $mediaType = str_starts_with($mime, 'image/') ? 'image' : 'document';
+
+        // Store file in public disk
+        $workspaceId = $this->workspaceId();
+        $folder = "chat_attachments/{$workspaceId}";
+        $path = $file->store($folder, 'public');
+        $mediaUrl = Storage::url($path);
+
+        $caption = $request->caption ? trim($request->caption) : ($mediaType === 'image' ? "📷 صورة: {$origName}" : "📎 ملف: {$origName}");
+
+        $message = Message::create([
+            'conversation_id' => $conversation->id,
+            'sender_type'     => 'agent',
+            'content'         => $caption,
+            'media_type'      => $mediaType,
+            'media_url'       => $mediaUrl,
+            'file_name'       => $origName,
+            'file_size'       => $fileSize,
+        ]);
+
+        $conversation->touch();
+
+        // Publish to Redis live chat
+        try {
+            if (class_exists('Illuminate\Support\Facades\Redis')) {
+                \Illuminate\Support\Facades\Redis::publish('rudood_chat_channel', json_encode([
+                    'conversation_id' => $conversation->id,
+                    'workspace_id'    => $this->workspaceId(),
+                    'sender_type'     => 'agent',
+                    'content'         => $message->content,
+                    'time'            => $message->created_at->format('H:i'),
+                    'message_id'      => $message->id,
+                    'media_type'      => $message->media_type,
+                    'media_url'       => $message->media_url,
+                    'file_name'       => $message->file_name,
+                    'file_size'       => $message->file_size,
+                    'is_self'         => true,
+                ]));
+            }
+        } catch (\Throwable $e) {}
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+        ]);
+    }
+
+    /**
+     * Mark a conversation as resolved and trigger automatic CSAT survey.
+     */
+    public function resolveConversation(Request $request, int $id)
+    {
+        $conversation = Conversation::with('customer')
+            ->where('id', $id)
+            ->where('workspace_id', $this->workspaceId())
+            ->firstOrFail();
+
+        $userName = auth()->user()->name ?? 'الموظف';
+        $conversation->resolve($userName);
+
+        // Prepare CSAT interactive survey message
+        $csatContent = "شكراً لتواصلك معنا! يسعدنا دائماً خدمتك. نرجو منك تقييم تجربتك معنا اليوم لمساعدتنا على تحسين وتطوير الخدمة ⭐️";
+        $csatButtons = [
+            ['id' => 'csat_5', 'title' => '⭐️⭐️⭐️⭐️⭐️ ممتاز (5)'],
+            ['id' => 'csat_4', 'title' => '⭐️⭐️⭐️⭐️ جيد جداً (4)'],
+            ['id' => 'csat_3', 'title' => '⭐️⭐️⭐️ جيد (3)'],
+        ];
+
+        $surveyMsg = Message::create([
+            'conversation_id'  => $conversation->id,
+            'sender_type'      => 'bot',
+            'content'          => $csatContent,
+            'interactive_type' => 'button',
+            'interactive_data' => $csatButtons,
+        ]);
+
+        // If customer is on WhatsApp, dispatch interactive buttons via WhatsApp Cloud API
+        $customer = $conversation->customer;
+        if ($customer && !empty($customer->phone)) {
+            $channel = Channel::where('workspace_id', $this->workspaceId())
+                ->where('platform', 'whatsapp')
+                ->first();
+
+            if ($channel && $channel->isActive()) {
+                $waService = app(\App\Services\WhatsAppInteractiveService::class);
+                $payload = $waService->buildButtonPayload($customer->phone, $csatContent, $csatButtons);
+                $waService->sendInteractive($channel, $customer->phone, $payload);
+            }
+        }
+
+        // Publish to Redis
+        try {
+            if (class_exists('Illuminate\Support\Facades\Redis')) {
+                \Illuminate\Support\Facades\Redis::publish('rudood_chat_channel', json_encode([
+                    'conversation_id'  => $conversation->id,
+                    'workspace_id'     => $this->workspaceId(),
+                    'sender_type'      => 'bot',
+                    'content'          => $surveyMsg->content,
+                    'time'             => $surveyMsg->created_at->format('H:i'),
+                    'message_id'       => $surveyMsg->id,
+                    'interactive_type' => $surveyMsg->interactive_type,
+                    'interactive_data' => $surveyMsg->interactive_data,
+                    'status_update'    => 'resolved',
+                ]));
+            }
+        } catch (\Throwable $e) {}
+
+        if ($request->expectsJson() || $request->wantsJson() || !$request->headers->has('referer')) {
+            return response()->json([
+                'success'      => true,
+                'conversation' => $conversation,
+                'survey'       => $surveyMsg,
+                'message'      => 'تم إنهاء المحادثة وإرسال استبيان الرضا (CSAT) بنجاح ✓',
+            ]);
+        }
+
+        return back()->with('success', 'تم إنهاء المحادثة وإرسال استبيان الرضا بنجاح ✓');
+    }
+
+    /**
+     * Record CSAT rating submitted by customer.
+     */
+    public function submitCsat(Request $request, int $id)
+    {
+        $request->validate([
+            'score'    => 'required|integer|between:1,5',
+            'feedback' => 'nullable|string|max:1000',
+        ]);
+
+        $conversation = Conversation::where('id', $id)
+            ->where('workspace_id', $this->workspaceId())
+            ->firstOrFail();
+
+        $conversation->recordCsat((int)$request->score, $request->feedback);
+
+        // Create polite thank-you message
+        $stars = str_repeat('⭐️', (int)$request->score);
+        $thankYouMsg = Message::create([
+            'conversation_id' => $conversation->id,
+            'sender_type'     => 'bot',
+            'content'         => "شكراً جزيلاً لتقييمك الكريم ({$stars} - {$request->score}/5)! رأيك يهمنا دائماً ونسعد بخدمتك في أي وقت 🌸",
+        ]);
+
+        // Publish to Redis
+        try {
+            if (class_exists('Illuminate\Support\Facades\Redis')) {
+                \Illuminate\Support\Facades\Redis::publish('rudood_chat_channel', json_encode([
+                    'conversation_id' => $conversation->id,
+                    'workspace_id'    => $this->workspaceId(),
+                    'sender_type'     => 'bot',
+                    'content'         => $thankYouMsg->content,
+                    'time'            => $thankYouMsg->created_at->format('H:i'),
+                    'message_id'      => $thankYouMsg->id,
+                    'csat_score'      => $conversation->csat_score,
+                ]));
+            }
+        } catch (\Throwable $e) {}
+
+        return response()->json([
+            'success'    => true,
+            'csat_score' => $conversation->csat_score,
+            'message'    => 'تم تسجيل تقييمك بنجاح، شكراً لك!',
         ]);
     }
 }

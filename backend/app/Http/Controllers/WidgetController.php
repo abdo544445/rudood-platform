@@ -214,4 +214,46 @@ class WidgetController extends Controller
             'messages' => $messages,
         ]);
     }
+
+    /**
+     * Submit CSAT rating from web widget.
+     */
+    public function submitCsat(Request $request, int $conversation_id)
+    {
+        $request->validate([
+            'score'    => 'required|integer|between:1,5',
+            'feedback' => 'nullable|string|max:1000',
+        ]);
+
+        $conversation = Conversation::findOrFail($conversation_id);
+        $conversation->recordCsat((int)$request->score, $request->feedback);
+
+        $stars = str_repeat('⭐️', (int)$request->score);
+        $thankYouMsg = Message::create([
+            'conversation_id' => $conversation->id,
+            'sender_type'     => 'bot',
+            'content'         => "شكراً جزيلاً لتقييمك ({$stars})! نسعد دائماً بخدمتك ونتمنى لك يوماً رائعاً 🌸",
+        ]);
+
+        // Publish to Redis
+        try {
+            if (class_exists('Illuminate\Support\Facades\Redis')) {
+                \Illuminate\Support\Facades\Redis::publish('rudood_chat_channel', json_encode([
+                    'conversation_id' => $conversation->id,
+                    'workspace_id'    => $conversation->workspace_id,
+                    'sender_type'     => 'bot',
+                    'content'         => $thankYouMsg->content,
+                    'time'            => $thankYouMsg->created_at->format('H:i'),
+                    'message_id'      => $thankYouMsg->id,
+                    'csat_score'      => $conversation->csat_score,
+                ]));
+            }
+        } catch (\Throwable $e) {}
+
+        return response()->json([
+            'success'    => true,
+            'csat_score' => $conversation->csat_score,
+            'message'    => 'تم تسجيل التقييم بنجاح، شكراً لك!',
+        ]);
+    }
 }

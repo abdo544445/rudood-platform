@@ -40,6 +40,8 @@ Route::middleware(['throttle:webhook'])->group(function () {
     Route::get('/widget/config/{workspace_id}', [\App\Http\Controllers\WidgetController::class, 'getConfig']);
     Route::post('/widget/message', [\App\Http\Controllers\WidgetController::class, 'sendMessage']);
     Route::get('/widget/history/{conversation_id}', [\App\Http\Controllers\WidgetController::class, 'getHistory']);
+    Route::post('/widget/csat/{conversation_id}', [\App\Http\Controllers\WidgetController::class, 'submitCsat']);
+    Route::post('/conversations/{id}/csat', [\App\Http\Controllers\ConversationController::class, 'submitCsat']);
 });
 
 // Production Health Check Endpoint

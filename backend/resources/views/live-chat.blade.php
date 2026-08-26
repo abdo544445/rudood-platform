@@ -146,9 +146,24 @@
             </div>
           </div>
 
-          <!-- أزرار التحكم بالبوت والتدخل البشري -->
+          <!-- أزرار التحكم بالبوت والتنبيهات والتدخل البشري -->
           <div class="d-flex align-items-center gap-2">
-            <button id="toggleBotBtn" class="btn btn-sm {{ $active->is_bot_paused ? 'btn-outline-success' : 'btn-outline-danger' }} rounded-pill px-3 fs-8 fw-bold">
+            <button type="button" id="toggleNotificationsBtn" class="btn btn-sm btn-outline-secondary border-secondary border-opacity-40 text-white-50 rounded-pill px-3 py-1 fs-9 d-flex align-items-center gap-1" title="تفعيل / كتم التنبيهات الصوتية والمكتبية">
+              <i class="bi bi-bell-fill text-gold" id="notifIcon"></i>
+              <span id="notifLabel" class="d-none d-sm-inline">التنبيهات: مفعلة</span>
+            </button>
+
+            @if($active->status === 'resolved')
+              <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-30 rounded-pill px-3 py-1 fs-9 d-flex align-items-center gap-1">
+                <i class="bi bi-check-circle-fill"></i> تم الحل والإنهاء ✓
+              </span>
+            @else
+              <button type="button" id="resolveConvBtn" class="btn btn-sm btn-outline-success border-success border-opacity-50 text-success rounded-pill px-3 fs-9 fw-bold d-flex align-items-center gap-1">
+                <i class="bi bi-check2-circle"></i> إنهاء والتقييم
+              </button>
+            @endif
+
+            <button id="toggleBotBtn" class="btn btn-sm {{ $active->is_bot_paused ? 'btn-outline-success' : 'btn-outline-danger' }} rounded-pill px-3 fs-9 fw-bold">
               @if($active->is_bot_paused)
                 <i class="bi bi-play-circle-fill me-1"></i> استئناف ردود البوت
               @else
@@ -179,14 +194,48 @@
               <span>رسالة صوتية مفرّغة بالذكاء الاصطناعي</span>
             </div>
             @endif
+
+            @if ($msg->media_type === 'image' && !empty($msg->media_url))
+            <div class="chat-attachment-img mt-1 mb-2">
+              <a href="{{ $msg->media_url }}" target="_blank" class="d-inline-block position-relative rounded-3 overflow-hidden border border-secondary border-opacity-30">
+                <img src="{{ $msg->media_url }}" class="img-fluid rounded-3" style="max-height: 200px; max-width: 280px; object-fit: cover;" alt="{{ $msg->file_name ?? 'صورة مرفقة' }}">
+              </a>
+            </div>
+            @elseif ($msg->media_type === 'document' && !empty($msg->media_url))
+            <div class="chat-attachment-doc mt-1 mb-2 p-2 rounded-3 bg-black bg-opacity-40 border border-secondary border-opacity-30 d-flex align-items-center justify-content-between gap-3" style="max-width: 320px;">
+              <div class="d-flex align-items-center gap-2 text-truncate">
+                <i class="bi bi-file-earmark-text-fill text-danger fs-4"></i>
+                <div class="text-truncate">
+                  <div class="text-white fs-9 fw-bold text-truncate">{{ $msg->file_name ?? 'مستند مرفق' }}</div>
+                  <small class="text-white-50" style="font-size: 0.72rem;">{{ $msg->file_size ? round($msg->file_size / 1024, 1) . ' KB' : 'ملف مرفق' }}</small>
+                </div>
+              </div>
+              <a href="{{ $msg->media_url }}" target="_blank" download class="btn btn-sm btn-dark border border-secondary border-opacity-50 text-gold fs-9 rounded-pill px-2 py-1 flex-shrink-0">
+                <i class="bi bi-download me-1"></i> تحميل
+              </a>
+            </div>
+            @endif
+
             <div>{{ $msg->content }}</div>
 
             @if ($msg->interactive_type === 'button' && !empty($msg->interactive_data))
             <div class="whatsapp-buttons-container d-flex flex-wrap gap-2 mt-2 pt-2 border-top border-white border-opacity-10">
               @foreach((array)$msg->interactive_data as $b)
-                <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fs-9 d-inline-flex align-items-center gap-1 border-success border-opacity-40 text-success bg-success bg-opacity-10 shadow-sm disabled">
-                  <i class="bi bi-cursor-fill fs-9"></i> {{ is_array($b) ? ($b['title'] ?? $b['id']) : $b }}
-                </button>
+                @php
+                  $bId = is_array($b) ? ($b['id'] ?? '') : '';
+                  $bTitle = is_array($b) ? ($b['title'] ?? $bId) : $b;
+                  $isCsat = str_starts_with($bId, 'csat_');
+                  $score = $isCsat ? (int)substr($bId, 5) : 5;
+                @endphp
+                @if($isCsat)
+                  <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-3 py-1 fs-9 d-inline-flex align-items-center gap-1 border-warning border-opacity-40 text-warning bg-warning bg-opacity-10 shadow-sm csat-interactive-btn" onclick="submitCsatScore({{ $active->id }}, {{ $score }})">
+                    <i class="bi bi-star-fill fs-9"></i> {{ $bTitle }}
+                  </button>
+                @else
+                  <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fs-9 d-inline-flex align-items-center gap-1 border-success border-opacity-40 text-success bg-success bg-opacity-10 shadow-sm disabled">
+                    <i class="bi bi-cursor-fill fs-9"></i> {{ $bTitle }}
+                  </button>
+                @endif
               @endforeach
             </div>
             @elseif ($msg->interactive_type === 'list' && !empty($msg->interactive_data))
@@ -284,6 +333,10 @@
 
           <form id="sendForm" class="d-flex gap-2 align-items-center m-0">
             @csrf
+            <label for="chatAttachmentInput" class="btn btn-outline-secondary border-secondary border-opacity-40 text-white-50 rounded-3 px-2 py-1 fs-8 d-flex align-items-center mb-0 cursor-pointer flex-shrink-0" title="إرفاق صورة أو مستند PDF / فاتورة">
+              <i class="bi bi-paperclip fs-6"></i>
+              <input type="file" id="chatAttachmentInput" accept="image/*,.pdf,.doc,.docx,.txt,.csv" class="d-none">
+            </label>
             <button type="button" class="btn btn-outline-success border-success border-opacity-50 text-success rounded-3 px-2 py-1 d-flex align-items-center gap-1 fs-8 flex-shrink-0" data-bs-toggle="modal" data-bs-target="#waInteractiveModal" title="إرسال رسالة تفاعلية (أزرار / قوائم / كتالوج)">
               <i class="bi bi-whatsapp"></i> <span class="d-none d-md-inline">رسالة تفاعلية</span>
             </button>
@@ -337,6 +390,34 @@
           </div>
         </div>
 
+        <!-- بطاقة تقييم رضا العميل (CSAT) -->
+        <div class="mb-3">
+          <label class="form-label text-gold fs-9 mb-1"><i class="bi bi-star-fill me-1"></i>تقييم رضا العميل (CSAT)</label>
+          <div class="p-2 rounded-3 border border-secondary border-opacity-25 bg-black bg-opacity-30 fs-8" id="csatCrmCard">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="text-white-50">التقييم:</span>
+              <span id="csatScoreDisplay" class="fw-bold text-warning">
+                @if($active->csat_score)
+                  {{ str_repeat('⭐️', $active->csat_score) }} ({{ $active->csat_score }}/5)
+                @else
+                  <span class="text-white-50 fs-9">لم يتم التقييم بعد</span>
+                @endif
+              </span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-white-50">حالة المعالجة:</span>
+              <span class="badge {{ $active->status === 'resolved' ? 'bg-success' : 'bg-secondary' }} fs-9" id="csatStatusBadge">
+                {{ $active->status === 'resolved' ? 'تم الحل والإنهاء ✓' : 'قيد المتابعة' }}
+              </span>
+            </div>
+            @if($active->csat_feedback)
+            <div class="mt-2 text-white-50 fs-9 border-top border-secondary border-opacity-25 pt-1">
+              <strong class="text-white">ملاحظة العميل:</strong> {{ $active->csat_feedback }}
+            </div>
+            @endif
+          </div>
+        </div>
+
         <!-- بطاقة الوسوم والملاحظات الداخلية -->
         <form id="notesForm" class="flex-grow-1 d-flex flex-direction-column flex-column">
           @csrf
@@ -378,22 +459,89 @@
     const CSRF_TOKEN       = "{{ csrf_token() }}";
     const WS_URL           = "{{ config('services.websocket_url') }}" || (window.location.protocol + '//' + window.location.hostname + ':3000');
 
-    // ─── Web Audio API Notification Chime ─────────────────────────────────────
-    function playNotificationSound() {
+    // ─── Notification Settings & Web Audio Synthesizer ────────────────────────
+    let notificationsEnabled = localStorage.getItem('rudood_notifs') !== 'false';
+    const notifBtn   = document.getElementById('toggleNotificationsBtn');
+    const notifIcon  = document.getElementById('notifIcon');
+    const notifLabel = document.getElementById('notifLabel');
+
+    function updateNotifUI() {
+      if (notifIcon && notifLabel) {
+        if (notificationsEnabled) {
+          notifIcon.className = 'bi bi-bell-fill text-gold';
+          notifLabel.innerText = 'التنبيهات: مفعلة';
+        } else {
+          notifIcon.className = 'bi bi-bell-slash text-white-50';
+          notifLabel.innerText = 'التنبيهات: مكتومة';
+        }
+      }
+    }
+    updateNotifUI();
+
+    if (notifBtn) {
+      notifBtn.addEventListener('click', async () => {
+        notificationsEnabled = !notificationsEnabled;
+        localStorage.setItem('rudood_notifs', notificationsEnabled ? 'true' : 'false');
+        updateNotifUI();
+
+        if (notificationsEnabled && 'Notification' in window && Notification.permission !== 'granted') {
+          await Notification.requestPermission();
+        }
+
+        if (notificationsEnabled) {
+          playNotificationSound('message');
+        }
+      });
+    }
+
+    function playNotificationSound(type = 'message') {
+      if (!notificationsEnabled) return;
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
-        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.3);
+
+        if (type === 'escalation') {
+          // Urgent 2-stage buzzer alert
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(750, audioCtx.currentTime);
+          osc.frequency.setValueAtTime(950, audioCtx.currentTime + 0.12);
+          osc.frequency.setValueAtTime(750, audioCtx.currentTime + 0.24);
+          gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.45);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.45);
+        } else {
+          // Sweet harmonic chime
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+          osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.3);
+        }
       } catch (e) {}
+    }
+
+    function showDesktopNotification(title, body, convId) {
+      if (!notificationsEnabled || !('Notification' in window)) return;
+      if (Notification.permission === 'granted') {
+        const notif = new Notification(title, {
+          body: body || 'وصلت رسالة جديدة في المحادثة',
+          icon: '/favicon.ico',
+        });
+        notif.onclick = () => {
+          window.focus();
+          if (convId && convId !== ACTIVE_CONV_ID) {
+            window.location.href = `/live-chat/${convId}`;
+          }
+        };
+      }
     }
 
     // ─── Socket.io Connection ───────────────────────────────────────────────
@@ -417,15 +565,40 @@
       });
 
       socket.on('new_message', (data) => {
+        const isEscalated = data.is_escalated || data.sentiment === 'urgent';
+
         if (data.conversation_id !== ACTIVE_CONV_ID) {
-          playNotificationSound();
+          playNotificationSound(isEscalated ? 'escalation' : 'message');
+          showDesktopNotification(
+            isEscalated ? '🚨 تصعيد عاجل: عميل بحاجة لموظف!' : '📩 رسالة جديدة من العميل',
+            data.content,
+            data.conversation_id
+          );
           return;
         }
 
         if (data.sender_type === 'agent' && data.is_self) return;
 
-        appendMessage(data.content, data.sender_type, data.time, data.interactive_type, data.interactive_data);
-        playNotificationSound();
+        appendMessage(
+          data.content,
+          data.sender_type,
+          data.time,
+          data.interactive_type,
+          data.interactive_data,
+          data.media_type,
+          data.media_url,
+          data.file_name,
+          data.file_size
+        );
+
+        playNotificationSound(isEscalated ? 'escalation' : 'message');
+        if (document.hidden) {
+          showDesktopNotification(
+            isEscalated ? '🚨 تصعيد عاجل: عميل بحاجة لموظف!' : '📩 رسالة واردة في المحادثة',
+            data.content,
+            data.conversation_id
+          );
+        }
       });
 
     } catch (e) {
@@ -558,7 +731,7 @@
     }
 
     // ─── Helpers ─────────────────────────────────────────────────────────────
-    function appendMessage(content, senderType, time, interactiveType = null, interactiveData = null) {
+    function appendMessage(content, senderType, time, interactiveType = null, interactiveData = null, mediaType = 'text', mediaUrl = null, fileName = null, fileSize = null) {
       if (!chatWindow) return;
 
       const cls = senderType === 'customer' ? 'message-incoming'
@@ -572,12 +745,44 @@
 
       const div = document.createElement('div');
       div.className = `message ${cls}`;
+
+      let mediaHtml = '';
+      if (mediaType === 'image' && mediaUrl) {
+        mediaHtml = `<div class="chat-attachment-img mt-1 mb-2">
+          <a href="${escapeHtml(mediaUrl)}" target="_blank" class="d-inline-block position-relative rounded-3 overflow-hidden border border-secondary border-opacity-30">
+            <img src="${escapeHtml(mediaUrl)}" class="img-fluid rounded-3" style="max-height: 200px; max-width: 280px; object-fit: cover;">
+          </a>
+        </div>`;
+      } else if (mediaType === 'document' && mediaUrl) {
+        const sizeStr = fileSize ? (Math.round(fileSize / 1024 * 10) / 10) + ' KB' : 'ملف مرفق';
+        mediaHtml = `<div class="chat-attachment-doc mt-1 mb-2 p-2 rounded-3 bg-black bg-opacity-40 border border-secondary border-opacity-30 d-flex align-items-center justify-content-between gap-3" style="max-width: 320px;">
+          <div class="d-flex align-items-center gap-2 text-truncate">
+            <i class="bi bi-file-earmark-text-fill text-danger fs-4"></i>
+            <div class="text-truncate">
+              <div class="text-white fs-9 fw-bold text-truncate">${escapeHtml(fileName || 'مستند مرفق')}</div>
+              <small class="text-white-50" style="font-size: 0.72rem;">${sizeStr}</small>
+            </div>
+          </div>
+          <a href="${escapeHtml(mediaUrl)}" target="_blank" download class="btn btn-sm btn-dark border border-secondary border-opacity-50 text-gold fs-9 rounded-pill px-2 py-1 flex-shrink-0">
+            <i class="bi bi-download me-1"></i> تحميل
+          </a>
+        </div>`;
+      }
       
       let interactiveHtml = '';
       if (interactiveType === 'button' && interactiveData) {
         const buttons = Array.isArray(interactiveData) ? interactiveData : [];
         interactiveHtml = `<div class="whatsapp-buttons-container d-flex flex-wrap gap-2 mt-2 pt-2 border-top border-white border-opacity-10">` +
-          buttons.map(b => `<button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fs-9 d-inline-flex align-items-center gap-1 border-success border-opacity-40 text-success bg-success bg-opacity-10 shadow-sm disabled"><i class="bi bi-cursor-fill fs-9"></i> ${escapeHtml(typeof b === 'object' ? (b.title || b.id) : b)}</button>`).join('') +
+          buttons.map(b => {
+            const bId = typeof b === 'object' ? (b.id || '') : '';
+            const bTitle = typeof b === 'object' ? (b.title || bId) : b;
+            const isCsat = bId.startsWith('csat_');
+            const score = isCsat ? parseInt(bId.replace('csat_', '')) : 5;
+            if (isCsat && ACTIVE_CONV_ID) {
+              return `<button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-3 py-1 fs-9 d-inline-flex align-items-center gap-1 border-warning border-opacity-40 text-warning bg-warning bg-opacity-10 shadow-sm" onclick="submitCsatScore(${ACTIVE_CONV_ID}, ${score})"><i class="bi bi-star-fill fs-9"></i> ${escapeHtml(bTitle)}</button>`;
+            }
+            return `<button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fs-9 d-inline-flex align-items-center gap-1 border-success border-opacity-40 text-success bg-success bg-opacity-10 shadow-sm disabled"><i class="bi bi-cursor-fill fs-9"></i> ${escapeHtml(bTitle)}</button>`;
+          }).join('') +
           `</div>`;
       } else if (interactiveType === 'list' && interactiveData) {
         interactiveHtml = `<div class="whatsapp-list-container mt-2 p-2 rounded-3 bg-black bg-opacity-40 border border-secondary border-opacity-30">
@@ -621,10 +826,129 @@
           `</div></div>`;
       }
 
-      div.innerHTML = `<div>${escapeHtml(content)}</div>${interactiveHtml}<span class="message-time ${timeClass}">${time}${label}</span>`;
+      div.innerHTML = `${mediaHtml}<div>${escapeHtml(content)}</div>${interactiveHtml}<span class="message-time ${timeClass}">${time}${label}</span>`;
       chatWindow.appendChild(div);
       chatWindow.scrollTop = chatWindow.scrollHeight;
     }
+
+    // ─── File Attachment Upload Handler ──────────────────────────────────────
+    const fileInput = document.getElementById('chatAttachmentInput');
+    if (fileInput && ACTIVE_CONV_ID) {
+      fileInput.addEventListener('change', async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        if (file.size > 10 * 1024 * 1024) {
+          alert('حجم الملف يتجاوز الحد المسموح به (10 ميجابايت).');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('attachment', file);
+        formData.append('_token', CSRF_TOKEN);
+
+        const time = new Date().toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' });
+        const isImage = file.type.startsWith('image/');
+        const tempUrl = URL.createObjectURL(file);
+        
+        appendMessage(
+          isImage ? `📷 صورة: ${file.name}` : `📎 ملف: ${file.name}`,
+          'agent',
+          time,
+          null,
+          null,
+          isImage ? 'image' : 'document',
+          tempUrl,
+          file.name,
+          file.size
+        );
+
+        try {
+          const res = await fetch(`/live-chat/${ACTIVE_CONV_ID}/attachment`, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            body: formData,
+          });
+          const data = await res.json();
+          fileInput.value = '';
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    }
+
+    // ─── Resolve Conversation & Automated CSAT Survey ────────────────────────
+    const resolveConvBtn = document.getElementById('resolveConvBtn');
+    if (resolveConvBtn && ACTIVE_CONV_ID) {
+      resolveConvBtn.addEventListener('click', async () => {
+        if (!confirm('هل أنت متأكد من إنهاء هذه المحادثة وإرسال استبيان الرضا (CSAT) للعميل؟')) return;
+
+        resolveConvBtn.disabled = true;
+        resolveConvBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> جاري الإنهاء...';
+
+        try {
+          const res = await fetch(`/live-chat/${ACTIVE_CONV_ID}/resolve`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': CSRF_TOKEN,
+              'Accept':       'application/json',
+            },
+          });
+          const data = await res.json();
+          if (data.success) {
+            resolveConvBtn.outerHTML = `<span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-30 rounded-pill px-3 py-1 fs-9 d-flex align-items-center gap-1"><i class="bi bi-check-circle-fill"></i> تم الحل والإنهاء ✓</span>`;
+            const badgeEl = document.getElementById('csatStatusBadge');
+            if (badgeEl) {
+              badgeEl.className = 'badge bg-success fs-9';
+              badgeEl.innerText = 'تم الحل والإنهاء ✓';
+            }
+            if (data.survey) {
+              appendMessage(
+                data.survey.content,
+                'bot',
+                new Date().toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' }),
+                data.survey.interactive_type,
+                data.survey.interactive_data
+              );
+            }
+          }
+        } catch (e) {
+          console.error(e);
+          resolveConvBtn.disabled = false;
+          resolveConvBtn.innerHTML = '<i class="bi bi-check2-circle"></i> إنهاء والتقييم';
+        }
+      });
+    }
+
+    // ─── Customer Satisfaction (CSAT) Submission ─────────────────────────────
+    window.submitCsatScore = async function(convId, score) {
+      try {
+        const res = await fetch(`/live-chat/${convId}/csat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': CSRF_TOKEN,
+            'Accept':       'application/json',
+          },
+          body: JSON.stringify({ score }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          const scoreDisplay = document.getElementById('csatScoreDisplay');
+          if (scoreDisplay) {
+            scoreDisplay.innerHTML = '⭐️'.repeat(score) + ` (${score}/5)`;
+          }
+          appendMessage(
+            `شكراً جزيلاً لتقييمك الكريم (${'⭐️'.repeat(score)} - ${score}/5)! يسعدنا دائماً خدمتك 🌸`,
+            'bot',
+            new Date().toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' })
+          );
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
     function escapeHtml(str) {
       const d = document.createElement('div');

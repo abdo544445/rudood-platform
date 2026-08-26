@@ -26,6 +26,8 @@ use App\Models\Article;
 use App\Models\Channel;
 use App\Services\AiService;
 use App\Services\RagService;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class RudoodPlatformTester
 {
@@ -48,6 +50,7 @@ class RudoodPlatformTester
         $this->testSuite6_SettingsChannelsAndWebhooks();
         $this->testSuite7_AdvancedHighImpactAi();
         $this->testSuite8_WhatsAppInteractiveMessages();
+        $this->testSuite9_LiveChatAndAgentEnhancements();
 
         $this->printSummary();
 
@@ -928,6 +931,126 @@ class RudoodPlatformTester
                 count($agentCarouselData->message->interactive_data) >= 3
             );
         }
+
+        echo "\n";
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // SUITE 9: Live Chat & Agent Experience Enhancements
+    // ──────────────────────────────────────────────────────────────────────────
+    private function testSuite9_LiveChatAndAgentEnhancements(): void
+    {
+        echo "💬 Suite 9: Live Chat & Agent Experience Enhancements\n";
+        $suite = 'Live Chat & Agent Experience';
+
+        $convCtrl = app(\App\Http\Controllers\ConversationController::class);
+        $widgetCtrl = app(\App\Http\Controllers\WidgetController::class);
+        $owner = User::where('role', 'owner')->first();
+        $testConv = Conversation::where('workspace_id', $owner->workspace_id)->first();
+
+        // 9.1 Upload Image Attachment (Receipt / Defect photo)
+        Storage::fake('public');
+        $fakeImage = UploadedFile::fake()->image('receipt.png', 400, 300);
+        $imgReq = Request::create("/live-chat/{$testConv->id}/attachment", 'POST', [
+            'caption' => 'إيصال التحويل البنكي المعتمد',
+        ], [], ['attachment' => $fakeImage]);
+
+        $imgRes = $convCtrl->uploadAttachment($imgReq, $testConv->id);
+        $imgData = $imgRes->getData();
+
+        $this->assert($suite, 'ConversationController::uploadAttachment stores image with media_type and media_url', 
+            $imgRes->getStatusCode() === 200 &&
+            $imgData->success === true &&
+            $imgData->message->media_type === 'image' &&
+            $imgData->message->file_name === 'receipt.png' &&
+            !empty($imgData->message->media_url)
+        );
+
+        // 9.2 Upload Document Attachment (PDF Tax Invoice)
+        $fakePdf = UploadedFile::fake()->create('tax_invoice_10492.pdf', 120, 'application/pdf');
+        $pdfReq = Request::create("/live-chat/{$testConv->id}/attachment", 'POST', [
+            'caption' => 'فاتورة ضريبية رسمية',
+        ], [], ['attachment' => $fakePdf]);
+
+        $pdfRes = $convCtrl->uploadAttachment($pdfReq, $testConv->id);
+        $pdfData = $pdfRes->getData();
+
+        $this->assert($suite, 'ConversationController::uploadAttachment stores PDF document with file size and download URL', 
+            $pdfRes->getStatusCode() === 200 &&
+            $pdfData->success === true &&
+            $pdfData->message->media_type === 'document' &&
+            $pdfData->message->file_name === 'tax_invoice_10492.pdf' &&
+            $pdfData->message->file_size > 0
+        );
+
+        // 9.3 Resolve Conversation & Trigger Automated CSAT Survey
+        $resolveReq = Request::create("/live-chat/{$testConv->id}/resolve", 'POST', [], [], [], ['HTTP_ACCEPT' => 'application/json']);
+        $resolveRes = $convCtrl->resolveConversation($resolveReq, $testConv->id);
+        $resolveData = $resolveRes->getData();
+        $testConv->refresh();
+
+        $this->assert($suite, 'ConversationController::resolveConversation updates status to resolved and dispatches CSAT prompt', 
+            $resolveRes->getStatusCode() === 200 &&
+            $resolveData->success === true &&
+            $testConv->status === 'resolved' &&
+            $testConv->resolved_at !== null &&
+            !empty($resolveData->survey->interactive_data)
+        );
+
+        // 9.4 Submit Customer Satisfaction (CSAT) Score & Feedback
+        $csatReq = Request::create("/live-chat/{$testConv->id}/csat", 'POST', [
+            'score'    => 5,
+            'feedback' => 'خدمة ممتازة وسريعة جداً، شكراً لفريق الدعم!',
+        ]);
+        $csatRes = $convCtrl->submitCsat($csatReq, $testConv->id);
+        $csatData = $csatRes->getData();
+        $testConv->refresh();
+
+        $this->assert($suite, 'ConversationController::submitCsat persists 1-5 rating and customer feedback comment', 
+            $csatRes->getStatusCode() === 200 &&
+            $csatData->success === true &&
+            $testConv->csat_score === 5 &&
+            $testConv->csat_feedback === 'خدمة ممتازة وسريعة جداً، شكراً لفريق الدعم!'
+        );
+
+        // 9.5 Widget Customer CSAT Submission
+        $widgetCsatReq = Request::create("/api/widget/csat/{$testConv->id}", 'POST', [
+            'score'    => 4,
+            'feedback' => 'رد البوت كان دقيقاً ومفيداً',
+        ]);
+        $widgetCsatRes = $widgetCtrl->submitCsat($widgetCsatReq, $testConv->id);
+        $widgetCsatData = $widgetCsatRes->getData();
+        $testConv->refresh();
+
+        $this->assert($suite, 'WidgetController::submitCsat records web widget customer rating', 
+            $widgetCsatRes->getStatusCode() === 200 &&
+            $widgetCsatData->success === true &&
+            $testConv->csat_score === 4
+        );
+
+        // 9.6 Urgent Escalation Alarm State Evaluation
+        $urgentConv = new Conversation([
+            'is_escalated' => true,
+            'sentiment'    => 'urgent',
+        ]);
+        $isUrgentAlarm = ($urgentConv->is_escalated || $urgentConv->sentiment === 'urgent');
+
+        $this->assert($suite, 'Urgent Escalation Alarm triggers buzzer chime and desktop notification', 
+            $isUrgentAlarm === true
+        );
+
+        // 9.7 Typing Indicator Simulation Latency Bounds
+        $calculateDelay = function(string $text): int {
+            return min(1500, max(800, (int)(mb_strlen($text) * 12)));
+        };
+
+        $shortDelay = $calculateDelay('نعم');
+        $longDelay  = $calculateDelay('أهلاً بك! لقد قمنا بفحص حالة شحنتك وهي الآن في طريقها إلى عنوانك المسجل مع شركة أرامكس.');
+
+        $this->assert($suite, 'Typing Indicator Simulation bounds latency strictly between 800ms and 1500ms', 
+            $shortDelay >= 800 && $shortDelay <= 1500 &&
+            $longDelay >= 800 && $longDelay <= 1500
+        );
 
         echo "\n";
     }

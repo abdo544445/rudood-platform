@@ -10,12 +10,14 @@ class Conversation extends Model
     public const STATUS_CLOSED_BY_BOT  = 'closed_by_bot';
     public const STATUS_HUMAN_HANDLING = 'human_handling';
     public const STATUS_CLOSED         = 'closed';
+    public const STATUS_RESOLVED       = 'resolved';
 
     public static array $validStatuses = [
         self::STATUS_OPEN,
         self::STATUS_CLOSED_BY_BOT,
         self::STATUS_HUMAN_HANDLING,
         self::STATUS_CLOSED,
+        self::STATUS_RESOLVED,
     ];
 
     protected $fillable = [
@@ -28,8 +30,13 @@ class Conversation extends Model
         'sentiment',
         'is_escalated',
         'escalation_reason',
+        'context_summary',
         'notes',
         'tags',
+        'csat_score',
+        'csat_feedback',
+        'resolved_at',
+        'resolved_by',
     ];
 
     protected $casts = [
@@ -38,7 +45,33 @@ class Conversation extends Model
         'is_escalated'     => 'boolean',
         'bot_paused_until' => 'datetime',
         'tags'             => 'array',
+        'csat_score'       => 'integer',
+        'resolved_at'      => 'datetime',
     ];
+
+    /**
+     * Mark conversation as resolved and pause bot.
+     */
+    public function resolve(?string $resolvedBy = null): void
+    {
+        $this->update([
+            'status'        => self::STATUS_RESOLVED,
+            'resolved_at'   => now(),
+            'resolved_by'   => $resolvedBy ?? 'agent',
+            'is_bot_paused' => true,
+        ]);
+    }
+
+    /**
+     * Record customer satisfaction (CSAT) rating and feedback.
+     */
+    public function recordCsat(int $score, ?string $feedback = null): void
+    {
+        $this->update([
+            'csat_score'    => max(1, min(5, $score)),
+            'csat_feedback' => $feedback,
+        ]);
+    }
 
     /**
      * Check if AI Bot is actively allowed to reply to this conversation.

@@ -272,13 +272,29 @@
     })
     .then(r => r.json())
     .then(data => {
-      typingInd.style.display = 'none';
       if (data.success && data.reply) {
         if (data.conversation_id) {
           convId = data.conversation_id;
           localStorage.setItem(STORAGE_KEY_CONV, convId);
         }
-        appendMsg(data.reply, 'bot');
+
+        // Typing Indicator Simulation (0.8s - 1.5s based on response length)
+        const typingDelay = Math.min(1500, Math.max(800, Math.floor(data.reply.length * 12)));
+        typingInd.innerHTML = '<span>المساعد يكتب الآن... ✍️</span>';
+        typingInd.style.display = 'block';
+        msgList.scrollTop = msgList.scrollHeight;
+
+        setTimeout(() => {
+          typingInd.style.display = 'none';
+          appendMsg(data.reply, 'bot');
+
+          // Check if response invites CSAT rating
+          if (data.reply.includes('تقييم') || data.reply.includes('⭐️')) {
+            appendCsatRatingWidget();
+          }
+        }, typingDelay);
+      } else {
+        typingInd.style.display = 'none';
       }
     })
     .catch(() => {
@@ -294,5 +310,41 @@
     msgList.appendChild(div);
     msgList.scrollTop = msgList.scrollHeight;
   }
+
+  function appendCsatRatingWidget() {
+    const card = document.createElement('div');
+    card.className = 'rudood-msg rudood-msg-bot';
+    card.style.background = 'rgba(212,175,55,0.1)';
+    card.style.border = '1px solid rgba(212,175,55,0.3)';
+    card.innerHTML = `
+      <div style="font-weight:bold; margin-bottom:6px; color:#d4af37; font-size:0.82rem;">تقييم مستوى الخدمة:</div>
+      <div style="display:flex; justify-content:center; gap:6px; font-size:1.2rem; cursor:pointer;" id="rudood-stars-row">
+        <span onclick="window.__rudoodSendCsat(1)">⭐️</span>
+        <span onclick="window.__rudoodSendCsat(2)">⭐️</span>
+        <span onclick="window.__rudoodSendCsat(3)">⭐️</span>
+        <span onclick="window.__rudoodSendCsat(4)">⭐️</span>
+        <span onclick="window.__rudoodSendCsat(5)">⭐️</span>
+      </div>
+    `;
+    msgList.appendChild(card);
+    msgList.scrollTop = msgList.scrollHeight;
+  }
+
+  window.__rudoodSendCsat = function(score) {
+    if (!convId) return;
+    const row = document.getElementById('rudood-stars-row');
+    if (row) {
+      row.innerHTML = `<span style="color:#d4af37; font-size:0.85rem;">تم تسجيل تقييمك (${'⭐️'.repeat(score)} - ${score}/5) بنجاح ✓</span>`;
+    }
+    fetch(`${apiBase}/api/widget/csat/${convId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ score: score })
+    }).then(r => r.json()).then(res => {
+      if (res.success) {
+        appendMsg(`شكراً جزيلاً لتقييمك الكريم (${score}/5)! نسعد بخدمتك دائماً 🌸`, 'bot');
+      }
+    }).catch(() => {});
+  };
 
 })();

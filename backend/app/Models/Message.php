@@ -12,6 +12,8 @@ class Message extends Model
         'content',
         'media_type',
         'media_url',
+        'file_name',
+        'file_size',
         'interactive_type',
         'interactive_data',
         'read_at',
