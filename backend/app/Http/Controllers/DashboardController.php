@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\KnowledgeBase;
 use App\Models\AutoRule;
 use App\Models\AiDecisionLog;
+use App\Models\MockOrder;
+use App\Services\ConversionTrackingService;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -141,6 +143,16 @@ class DashboardController extends Controller
             }
         } catch (\Throwable $e) {}
 
+        // --- 5. Conversion Analytics & ROI Tracking ---
+        $conversionService = app(ConversionTrackingService::class);
+        $roi_stats = $conversionService->calculateMerchantRoi($workspace_id);
+        $monthly_trends = $conversionService->getMonthlyDeflectionTrends($workspace_id);
+        $recent_conversions = MockOrder::where('workspace_id', $workspace_id)
+            ->where('is_attributed_to_bot', true)
+            ->latest()
+            ->take(5)
+            ->get();
+
         return view('dashboard', compact(
             'stats',
             'secondary_stats',
@@ -150,8 +162,31 @@ class DashboardController extends Controller
             'recent_conversations',
             'channels',
             'recent_rules',
-            'recent_decisions'
+            'recent_decisions',
+            'roi_stats',
+            'monthly_trends',
+            'recent_conversions'
         ));
+    }
+
+    /**
+     * Return dynamic ROI and deflection metrics (7d, 30d, 90d, 12m).
+     */
+    public function getRoiAnalytics(Request $request)
+    {
+        $workspaceId = auth()->user()->workspace_id ?? 1;
+        $period = $request->query('period', '30d');
+
+        $conversionService = app(ConversionTrackingService::class);
+        $roiStats = $conversionService->calculateMerchantRoi($workspaceId, $period);
+        $monthlyTrends = $conversionService->getMonthlyDeflectionTrends($workspaceId);
+
+        return response()->json([
+            'success'        => true,
+            'period'         => $period,
+            'roi_stats'      => $roiStats,
+            'monthly_trends' => $monthlyTrends,
+        ]);
     }
 
     public function getStats()

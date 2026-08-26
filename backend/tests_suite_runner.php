@@ -24,8 +24,11 @@ use App\Models\AutoRule;
 use App\Models\Subscription;
 use App\Models\Article;
 use App\Models\Channel;
+use App\Models\MockOrder;
+use App\Models\AnalyticsSnapshot;
 use App\Services\AiService;
 use App\Services\RagService;
+use App\Services\ConversionTrackingService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -51,6 +54,7 @@ class RudoodPlatformTester
         $this->testSuite7_AdvancedHighImpactAi();
         $this->testSuite8_WhatsAppInteractiveMessages();
         $this->testSuite9_LiveChatAndAgentEnhancements();
+        $this->testSuite10_ConversionAnalyticsAndRoiTracking();
 
         $this->printSummary();
 
@@ -1050,6 +1054,154 @@ class RudoodPlatformTester
         $this->assert($suite, 'Typing Indicator Simulation bounds latency strictly between 800ms and 1500ms', 
             $shortDelay >= 800 && $shortDelay <= 1500 &&
             $longDelay >= 800 && $longDelay <= 1500
+        );
+
+        echo "\n";
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // SUITE 10: Conversion Analytics & ROI Tracking
+    // ──────────────────────────────────────────────────────────────────────────
+    private function testSuite10_ConversionAnalyticsAndRoiTracking(): void
+    {
+        echo "📊 Suite 10: Conversion Analytics & ROI Tracking\n";
+        $suite = 'Conversion Analytics & ROI';
+
+        $trackingService = app(ConversionTrackingService::class);
+        $dashCtrl = app(\App\Http\Controllers\DashboardController::class);
+        $owner = User::where('role', 'owner')->first();
+        Auth::login($owner);
+
+        $testConv = Conversation::where('workspace_id', $owner->workspace_id)->first();
+
+        // 10.1 Direct Order Attribution to AI Conversation
+        $directOrder = MockOrder::updateOrCreate(
+            ['order_number' => 'TEST-ORD-101'],
+            [
+                'workspace_id'    => $owner->workspace_id,
+                'customer_name'   => 'فهد السالم',
+                'customer_phone'  => '+966509998877',
+                'status'          => 'shipped',
+                'courier'         => 'أرامكس',
+                'items_summary'   => 'سماعة رأس لاسلكية فاخرة',
+                'total_amount'    => 550.00,
+            ]
+        );
+
+        $attrResult = $trackingService->attributeOrderToConversation($directOrder, $testConv, 'catalog_order');
+        $directOrder->refresh();
+        $testConv->refresh();
+
+        $this->assert($suite, 'ConversionTrackingService::attributeOrderToConversation attributes order directly', 
+            $attrResult['attributed'] === true &&
+            $directOrder->is_attributed_to_bot === true &&
+            $directOrder->conversation_id === $testConv->id &&
+            $directOrder->attribution_type === 'catalog_order' &&
+            $testConv->is_converted === true &&
+            (float)$testConv->conversion_revenue == 550.00
+        );
+
+        // 10.2 Phone Matching Heuristic Attribution (72-Hour Window)
+        $customer = $testConv->customer;
+        if (!$customer) {
+            $customer = Customer::create([
+                'workspace_id' => $owner->workspace_id,
+                'name'         => 'عميل مميز',
+                'phone'        => '+966512345678',
+            ]);
+            $testConv->customer_id = $customer->id;
+        } else {
+            $customer->update(['phone' => '+966512345678']);
+        }
+        $testConv->touch();
+
+        $heuristicOrder = MockOrder::updateOrCreate(
+            ['order_number' => 'TEST-ORD-102'],
+            [
+                'workspace_id'    => $owner->workspace_id,
+                'customer_name'   => $customer->name,
+                'customer_phone'  => '+966512345678',
+                'status'          => 'preparing',
+                'courier'         => 'سمسا',
+                'items_summary'   => 'شاحن سريع ذكي 65W',
+                'total_amount'    => 180.00,
+            ]
+        );
+
+        $heuristicResult = $trackingService->attributeOrderToConversation($heuristicOrder, null, 'product_recommendation');
+        $heuristicOrder->refresh();
+
+        $this->assert($suite, 'ConversionTrackingService matches phone within 72-hour attribution window', 
+            $heuristicResult['attributed'] === true &&
+            $heuristicOrder->is_attributed_to_bot === true &&
+            $heuristicOrder->conversation_id === $testConv->id
+        );
+
+        // 10.3 Merchant ROI Calculation
+        $roiStats = $trackingService->calculateMerchantRoi($owner->workspace_id, '30d');
+
+        $this->assert($suite, 'ConversionTrackingService::calculateMerchantRoi aggregates revenue, hours saved, and deflection rate', 
+            isset($roiStats['revenue_generated']) && $roiStats['revenue_generated'] > 0 &&
+            isset($roiStats['converted_orders_count']) && $roiStats['converted_orders_count'] > 0 &&
+            isset($roiStats['hours_saved']) && $roiStats['hours_saved'] >= 0 &&
+            isset($roiStats['cost_savings_amount']) &&
+            isset($roiStats['deflection_rate'])
+        );
+
+        // 10.4 Monthly Deflection Trends & Agent Hours Saved
+        $trends = $trackingService->getMonthlyDeflectionTrends($owner->workspace_id, 6);
+
+        $this->assert($suite, 'ConversionTrackingService::getMonthlyDeflectionTrends outputs 6-month series data', 
+            count($trends['labels']) === 6 &&
+            count($trends['ai_resolved_series']) === 6 &&
+            count($trends['hours_saved_series']) === 6 &&
+            count($trends['deflection_rate_series']) === 6 &&
+            count($trends['revenue_series']) === 6
+        );
+
+        // 10.5 DashboardController::index passes ROI & Deflection datasets
+        $dashView = $dashCtrl->index();
+        $viewData = $dashView->getData();
+
+        $this->assert($suite, 'DashboardController::index provides roi_stats, monthly_trends, and recent_conversions', 
+            isset($viewData['roi_stats']) &&
+            isset($viewData['monthly_trends']) &&
+            isset($viewData['recent_conversions'])
+        );
+
+        // 10.6 DashboardController::getRoiAnalytics dynamic JSON endpoint
+        $roiReq = Request::create('/dashboard/roi-analytics?period=30d', 'GET');
+        $roiRes = $dashCtrl->getRoiAnalytics($roiReq);
+        $roiData = $roiRes->getData();
+
+        $this->assert($suite, 'DashboardController::getRoiAnalytics returns 200 JSON with filtered metrics', 
+            $roiRes->getStatusCode() === 200 &&
+            $roiData->success === true &&
+            isset($roiData->roi_stats->revenue_generated) &&
+            count($roiData->monthly_trends->labels) === 6
+        );
+
+        // 10.7 AnalyticsSnapshot Model Persistence
+        $snapshot = AnalyticsSnapshot::updateOrCreate(
+            [
+                'workspace_id' => $owner->workspace_id,
+                'period_key'   => now()->format('Y-m'),
+            ],
+            [
+                'total_conversations'       => 150,
+                'ai_resolved_conversations' => 125,
+                'deflection_rate'           => 83.33,
+                'hours_saved'               => 21.25,
+                'cost_savings_amount'       => 743.75,
+                'revenue_generated'         => 18500.00,
+                'converted_orders_count'    => 24,
+            ]
+        );
+
+        $this->assert($suite, 'AnalyticsSnapshot model stores and retrieves monthly ROI snapshot', 
+            $snapshot->id > 0 &&
+            (float)$snapshot->revenue_generated == 18500.00 &&
+            (float)$snapshot->deflection_rate == 83.33
         );
 
         echo "\n";

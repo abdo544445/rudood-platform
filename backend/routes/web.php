@@ -132,6 +132,7 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/roi-analytics', [DashboardController::class, 'getRoiAnalytics'])->name('dashboard.roi-analytics');
 
     // Live Chat & Chat 2.0 Actions
     Route::get('/live-chat', [ConversationController::class, 'index'])->name('live-chat.index');

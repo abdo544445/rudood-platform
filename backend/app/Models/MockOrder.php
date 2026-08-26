@@ -11,6 +11,10 @@ class MockOrder extends Model
 
     protected $fillable = [
         'workspace_id',
+        'conversation_id',
+        'is_attributed_to_bot',
+        'attribution_type',
+        'attribution_confidence',
         'order_number',
         'customer_name',
         'customer_phone',
@@ -23,12 +27,19 @@ class MockOrder extends Model
     ];
 
     protected $casts = [
-        'total_amount' => 'decimal:2',
+        'total_amount'           => 'decimal:2',
+        'is_attributed_to_bot'   => 'boolean',
+        'attribution_confidence' => 'decimal:2',
     ];
 
     public function workspace(): BelongsTo
     {
         return $this->belongsTo(Workspace::class);
+    }
+
+    public function conversation(): BelongsTo
+    {
+        return $this->belongsTo(Conversation::class);
     }
 
     /**

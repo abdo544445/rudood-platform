@@ -37,17 +37,42 @@ class Conversation extends Model
         'csat_feedback',
         'resolved_at',
         'resolved_by',
+        'is_converted',
+        'conversion_revenue',
+        'converted_at',
+        'attributed_order_id',
     ];
 
     protected $casts = [
-        'status'           => 'string',
-        'is_bot_paused'    => 'boolean',
-        'is_escalated'     => 'boolean',
-        'bot_paused_until' => 'datetime',
-        'tags'             => 'array',
-        'csat_score'       => 'integer',
-        'resolved_at'      => 'datetime',
+        'status'             => 'string',
+        'is_bot_paused'      => 'boolean',
+        'is_escalated'       => 'boolean',
+        'bot_paused_until'   => 'datetime',
+        'tags'               => 'array',
+        'csat_score'         => 'integer',
+        'resolved_at'        => 'datetime',
+        'is_converted'       => 'boolean',
+        'conversion_revenue' => 'decimal:2',
+        'converted_at'       => 'datetime',
     ];
+
+    /**
+     * Mark conversation as converted with attributed order and revenue.
+     */
+    public function markAsConverted(float $revenue, int $orderId): void
+    {
+        $this->update([
+            'is_converted'        => true,
+            'conversion_revenue'  => $revenue,
+            'converted_at'        => now(),
+            'attributed_order_id' => $orderId,
+        ]);
+    }
+
+    public function attributedOrder(): BelongsTo
+    {
+        return $this->belongsTo(MockOrder::class, 'attributed_order_id');
+    }
 
     /**
      * Mark conversation as resolved and pause bot.
