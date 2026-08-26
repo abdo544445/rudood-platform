@@ -18,7 +18,9 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return redirect('/dashboard');
+            return Auth::user()->isSuperAdmin()
+                ? redirect()->route('admin.dashboard')
+                : redirect('/dashboard');
         }
         return view('login');
     }
@@ -35,6 +37,12 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+            $user = Auth::user();
+
+            if ($user->isSuperAdmin()) {
+                return redirect()->route('admin.dashboard')->with('success', 'مرحباً بك في لوحة الإدارة العليا (Super Admin) 👑');
+            }
+
             return redirect()->intended('/dashboard');
         }
 
@@ -49,7 +57,9 @@ class AuthController extends Controller
     public function showRegister()
     {
         if (Auth::check()) {
-            return redirect('/dashboard');
+            return Auth::user()->isSuperAdmin()
+                ? redirect()->route('admin.dashboard')
+                : redirect('/dashboard');
         }
         return view('register');
     }

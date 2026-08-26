@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'websocket_url' => env('WEBSOCKET_URL', 'http://localhost:3000'),
+
+    'whatsapp' => [
+        'verify_token' => env('WHATSAPP_VERIFY_TOKEN', 'rudood_secret'),
+    ],
+
 ];

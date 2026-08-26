@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('workspace_id')->nullable()->constrained()->onDelete('set null');
             $table->string('phone')->nullable();
-            $table->enum('role', ['owner', 'admin', 'agent'])->default('owner');
+            $table->enum('role', ['owner', 'admin', 'agent', 'super_admin'])->default('owner');
         });
     }
 

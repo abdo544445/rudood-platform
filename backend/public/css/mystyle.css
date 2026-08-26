@@ -1,22 +1,44 @@
 :root {
-  --gold-primary: #d4a359;
+  --gold-primary: #d4af37;
   --gold-gradient: linear-gradient(135deg, #f3d082 0%, #c49346 100%);
   --text-gold: #e2b767;
   --card-border: rgba(255, 255, 255, 0.7);
+  --font-main: 'Cairo', system-ui, -apple-system, sans-serif;
+}
+
+html {
+  font-size: 14.2px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+@media (min-width: 1200px) {
+  body {
+    zoom: 0.94;
+  }
+}
+
+::selection {
+  background: #d4af37 !important;
+  color: #0b0f19 !important;
+}
+::-moz-selection {
+  background: #d4af37 !important;
+  color: #0b0f19 !important;
 }
 
 body {
-  font-family: 'Cairo', sans-serif;
-  background-color: #76c7ff;
+  font-family: var(--font-main);
+  background-color: #0b0f19;
   
-  /* المسار هنا يوجه للمجلد log */
+  /* Background image with fixed attachment */
   background-image: url('../images/log22.png'); 
-  
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  color:#ffffff;
+  color: #ffffff;
   overflow-x: hidden;
   direction: rtl;
 }
@@ -337,7 +359,7 @@ body {
 
 .custom-accordion .accordion-button:not(.collapsed) {
   background-color: rgba(212, 163, 89, 0.15) !important;
-  color: var(--text-gold, #d4a359) !important;
+  color: var(--text-gold, #d4af37) !important;
 }
 
 /* تغيير لون سهم الأكورديون إلى الأبيض/الذهبي */

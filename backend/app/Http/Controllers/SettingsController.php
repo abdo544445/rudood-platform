@@ -6,19 +6,31 @@ use Illuminate\Http\Request;
 use App\Models\Bot;
 use App\Models\AutoRule;
 use App\Models\KnowledgeBase;
+use App\Models\Channel;
 
 class SettingsController extends Controller
 {
     private function getBot(): Bot
     {
         $workspace_id = auth()->user()->workspace_id;
-        return Bot::where('workspace_id', $workspace_id)->firstOrFail();
+        return Bot::firstOrCreate(
+            ['workspace_id' => $workspace_id],
+            [
+                'name' => 'المساعد الذكي',
+                'system_prompt' => 'أنت مساعد ذكي.',
+                'model_type' => 'gemini-1.5-flash',
+                'ai_provider' => 'gemini',
+                'is_active' => true,
+            ]
+        );
     }
 
     public function index()
     {
         $bot = $this->getBot();
-        return view('settings', compact('bot'));
+        $workspace = auth()->user()->workspace;
+        $channels = Channel::where('workspace_id', auth()->user()->workspace_id)->get();
+        return view('settings', compact('bot', 'workspace', 'channels'));
     }
 
     /**
@@ -45,11 +57,33 @@ class SettingsController extends Controller
     }
 
     /**
+     * Fetch available models dynamically for the selected provider.
+     */
+    public function fetchModels(Request $request)
+    {
+        $bot = $this->getBot();
+        $provider = $request->input('ai_provider', 'gemini');
+        $apiKey = $request->input('ai_api_key');
+        $baseUrl = $request->input('api_base_url');
+
+        $aiService = new \App\Services\AiService($bot);
+        $result = $aiService->fetchAvailableModels($provider, $apiKey, $baseUrl);
+
+        return response()->json($result);
+    }
+
+    /**
      * Save the AI provider and API key configuration.
      */
     public function saveAiKey(Request $request)
     {
         $bot = $this->getBot();
+        $workspace = auth()->user()->workspace;
+
+        // Check if custom API keys are restricted by Super Admin
+        if ($workspace && !$workspace->allow_custom_api_key && !auth()->user()->is_super_admin) {
+            return back()->with('error', 'إدخال مفاتيح API الخاصة مقيد في خطة حسابك الحالية. يتم تشغيل الذكاء الاصطناعي تلقائياً عبر خوادم المنصة.');
+        }
 
         $request->validate([
             'ai_provider' => 'required|in:openai,gemini,anthropic,openai_compatible',
@@ -66,6 +100,7 @@ class SettingsController extends Controller
             'api_base_url' => $request->api_base_url,
             'max_tokens'   => $request->max_tokens ?? 500,
             'temperature'  => $request->temperature ?? 0.7,
+            'api_mode'     => 'custom_byok',
         ];
 
         if ($request->filled('ai_api_key')) {

@@ -9,15 +9,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('css/mystyle.css') }}">
+  @include('layouts.partials.theme')
 
   <style>
-    body { background-color: #0b0f19 !important; color: #ffffff !important; font-family: 'Cairo', sans-serif; min-height: 100vh; }
-    .sidebar { width: 260px; background: rgba(15, 23, 42, 0.95) !important; backdrop-filter: blur(16px); border-left: 1px solid rgba(212, 175, 55, 0.2); min-height: 100vh; position: fixed; top: 0; right: 0; z-index: 1000; }
-    .sidebar .nav-link { color: rgba(255, 255, 255, 0.7) !important; padding: 12px 18px; border-radius: 10px; margin: 4px 10px; transition: all 0.3s ease; }
-    .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #000000 !important; background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%) !important; font-weight: bold; }
-    .main-content { margin-right: 260px; padding: 30px; }
-    .stat-card { background: rgba(255, 255, 255, 0.03) !important; backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.2) !important; border-radius: 16px; }
-    .text-gold { color: #d4af37 !important; }
     .upload-zone { border: 2px dashed rgba(212, 175, 55, 0.4); background: rgba(255, 255, 255, 0.02); border-radius: 16px; padding: 30px; text-align: center; transition: all 0.3s ease; cursor: pointer; }
     .upload-zone:hover { border-color: #d4af37; background: rgba(212, 175, 55, 0.05); }
     .file-item { background: rgba(15, 23, 42, 0.7) !important; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; }
@@ -32,29 +26,7 @@
 <body>
 
   <!-- الشريط الجانبي -->
-  <aside class="sidebar d-flex flex-column justify-content-between py-3">
-    <div>
-      <div class="px-4 mb-4 text-center">
-        <a href="{{ url('/index') }}">
-          <img src="{{ asset('images/img.png') }}" alt="شعار منصة ردود" style="max-height: 45px;">
-        </a>
-      </div>
-      <ul class="nav nav-pills flex-column">
-        <li class="nav-item"><a href="{{ url('/dashboard') }}" class="nav-link d-flex align-items-center gap-3"><i class="bi bi-grid-1x2-fill"></i> الرئيسية</a></li>
-        <li class="nav-item"><a href="{{ url('/ai-manage') }}" class="nav-link active d-flex align-items-center gap-3"><i class="bi bi-cpu-fill"></i> تدريب الذكاء الاصطناعي</a></li>
-        <li class="nav-item"><a href="{{ url('/live-chat') }}" class="nav-link d-flex align-items-center gap-3"><i class="bi bi-chat-dots-fill"></i> المحادثات المباشرة</a></li>
-        <li class="nav-item"><a href="{{ url('/settings') }}" class="nav-link d-flex align-items-center gap-3"><i class="bi bi-gear-fill"></i> الإعدادات والقنوات</a></li>
-      </ul>
-    </div>
-    <div class="px-3">
-      <form action="{{ url('/logout') }}" method="POST">
-        @csrf
-        <button type="submit" class="btn btn-outline-danger w-100 rounded-pill d-flex align-items-center justify-content-center gap-2">
-          <i class="bi bi-box-arrow-right"></i> تسجيل الخروج
-        </button>
-      </form>
-    </div>
-  </aside>
+  @include('layouts.partials.sidebar')
 
   <!-- المحتوى الرئيسي -->
   <main class="main-content">
@@ -71,7 +43,13 @@
     </div>
     @endif
 
-    @if ($errors->any())
+    @if (session('error'))
+    <div class="alert py-2 mb-4" style="background: rgba(231,76,60,0.15); border: 1px solid #e74c3c; color: #e74c3c; border-radius: 10px;">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
+    </div>
+    @endif
+
+    @if (isset($errors) && $errors->any())
     <div class="alert alert-danger mb-4 py-2">{{ $errors->first() }}</div>
     @endif
 
@@ -108,16 +86,23 @@
           <div>
             <h6 class="fw-bold text-white fs-7 mb-2">الملفات المدربة حالياً ({{ $docs->count() }}):</h6>
             @forelse ($docs as $doc)
-            <div class="file-item d-flex justify-content-between align-items-center">
+            <div class="file-item d-flex justify-content-between align-items-center flex-wrap gap-2">
               <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-file-earmark-pdf-fill text-danger fs-5"></i>
                 <div>
                   <span class="text-white fs-7 d-block">{{ $doc->file_name }}</span>
-                  <small class="text-white-50">{{ $doc->created_at->diffForHumans() }}</small>
+                  <small class="text-white-50">{{ $doc->created_at->diffForHumans() }} | {{ count($doc->chunks ?? []) }} مقطع</small>
                 </div>
               </div>
               <div class="d-flex align-items-center gap-2">
-                <span class="file-status-badge"><i class="bi bi-check-circle-fill me-1"></i>مكتمل</span>
+                <!-- زر استخراج وتوليد الأسئلة والأجوبة بالذكاء الاصطناعي -->
+                <form action="{{ route('ai.generate-faq', $doc->id) }}" method="POST" class="d-inline" onsubmit="handleGenerateFaqSubmit(this)">
+                  @csrf
+                  <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill px-3 py-1 fs-9 fw-bold" title="استخراج 5 أسئلة وأجوبة شائعة من هذا الملف وإضافتها للقواعد الفورية">
+                    <i class="bi bi-stars text-gold me-1"></i> استخراج أسئلة بالـ AI
+                  </button>
+                </form>
+
                 <form action="{{ url('/ai-manage/doc/' . $doc->id) }}" method="POST" class="d-inline">
                   @csrf
                   @method('DELETE')
@@ -154,9 +139,17 @@
               <input type="text" id="faqQuestion" name="question" class="form-control custom-input"
                 placeholder="مثال: ما هي أوقات التوصيل لديكم؟" required>
             </div>
+            <div class="mb-3">
+              <label for="faqKeywords" class="form-label text-white fs-7 fw-bold">
+                الكلمات المفتاحية للمطابقة الفورية <span class="text-white-50 fs-8 fw-normal">(مفصولة بفاصلة)</span>
+              </label>
+              <input type="text" id="faqKeywords" name="keywords" class="form-control custom-input"
+                placeholder="مثال: توصيل, مدة, شحن, اوقات">
+              <small class="text-white-50 fs-8">إذا تُركت فارغة، سيتم استخراج الكلمات الأساسية من السؤال تلقائياً.</small>
+            </div>
             <div class="mb-4">
               <label for="faqAnswer" class="form-label text-white fs-7 fw-bold">الإجابة النموذجية للبوت</label>
-              <textarea id="faqAnswer" name="answer" class="form-control custom-input" rows="5"
+              <textarea id="faqAnswer" name="answer" class="form-control custom-input" rows="4"
                 placeholder="اكتب الإجابة الدقيقة التي سيقوم البوت بإرسالها للعميل..." required></textarea>
             </div>
             <button type="submit" class="btn btn-gold w-100 py-2">
@@ -166,6 +159,24 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- بنر الانتقال إلى مختبر الذكاء الاصطناعي المتقدم -->
+    <div class="stat-card p-4 mb-5" style="border: 1px solid rgba(212,175,55,0.35) !important; background: linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(15,23,42,0.8) 100%) !important;">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(212,175,55,0.2); border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 1.5rem;">
+            <i class="bi bi-robot"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold text-white mb-1">مختبر الذكاء الاصطناعي المتطور (AI Playground Workbench)</h5>
+            <p class="text-white-50 mb-0 fs-8">اختبر ردود المساعد الذكي، عاين استرجاع المقاطع (RAG)، واضبط المعاملات ونبرة الرد في بيئة تفاعلية متكاملة.</p>
+          </div>
+        </div>
+        <a href="{{ url('/playground') }}" class="btn btn-gold px-4 py-2 rounded-pill fw-bold d-flex align-items-center gap-2">
+          <i class="bi bi-box-arrow-up-right"></i> فتح المختبر الكامل (Open Playground)
+        </a>
+      </div>
     </div>
 
     <!-- قائمة القواعد المحفوظة -->
@@ -186,6 +197,13 @@
             <i class="bi bi-chat-right-quote-fill text-gold fs-7"></i>
             <span class="fw-bold text-white fs-7">{{ $rule->question }}</span>
           </div>
+          @if (!empty($rule->keywords) && is_array($rule->keywords))
+          <div class="d-flex flex-wrap gap-1 ps-3 my-1">
+            @foreach ($rule->keywords as $kw)
+              <span class="badge bg-secondary bg-opacity-25 text-white-50 fs-9">{{ $kw }}</span>
+            @endforeach
+          </div>
+          @endif
           <p class="text-white-50 fs-8 mb-0 ps-3" style="white-space: pre-line;">{{ Str::limit($rule->reply_template, 180) }}</p>
         </div>
         <div class="d-flex align-items-center gap-2 flex-shrink-0">
@@ -213,5 +231,14 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function handleGenerateFaqSubmit(form) {
+      const btn = form.querySelector('button');
+      if (btn) {
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> جاري التوليد...';
+        btn.disabled = true;
+      }
+    }
+  </script>
 </body>
 </html>

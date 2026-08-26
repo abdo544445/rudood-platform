@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -8,6 +8,11 @@
   <link rel="stylesheet" href="{{ asset('css/bootstrap.rtl.min.css') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="{{ asset('css/mystyle.css') }}">
+  <!-- Google Fonts (Cairo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  @include('layouts.partials.theme')
 </head>
 <body>
 
@@ -27,12 +32,15 @@
           <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/index') }}">الرئيسية</a></li>
           <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/features') }}">المميزات</a></li>
           <li class="nav-item"><a class="nav-link active text-gold" href="{{ url('/pricing') }}">التسعيرة</a></li>
-          <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/chat') }}">المدونة</a></li>
-          <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/try') }}">تواصل معنا</a></li>
+          <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/blog') }}">المدونة</a></li>
+          <li class="nav-item"><a class="nav-link text-white-50" href="{{ url('/contact') }}">تواصل معنا</a></li>
         </ul>
-        <div class="d-flex gap-2">
-          <a href="{{ url('/login') }}" class="btn btn-outline-light rounded-pill px-4">تسجيل الدخول</a>
-          <a href="{{ url('/register') }}" class="btn btn-gold rounded-pill px-4 fw-bold">طلب استشارة</a>
+        <div class="d-flex align-items-center gap-2">
+          <a href="{{ url('/demo') }}" class="btn btn-outline-danger rounded-pill px-3 fs-8 fw-bold d-flex align-items-center gap-1">
+            <i class="bi bi-broadcast text-danger"></i> استعراض حي
+          </a>
+          <a href="{{ url('/login') }}" class="btn btn-outline-light rounded-pill px-3 fs-8">تسجيل الدخول</a>
+          <a href="{{ url('/register') }}" class="btn btn-gold rounded-pill px-3 fw-bold fs-8">ابدأ الآن</a>
         </div>
       </div>
     </div>

@@ -6,15 +6,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Bus\Queueable as BusQueueable;
 
 use App\Models\Message;
 use App\Models\Conversation;
-use App\Models\AutoRule;
 use App\Models\Bot;
-use App\Models\KnowledgeBase;
+use App\Models\Channel;
+use App\Models\AiDecisionLog;
 use App\Services\AiService;
-use Illuminate\Support\Facades\Redis;
+use App\Services\RagService;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 /**
@@ -25,10 +25,12 @@ use Illuminate\Support\Str;
  *
  *  1. Load the conversation, workspace bot, and message context
  *  2. Check if the bot is active for this workspace
- *  3. Scan auto_rules for a keyword match → if found, reply immediately
- *  4. If no rule matched, compile knowledge_bases context + call the AI API
+ *  3. Scan auto_rules via RagService for a keyword match → if found, reply immediately
+ *  4. If no rule matched, fetch prior conversation history + compile knowledge_bases context via RagService + call AI
  *  5. Save the AI reply as a bot Message in the DB
- *  6. Publish the new message to Redis → Node.js WebSocket → Browser
+ *  6. Record an AiDecisionLog for full auditability & observability
+ *  7. Publish the new message to Redis → Node.js WebSocket → Browser
+ *  8. Dispatch outgoing reply to external channels (WhatsApp Cloud API / Telegram Bot)
  */
 class ProcessCustomerMessage implements ShouldQueue
 {
@@ -43,10 +45,24 @@ class ProcessCustomerMessage implements ShouldQueue
         private int $messageId
     ) {}
 
-    public function handle(): void
+    public function handle(?RagService $ragService = null): void
     {
-        $conversation = Conversation::with('customer')->find($this->conversationId);
+        $ragService = $ragService ?? app(RagService::class);
+        $startTime = microtime(true);
+
+        $conversation = Conversation::with('customer', 'workspace')->find($this->conversationId);
         if (!$conversation) return;
+
+        // ── Human Takeover Check: if bot is paused, do not reply ───────────────
+        if (!$conversation->isBotActive()) {
+            return;
+        }
+
+        $workspace = $conversation->workspace;
+        if ($workspace && !$workspace->hasRemainingQuota()) {
+            \Log::warning("Workspace {$workspace->id} exceeded monthly message limit.");
+            return;
+        }
 
         $bot = Bot::where('workspace_id', $conversation->workspace_id)
                   ->where('is_active', true)
@@ -58,19 +74,54 @@ class ProcessCustomerMessage implements ShouldQueue
         $customerMessage = Message::find($this->messageId);
         if (!$customerMessage) return;
 
-        // ── Step 1: Check Auto-Rules first (instant, no API call needed) ──────
-        $replyText = $this->checkAutoRules($conversation->workspace_id, $customerMessage->content);
+        // ── Step 0: Sentiment Analysis & Urgency Escalation ───────────────────
+        $aiService = new AiService($bot);
+        try {
+            $sentimentData = $aiService->analyzeSentimentAndUrgency($customerMessage->content);
+            $conversation->update([
+                'sentiment'         => $sentimentData['sentiment'],
+                'is_escalated'      => $sentimentData['is_escalated'] || $conversation->is_escalated,
+                'escalation_reason' => $sentimentData['reason'] ?? $conversation->escalation_reason,
+            ]);
+        } catch (\Throwable $e) {}
 
-        // ── Step 2: No rule matched → call AI with knowledge base context ─────
-        if (!$replyText) {
-            $context   = $this->buildKnowledgeContext($bot->id);
-            $aiService = new AiService($bot);
-            $replyText = $aiService->generateReply($customerMessage->content, $context);
+        $trigger = 'ai_api';
+        $matchedKeywords = null;
+        $context = null;
+
+        // ── Step 1: Check Auto-Rules first (instant, no API call needed) ──────
+        $ruleMatch = $ragService->checkAutoRules($conversation->workspace_id, $customerMessage->content);
+
+        if ($ruleMatch !== null) {
+            $trigger         = 'auto_rule';
+            $replyText       = $ruleMatch['reply'];
+            $matchedKeywords = is_array($ruleMatch['keywords'])
+                ? implode(', ', $ruleMatch['keywords'])
+                : (string) $ruleMatch['keywords'];
+        } else {
+            // ── Step 2: Multi-turn Conversational Memory & Knowledge Retrieval ──
+            $history = Message::where('conversation_id', $conversation->id)
+                ->where('id', '<', $customerMessage->id)
+                ->orderByDesc('id')
+                ->limit(6)
+                ->get()
+                ->reverse()
+                ->values()
+                ->toArray();
+
+            $ragResult = $ragService->retrieveRelevantChunks($bot->id, $customerMessage->content);
+            $context   = $ragResult['context'];
+
+            $replyText = $aiService->generateReply($customerMessage->content, $context, $history);
+
+            if ($replyText === $aiService->getFallbackReply()) {
+                $trigger = 'fallback';
+            }
         }
 
         if (!$replyText) return;
 
-        // ── Step 3: Save bot reply to database ───────────────────────────────
+        // ── Step 3: Save bot reply to database & record usage ────────────────
         $botMessage = Message::create([
             'conversation_id' => $conversation->id,
             'sender_type'     => 'bot',
@@ -79,7 +130,30 @@ class ProcessCustomerMessage implements ShouldQueue
 
         $conversation->touch(); // Float conversation to top of sidebar list
 
-        // ── Step 4: Publish to Redis → Node.js → Live Chat UI ────────────────
+        if ($workspace) {
+            $workspace->recordUsage(1, mb_strlen($replyText));
+        }
+
+        // ── Step 4: Record AI Decision Audit Log ─────────────────────────────
+        $durationMs = (int) max(1, round((microtime(true) - $startTime) * 1000));
+        try {
+            AiDecisionLog::create([
+                'conversation_id'  => $conversation->id,
+                'message_id'       => $botMessage->id,
+                'trigger'          => $trigger,
+                'matched_keywords' => $matchedKeywords,
+                'context_sent'     => $context ? Str::limit($context, 2000) : null,
+                'ai_provider'      => $bot->ai_provider ?: 'gemini',
+                'model_type'       => $bot->model_type ?: 'default',
+                'customer_message' => $customerMessage->content,
+                'bot_reply'        => $replyText,
+                'response_time_ms' => $durationMs,
+            ]);
+        } catch (\Throwable $e) {
+            \Log::warning('AI Decision Log creation failed: ' . $e->getMessage());
+        }
+
+        // ── Step 5: Publish to Redis → Node.js → Live Chat UI ────────────────
         try {
             if (class_exists('Illuminate\Support\Facades\Redis')) {
                 \Illuminate\Support\Facades\Redis::publish('rudood_chat_channel', json_encode([
@@ -94,52 +168,81 @@ class ProcessCustomerMessage implements ShouldQueue
         } catch (\Throwable $e) {
             \Log::warning('Redis publish omitted: ' . $e->getMessage());
         }
+
+        // ── Step 6: Dispatch Outgoing Channel Message (WhatsApp / Telegram) ──
+        $this->dispatchOutgoingChannelMessage($conversation, $replyText);
     }
 
     /**
-     * Search auto_rules for a keyword match in the customer's message.
-     * Returns the reply template if matched, or null.
+     * Send outgoing reply message via connected platform APIs.
      */
-    private function checkAutoRules(int $workspaceId, string $message): ?string
+    private function dispatchOutgoingChannelMessage(Conversation $conversation, string $replyText): void
     {
-        $messageLower = Str::lower($message);
+        $customer = $conversation->customer;
+        if (!$customer) return;
 
-        $rules = AutoRule::where('workspace_id', $workspaceId)
-                         ->where('is_active', true)
-                         ->get();
+        $workspaceId = $conversation->workspace_id;
 
-        foreach ($rules as $rule) {
-            $keywords = is_array($rule->keywords)
-                ? $rule->keywords
-                : (json_decode($rule->keywords ?? '', true) ?? []);
+        // 1. WhatsApp Outgoing Dispatch
+        if (($customer->platform === 'whatsapp' || !empty($customer->phone)) && !empty($customer->phone)) {
+            $waChannel = Channel::where('workspace_id', $workspaceId)
+                ->where('platform', 'whatsapp')
+                ->first();
 
-            if (!is_iterable($keywords)) continue;
-
-            foreach ($keywords as $keyword) {
-                if (!empty($keyword) && Str::contains($messageLower, Str::lower($keyword))) {
-                    return $rule->reply_template;
+            if ($waChannel && $waChannel->isActive() && $waChannel->access_token && $waChannel->phone_number_id) {
+                try {
+                    Http::withToken($waChannel->access_token)
+                        ->timeout(15)
+                        ->post("https://graph.facebook.com/v19.0/{$waChannel->phone_number_id}/messages", [
+                            'messaging_product' => 'whatsapp',
+                            'to'                => ltrim($customer->phone, '+'),
+                            'type'              => 'text',
+                            'text'              => ['body' => $replyText],
+                        ]);
+                } catch (\Throwable $e) {
+                    \Log::warning('WhatsApp outgoing reply error: ' . $e->getMessage());
                 }
             }
         }
 
-        return null;
-    }
+        // 2. Telegram Outgoing Dispatch
+        if (($customer->platform === 'telegram' || !empty($customer->chat_id)) && !empty($customer->chat_id)) {
+            $tgChannel = Channel::where('workspace_id', $workspaceId)
+                ->where('platform', 'telegram')
+                ->first();
 
-    /**
-     * Compile all knowledge base documents for this bot into a single context string.
-     * Truncated to avoid token overflow.
-     */
-    private function buildKnowledgeContext(int $botId): string
-    {
-        $docs = KnowledgeBase::where('bot_id', $botId)
-                              ->whereNotNull('document_text')
-                              ->get(['document_text']);
+            if ($tgChannel && $tgChannel->isActive() && $tgChannel->bot_token) {
+                try {
+                    Http::timeout(15)
+                        ->post("https://api.telegram.org/bot{$tgChannel->bot_token}/sendMessage", [
+                            'chat_id' => $customer->chat_id,
+                            'text'    => $replyText,
+                        ]);
+                } catch (\Throwable $e) {
+                    \Log::warning('Telegram outgoing reply error: ' . $e->getMessage());
+                }
+            }
+        }
 
-        if ($docs->isEmpty()) return '';
+        // 3. Instagram Direct Outgoing Dispatch
+        if ($customer->platform === 'instagram' && !empty($customer->chat_id)) {
+            $igChannel = Channel::where('workspace_id', $workspaceId)
+                ->where('platform', 'instagram')
+                ->first();
 
-        $combined = $docs->map(fn($d) => $d->document_text)->implode("\n\n---\n\n");
-
-        // Limit context to ~8000 characters to avoid token overflow
-        return Str::limit($combined, 8000, '...');
+            if ($igChannel && $igChannel->isActive() && ($igChannel->page_access_token || $igChannel->access_token)) {
+                try {
+                    $token = $igChannel->page_access_token ?: $igChannel->access_token;
+                    Http::withToken($token)
+                        ->timeout(15)
+                        ->post("https://graph.facebook.com/v19.0/me/messages", [
+                            'recipient' => ['id' => $customer->chat_id],
+                            'message'   => ['text' => $replyText],
+                        ]);
+                } catch (\Throwable $e) {
+                    \Log::warning('Instagram outgoing reply error: ' . $e->getMessage());
+                }
+            }
+        }
     }
 }

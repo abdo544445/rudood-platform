@@ -1,4 +1,4 @@
-﻿
+
   <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -11,8 +11,7 @@
   <link rel="stylesheet" href="{{ asset('css/mystyle.css') }}">
   <!-- Google Fonts (Cairo) -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
-  
+  @include('layouts.partials.theme')
 </head>
   <style>
     .nav-logo-img { height: 42px; width: auto; object-fit: contain; }

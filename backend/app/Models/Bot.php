@@ -12,15 +12,18 @@ class Bot extends Model
 
     protected $fillable = [
         'workspace_id', 'name', 'system_prompt', 'model_type',
-        'ai_provider', 'api_key_encrypted', 'api_base_url',
+        'ai_provider', 'api_key', 'api_key_encrypted', 'api_base_url',
         'bot_tone', 'welcome_message', 'max_tokens', 'temperature', 'is_active',
+        'enable_rag', 'enable_auto_rules', 'api_mode',
     ];
 
     protected $hidden = ['api_key_encrypted'];
 
     protected $casts = [
-        'is_active'   => 'boolean',
-        'temperature' => 'float',
+        'is_active'         => 'boolean',
+        'enable_rag'        => 'boolean',
+        'enable_auto_rules' => 'boolean',
+        'temperature'       => 'float',
     ];
 
     /**
@@ -69,7 +72,7 @@ class Bot extends Model
             'openai'            => 'OpenAI',
             'gemini'            => 'Google Gemini',
             'anthropic'         => 'Anthropic Claude',
-            'openai_compatible' => 'OpenAI Compatible (Custom)',
+            'openai_compatible' => 'OpenAI Compatible',
             default             => $this->ai_provider,
         };
     }

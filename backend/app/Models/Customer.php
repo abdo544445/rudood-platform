@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
-    protected $fillable = ['workspace_id', 'name', 'phone', 'email', 'platform'];
+    protected $fillable = ['workspace_id', 'name', 'phone', 'chat_id', 'email', 'platform'];
 
     public function conversations()
     {

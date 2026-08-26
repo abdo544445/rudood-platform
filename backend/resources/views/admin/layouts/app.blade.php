@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'لوحة الإدارة العليا') - منصة ردود (Rudood Admin)</title>
+    
+    <!-- Google Fonts (Cairo & Tajawal) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Reem+Kufi:wght@700;900&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    
+    <!-- ApexCharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    @include('layouts.partials.theme')
+
+    <style>
+        :root {
+            --sidebar-width: 255px;
+        }
+
+        body {
+            font-family: var(--font);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            right: 0;
+            background: linear-gradient(180deg, rgba(15,23,42,0.96) 0%, var(--bg-dark) 100%);
+            border-left: 1px solid var(--card-border);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-brand {
+            padding: 1.1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .sidebar-brand .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #fff;
+            box-shadow: 0 3px 10px var(--gold-soft);
+        }
+
+        .sidebar-brand-text {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+
+        .sidebar-menu {
+            padding: 0.85rem 0.75rem;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .nav-section-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-top: 1rem;
+            margin-bottom: 0.35rem;
+            padding-right: 0.65rem;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.55rem 0.85rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            margin-bottom: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-link i {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-link.active {
+            color: #fff;
+            background: linear-gradient(90deg, var(--gold-dark) 0%, var(--gold-soft) 100%);
+            box-shadow: 0 3px 10px var(--gold-soft);
+        }
+
+        /* Main Content Wrapper */
+        .admin-main-wrapper {
+            margin-right: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-header {
+            height: 60px;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 990;
+        }
+
+        .header-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0;
+            color: #fff;
+        }
+
+        .header-user-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 12px;
+            border-radius: 25px;
+            border: 1px solid var(--card-border);
+        }
+
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* Dashboard Cards & Layout */
+        .admin-content {
+            padding: 2rem;
+            flex-grow: 1;
+        }
+
+        /* High Contrast and Selection Overrides */
+        ::selection {
+            background: #d4af37 !important;
+            color: #0b0f19 !important;
+        }
+        ::-moz-selection {
+            background: #d4af37 !important;
+            color: #0b0f19 !important;
+        }
+
+        .text-muted, .text-secondary {
+            color: rgba(255, 255, 255, 0.78) !important;
+        }
+
+        .text-white-50 {
+            color: rgba(255, 255, 255, 0.82) !important;
+        }
+
+        .form-label, label {
+            color: #ffffff !important;
+            font-weight: 600;
+        }
+
+        .form-control, .form-select {
+            background-color: rgba(15, 23, 42, 0.85) !important;
+            border: 1px solid rgba(212, 175, 55, 0.3) !important;
+            color: #ffffff !important;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(15, 23, 42, 0.95) !important;
+            border-color: #d4af37 !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.25) !important;
+        }
+
+        /* Modal Z-Index and Clickability Fix */
+        .modal {
+            z-index: 1060 !important;
+        }
+        .modal-backdrop {
+            z-index: 1050 !important;
+        }
+        .modal-dialog {
+            z-index: 1070 !important;
+        }
+        .modal-content {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+        }
+
+        /* Some custom admin classes, others handled by theme.blade.php */
+        .stat-val {
+            font-size: 1.85rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #fff;
+        }
+
+        .stat-lbl {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.78) !important;
+            font-weight: 600;
+        }
+
+        .badge-admin-role {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand">
+            <div class="logo-icon">
+                <i class="bi bi-shield-fill"></i>
+            </div>
+            <div>
+                <div class="sidebar-brand-text">ردود إدمن</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted);">Super Admin Center</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <div class="nav-section-label">لوحة التحكم الرئيسية</div>
+            <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                <i class="bi bi-pie-chart"></i>
+                <span>نظرة عامة والتحليلات</span>
+            </a>
+            <a href="{{ route('admin.statistics') }}" class="sidebar-link {{ request()->routeIs('admin.statistics') ? 'active' : '' }}">
+                <i class="bi bi-bar-chart"></i>
+                <span>لوحة الإحصائيات الكاملة</span>
+            </a>
+
+            <div class="nav-section-label">إدارة المنصة والشركات</div>
+            <a href="{{ route('admin.workspaces.index') }}" class="sidebar-link {{ request()->routeIs('admin.workspaces.*') ? 'active' : '' }}">
+                <i class="bi bi-building"></i>
+                <span>الشركات والمتاجر</span>
+            </a>
+
+            <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                <i class="bi bi-people"></i>
+                <span>المستخدمين والملاك</span>
+            </a>
+
+            <a href="{{ route('admin.articles.index') }}" class="sidebar-link {{ request()->routeIs('admin.articles.*') ? 'active' : '' }}">
+                <i class="bi bi-newspaper"></i>
+                <span>إدارة المدونة والمقالات</span>
+            </a>
+
+            <a href="{{ route('admin.contacts.index') }}" class="sidebar-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
+                <i class="bi bi-envelope-paper-heart"></i>
+                <span class="d-flex align-items-center justify-content-between flex-grow-1">
+                    <span>رسائل تواصل معنا</span>
+                    @php
+                        $newContactsCount = \App\Models\ContactMessage::where('status', 'new')->count();
+                    @endphp
+                    @if($newContactsCount > 0)
+                        <span class="badge bg-danger rounded-pill px-2 py-0 fs-9">{{ $newContactsCount }}</span>
+                    @endif
+                </span>
+            </a>
+
+            <div class="nav-section-label">البنية التحتية والنظام</div>
+            <a href="{{ route('admin.system.index') }}" class="sidebar-link {{ request()->routeIs('admin.system.*') ? 'active' : '' }}">
+                <i class="bi bi-hdd-network"></i>
+                <span>حالة النظام والخدمات</span>
+            </a>
+
+            <a href="{{ route('admin.audit-logs.index') }}" class="sidebar-link {{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}">
+                <i class="bi bi-shield-check"></i>
+                <span>سجل تدقيق الأنشطة</span>
+            </a>
+
+            <div class="nav-section-label">تنقل سريع</div>
+            <a href="/dashboard" class="sidebar-link" target="_blank">
+                <i class="bi bi-box-arrow-up-right"></i>
+                <span>لوحة المتجر العادية</span>
+            </a>
+        </nav>
+
+        <div style="padding: 1rem; border-top: 1px solid var(--card-border);">
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-outline-danger w-100 btn-sm rounded-3 py-2 fw-bold">
+                    <i class="bi-box-arrow-right ms-1"></i> تسجيل الخروج
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="admin-main-wrapper">
+        <!-- Top Header -->
+        <header class="admin-header">
+            <div class="d-flex align-items-center gap-3">
+                <h1 class="header-title">@yield('page_title', 'لوحة التحكم والإدارة العليا')</h1>
+                <button type="button" class="btn btn-sm btn-dark border border-secondary border-opacity-50 text-white-50 px-3 rounded-pill fs-8 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#commandPaletteModal">
+                    <i class="bi bi-search text-gold"></i>
+                    <span>بحث سريع...</span>
+                    <kbd class="bg-black text-white-50 border border-secondary border-opacity-50 px-1 fs-9">⌘K</kbd>
+                </button>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <span class="badge-admin-role">
+                    <i class="bi-gem me-1"></i> {{ auth()->user()->role ?? 'Super Admin' }}
+                </span>
+
+                <div class="header-user-badge">
+                    <div class="user-avatar">
+                        {{ mb_substr(auth()->user()?->name ?? 'A', 0, 1) }}
+                    </div>
+                    <div>
+                        <div style="font-size: 0.9rem; font-weight: 700;">{{ auth()->user()?->name ?? 'مدير النظام الأعلى' }}</div>
+                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.75);">{{ auth()->user()?->email ?? 'admin@rudood.com' }}</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Content -->
+        <main class="admin-content">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4)!important;">
+                    <i class="bi-check-circle-fill me-2"></i> {{ session('success') }}
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4)!important;">
+                    <i class="bi-exclamation-triangle me-2"></i> {{ session('error') }}
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            @yield('content')
+        </main>
+    </div>
+
+    <!-- Global Command Palette Modal (Cmd + K) -->
+    @include('layouts.partials.command-palette')
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @yield('scripts')
+</body>
+</html>

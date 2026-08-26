@@ -4,7 +4,8 @@ FROM php:8.4-fpm-alpine
 RUN apk add --no-cache \
     nginx \
     supervisor \
-    mysql-client \
+    postgresql-client \
+    postgresql-dev \
     libpng-dev \
     libzip-dev \
     oniguruma-dev \
@@ -15,7 +16,7 @@ RUN apk add --no-cache \
 
 # Install required PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql mbstring gd zip bcmath
+    && docker-php-ext-install pdo pdo_pgsql pgsql pdo_mysql mbstring gd zip bcmath
 
 # Configure working directory
 WORKDIR /var/www/html

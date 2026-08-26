@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('workspace_id')->constrained()->onDelete('cascade');
+            $table->string('plan_name')->default('free');
+            $table->decimal('price', 10, 2)->default(0.00);
+            $table->string('status')->default('active');
+            $table->timestamp('renews_at')->nullable();
             $table->timestamps();
         });
     }
