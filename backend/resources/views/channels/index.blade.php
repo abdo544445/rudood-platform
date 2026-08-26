@@ -88,6 +88,11 @@
             <div>
               <h5 class="fw-bold text-white mb-0 fs-7">واتساب كلاود (WhatsApp Cloud API)</h5>
               <small class="text-white-50 fs-9">الربط الرسمي المباشر مع منصة Meta للأعمال</small>
+              <div class="d-flex flex-wrap gap-1 mt-1">
+                <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-25 fs-9 py-0 px-2"><i class="bi bi-hand-index-thumb me-1"></i> أزرار الرد السريع</span>
+                <span class="badge bg-warning bg-opacity-20 text-warning border border-warning border-opacity-25 fs-9 py-0 px-2"><i class="bi bi-list-ul me-1"></i> القوائم التفاعلية</span>
+                <span class="badge bg-info bg-opacity-20 text-info border border-info border-opacity-25 fs-9 py-0 px-2"><i class="bi bi-grid-3x3-gap me-1"></i> بطاقات الكتالوج</span>
+              </div>
             </div>
           </div>
           <div class="d-flex align-items-center gap-2">

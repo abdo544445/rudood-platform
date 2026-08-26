@@ -52,6 +52,119 @@ class WebhookController extends Controller
     }
 
     /**
+     * Meta / WhatsApp Cloud API Inbound Webhook Handler
+     * Route: POST /api/webhook/whatsapp
+     */
+    public function handleWhatsApp(Request $request)
+    {
+        $body = $request->all();
+
+        // Check if messages array exists in Meta's payload structure
+        $change = $body['entry'][0]['changes'][0]['value'] ?? null;
+        if (!$change || !isset($change['messages'][0])) {
+            return response()->json(['status' => 'ignored', 'reason' => 'no_messages']);
+        }
+
+        $msgData = $change['messages'][0];
+        $senderPhone = '+' . ltrim($msgData['from'] ?? '', '+');
+        $msgType = $msgData['type'] ?? 'text';
+        $phoneNumberId = $change['metadata']['phone_number_id'] ?? null;
+
+        // Determine channel & workspace
+        $channel = Channel::where('platform', 'whatsapp')
+            ->where(function ($q) use ($phoneNumberId) {
+                if ($phoneNumberId) $q->where('phone_number_id', $phoneNumberId);
+            })
+            ->first() ?? Channel::where('platform', 'whatsapp')->where('is_connected', true)->first();
+
+        if ($channel && !$channel->isActive()) {
+            return response()->json(['status' => 'channel_paused']);
+        }
+
+        $workspaceId = $channel?->workspace_id ?? Workspace::where('status', 'active')->first()?->id ?? 1;
+
+        $text = '';
+        $mediaType = 'text';
+        $mediaUrl = null;
+
+        // 1. Text Message
+        if ($msgType === 'text') {
+            $text = $msgData['text']['body'] ?? '';
+        }
+        // 2. Audio / Voice Note Message
+        elseif ($msgType === 'audio' || $msgType === 'voice') {
+            $mediaType = 'audio';
+            $bot = Bot::where('workspace_id', $workspaceId)->first() ?? new Bot();
+            $aiService = new \App\Services\AiService($bot);
+            $transcription = $aiService->transcribeAudio('');
+            $text = "🎙️ [رسالة صوتية]: " . $transcription;
+        }
+        // 3. WhatsApp Interactive Button Reply
+        elseif ($msgType === 'interactive' && isset($msgData['interactive']['button_reply'])) {
+            $btnReply = $msgData['interactive']['button_reply'];
+            $text = $btnReply['title'] ?? ($btnReply['id'] ?? '');
+        }
+        // 4. WhatsApp Interactive List Menu Reply
+        elseif ($msgType === 'interactive' && isset($msgData['interactive']['list_reply'])) {
+            $listReply = $msgData['interactive']['list_reply'];
+            $text = $listReply['title'] ?? ($listReply['id'] ?? '');
+        }
+
+        if (empty($text)) {
+            return response()->json(['status' => 'ignored', 'reason' => 'empty_content']);
+        }
+
+        $contactName = $change['contacts'][0]['profile']['name'] ?? 'عميل واتساب';
+
+        $customer = Customer::firstOrCreate(
+            ['workspace_id' => $workspaceId, 'phone' => $senderPhone],
+            ['name' => $contactName, 'platform' => 'whatsapp']
+        );
+
+        $conversation = Conversation::where('workspace_id', $workspaceId)
+            ->where('customer_id', $customer->id)
+            ->where('status', 'open')
+            ->first();
+
+        if (!$conversation) {
+            $conversation = Conversation::create([
+                'workspace_id' => $workspaceId,
+                'customer_id'  => $customer->id,
+                'status'       => 'open',
+            ]);
+        }
+
+        $msg = Message::create([
+            'conversation_id' => $conversation->id,
+            'sender_type'     => 'customer',
+            'content'         => $text,
+            'media_type'      => $mediaType,
+            'media_url'       => $mediaUrl,
+        ]);
+
+        $conversation->touch();
+
+        // Broadcast to Live Chat
+        try {
+            if (class_exists('Illuminate\Support\Facades\Redis')) {
+                \Illuminate\Support\Facades\Redis::publish('rudood_chat_channel', json_encode([
+                    'conversation_id' => $conversation->id,
+                    'workspace_id'    => $workspaceId,
+                    'sender_type'     => 'customer',
+                    'content'         => $msg->content,
+                    'time'            => $msg->created_at->format('H:i'),
+                    'message_id'      => $msg->id,
+                    'customer_name'   => $customer->name,
+                ]));
+            }
+        } catch (\Throwable $e) {}
+
+        ProcessCustomerMessage::dispatch($conversation->id, $msg->id)->onQueue('ai-processing');
+
+        return response()->json(['status' => 'ok', 'conversation_id' => $conversation->id, 'message_id' => $msg->id]);
+    }
+
+    /**
      * Meta Instagram Direct & Comments Webhook Verification (Handshake)
      * Route: GET /api/webhook/instagram
      */

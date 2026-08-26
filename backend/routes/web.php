@@ -139,6 +139,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/live-chat/canned-replies', [ConversationController::class, 'storeCannedReply'])->name('live-chat.canned-replies.store');
     Route::get('/live-chat/{id}', [ConversationController::class, 'show'])->name('live-chat.show');
     Route::post('/live-chat/{id}/send', [ConversationController::class, 'sendMessage']);
+    Route::post('/live-chat/{id}/send-interactive', [ConversationController::class, 'sendInteractive'])->name('live-chat.send-interactive');
     Route::post('/live-chat/{id}/toggle-bot', [ConversationController::class, 'toggleBot'])->name('live-chat.toggle-bot');
     Route::post('/live-chat/{id}/notes', [ConversationController::class, 'updateNotes'])->name('live-chat.update-notes');
 

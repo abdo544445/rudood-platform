@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\Customer;
+use App\Models\Channel;
 use Illuminate\Support\Facades\Redis;
 
 class ConversationController extends Controller
@@ -290,5 +291,89 @@ class ConversationController extends Controller
         }
 
         return redirect()->route('live-chat.index', ['conversation' => $id]);
+    }
+
+    /**
+     * Send an interactive WhatsApp message (Buttons, List Menu, or Catalog Cards) by Agent.
+     */
+    public function sendInteractive(Request $request, int $id)
+    {
+        $request->validate([
+            'type'    => 'required|in:button,list,carousel',
+            'content' => 'required|string',
+        ]);
+
+        $conversation = Conversation::with('customer')
+            ->where('id', $id)
+            ->where('workspace_id', $this->workspaceId())
+            ->firstOrFail();
+
+        $interactiveService = app(\App\Services\WhatsAppInteractiveService::class);
+        $type = $request->type;
+        $content = $request->content;
+        $interactiveData = [];
+
+        if ($type === 'button') {
+            $buttons = $request->buttons ?? $interactiveService->getWelcomeButtons();
+            $interactiveData = is_array($buttons) ? $buttons : json_decode($buttons, true);
+        } elseif ($type === 'list') {
+            $sections = $request->sections ?? $interactiveService->getStoreServicesListMenu();
+            $interactiveData = is_array($sections) ? $sections : json_decode($sections, true);
+        } elseif ($type === 'carousel') {
+            $cards = $request->cards ?? $interactiveService->getFeaturedProductCards();
+            $interactiveData = is_array($cards) ? $cards : json_decode($cards, true);
+        }
+
+        $message = Message::create([
+            'conversation_id'  => $conversation->id,
+            'sender_type'      => 'agent',
+            'content'          => $content,
+            'interactive_type' => $type,
+            'interactive_data' => $interactiveData,
+        ]);
+
+        $conversation->touch();
+
+        // Dispatch to WhatsApp if customer has phone
+        $customer = $conversation->customer;
+        if ($customer && !empty($customer->phone)) {
+            $channel = Channel::where('workspace_id', $this->workspaceId())
+                ->where('platform', 'whatsapp')
+                ->first();
+
+            if ($channel && $channel->isActive()) {
+                $payload = null;
+                if ($type === 'button') {
+                    $payload = $interactiveService->buildButtonPayload($customer->phone, $content, $interactiveData);
+                } elseif ($type === 'list') {
+                    $payload = $interactiveService->buildListMenuPayload($customer->phone, $content, 'عرض الخيارات 📋', $interactiveData);
+                }
+                if ($payload) {
+                    $interactiveService->sendInteractive($channel, $customer->phone, $payload);
+                }
+            }
+        }
+
+        // Publish to Redis live chat
+        try {
+            if (class_exists('Illuminate\Support\Facades\Redis')) {
+                \Illuminate\Support\Facades\Redis::publish('rudood_chat_channel', json_encode([
+                    'conversation_id'  => $conversation->id,
+                    'workspace_id'     => $this->workspaceId(),
+                    'sender_type'      => 'agent',
+                    'content'          => $message->content,
+                    'time'             => $message->created_at->format('H:i'),
+                    'message_id'       => $message->id,
+                    'interactive_type' => $message->interactive_type,
+                    'interactive_data' => $message->interactive_data,
+                    'is_self'          => true,
+                ]));
+            }
+        } catch (\Throwable $e) {}
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+        ]);
     }
 }

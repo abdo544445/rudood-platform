@@ -139,11 +139,36 @@ class ProcessCustomerMessage implements ShouldQueue
 
         if (!$replyText) return;
 
+        // ── Step 2.8: Attach WhatsApp Interactive Elements (Buttons, Menus, Carousel)
+        $interactiveService = app(\App\Services\WhatsAppInteractiveService::class);
+        $interactiveType = null;
+        $interactiveData = null;
+
+        if ($trigger === 'ai_tool:check_order_status') {
+            $interactiveType = 'button';
+            $interactiveData = [
+                ['id' => 'btn_track_details', 'title' => '📦 مسار الشحنة'],
+                ['id' => 'btn_return_order',  'title' => '🔄 طلب استرجاع'],
+                ['id' => 'btn_human_agent',   'title' => '👨‍💼 موظف بشري'],
+            ];
+        } elseif ($trigger === 'ai_tool:check_product_stock' || Str::contains($customerMessage->content, ['منتجات', 'سماعة', 'ساعة', 'كتالوج', 'عروض'])) {
+            $interactiveType = 'carousel';
+            $interactiveData = $interactiveService->getFeaturedProductCards();
+        } elseif (Str::contains($customerMessage->content, ['خيارات', 'خدمات', 'مساعدة', 'قائمة', 'أقسام'])) {
+            $interactiveType = 'list';
+            $interactiveData = $interactiveService->getStoreServicesListMenu();
+        } elseif (Str::contains(Str::lower($customerMessage->content), ['مرحبا', 'السلام', 'أهلا', 'هلا', 'start', 'hello'])) {
+            $interactiveType = 'button';
+            $interactiveData = $interactiveService->getWelcomeButtons();
+        }
+
         // ── Step 3: Save bot reply to database & record usage ────────────────
         $botMessage = Message::create([
-            'conversation_id' => $conversation->id,
-            'sender_type'     => 'bot',
-            'content'         => $replyText,
+            'conversation_id'  => $conversation->id,
+            'sender_type'      => 'bot',
+            'content'          => $replyText,
+            'interactive_type' => $interactiveType,
+            'interactive_data' => $interactiveData,
         ]);
 
         $conversation->touch(); // Float conversation to top of sidebar list
@@ -175,12 +200,14 @@ class ProcessCustomerMessage implements ShouldQueue
         try {
             if (class_exists('Illuminate\Support\Facades\Redis')) {
                 \Illuminate\Support\Facades\Redis::publish('rudood_chat_channel', json_encode([
-                    'conversation_id' => $conversation->id,
-                    'workspace_id'    => $conversation->workspace_id,
-                    'sender_type'     => 'bot',
-                    'content'         => $botMessage->content,
-                    'time'            => $botMessage->created_at->format('H:i'),
-                    'message_id'      => $botMessage->id,
+                    'conversation_id'  => $conversation->id,
+                    'workspace_id'     => $conversation->workspace_id,
+                    'sender_type'      => 'bot',
+                    'content'          => $botMessage->content,
+                    'time'             => $botMessage->created_at->format('H:i'),
+                    'message_id'       => $botMessage->id,
+                    'interactive_type' => $botMessage->interactive_type,
+                    'interactive_data' => $botMessage->interactive_data,
                 ]));
             }
         } catch (\Throwable $e) {
@@ -188,20 +215,22 @@ class ProcessCustomerMessage implements ShouldQueue
         }
 
         // ── Step 6: Dispatch Outgoing Channel Message (WhatsApp / Telegram) ──
-        $this->dispatchOutgoingChannelMessage($conversation, $replyText);
+        $this->dispatchOutgoingChannelMessage($conversation, $botMessage);
     }
 
     /**
      * Send outgoing reply message via connected platform APIs.
      */
-    private function dispatchOutgoingChannelMessage(Conversation $conversation, string $replyText): void
+    private function dispatchOutgoingChannelMessage(Conversation $conversation, Message $botMessage): void
     {
         $customer = $conversation->customer;
         if (!$customer) return;
 
         $workspaceId = $conversation->workspace_id;
+        $replyText = $botMessage->content;
+        $interactiveService = app(\App\Services\WhatsAppInteractiveService::class);
 
-        // 1. WhatsApp Outgoing Dispatch
+        // 1. WhatsApp Outgoing Dispatch (Interactive or Plain Text)
         if (($customer->platform === 'whatsapp' || !empty($customer->phone)) && !empty($customer->phone)) {
             $waChannel = Channel::where('workspace_id', $workspaceId)
                 ->where('platform', 'whatsapp')
@@ -209,14 +238,38 @@ class ProcessCustomerMessage implements ShouldQueue
 
             if ($waChannel && $waChannel->isActive() && $waChannel->access_token && $waChannel->phone_number_id) {
                 try {
-                    Http::withToken($waChannel->access_token)
-                        ->timeout(15)
-                        ->post("https://graph.facebook.com/v19.0/{$waChannel->phone_number_id}/messages", [
+                    $endpoint = "https://graph.facebook.com/v19.0/{$waChannel->phone_number_id}/messages";
+                    $payload = null;
+
+                    // Build interactive payload if available
+                    if ($botMessage->interactive_type === 'button' && !empty($botMessage->interactive_data)) {
+                        $payload = $interactiveService->buildButtonPayload(
+                            $customer->phone,
+                            $replyText,
+                            $botMessage->interactive_data
+                        );
+                    } elseif ($botMessage->interactive_type === 'list' && !empty($botMessage->interactive_data)) {
+                        $payload = $interactiveService->buildListMenuPayload(
+                            $customer->phone,
+                            $replyText,
+                            'عرض الخيارات 📋',
+                            $botMessage->interactive_data
+                        );
+                    }
+
+                    // Fallback to standard text payload
+                    if (!$payload) {
+                        $payload = [
                             'messaging_product' => 'whatsapp',
                             'to'                => ltrim($customer->phone, '+'),
                             'type'              => 'text',
                             'text'              => ['body' => $replyText],
-                        ]);
+                        ];
+                    }
+
+                    Http::withToken($waChannel->access_token)
+                        ->timeout(15)
+                        ->post($endpoint, $payload);
                 } catch (\Throwable $e) {
                     \Log::warning('WhatsApp outgoing reply error: ' . $e->getMessage());
                 }

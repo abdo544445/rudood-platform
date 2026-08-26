@@ -469,12 +469,57 @@
     }
 
     const latencyBadge = `<span class="text-white-50 fs-9 ms-2"><i class="bi bi-stopwatch"></i> ${data.latency_ms} ms</span>`;
-    const parsedMarkdown = marked.parse(data.reply || '');
+    const parsedMarkdown = (typeof marked !== 'undefined') ? marked.parse(data.reply || '') : (data.reply || '');
     const errorNotice = (data.trigger === 'fallback' && data.error_detail) ? `
       <div class="mt-2 p-2 rounded-2 bg-danger bg-opacity-15 border border-danger border-opacity-25 text-danger fs-9">
         <i class="bi bi-info-circle-fill me-1"></i><strong>ملاحظة تشخيصية:</strong> ${data.error_detail}
       </div>
     ` : '';
+
+    let interactiveHtml = '';
+    const replyText = data.reply || '';
+
+    if (data.trigger === 'ai_tool:check_order_status' || replyText.includes('تتبع') || replyText.includes('طلبك رقم')) {
+      interactiveHtml = `
+        <div class="whatsapp-interactive-buttons d-flex flex-wrap gap-1 mt-2 pt-2 border-top border-secondary border-opacity-25">
+          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-2 fs-9 cursor-pointer" onclick="sendPresetPrompt('📦 مسار الشحنة')"><i class="bi bi-cursor-fill me-1"></i> 📦 مسار الشحنة</span>
+          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-2 fs-9 cursor-pointer" onclick="sendPresetPrompt('🔄 سياسة الاسترجاع')"><i class="bi bi-cursor-fill me-1"></i> 🔄 طلب استرجاع</span>
+          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-2 fs-9 cursor-pointer" onclick="sendPresetPrompt('👨‍💼 تحويل لموظف')"><i class="bi bi-cursor-fill me-1"></i> 👨‍💼 موظف بشري</span>
+        </div>
+      `;
+    } else if (data.trigger === 'ai_tool:check_product_stock' || replyText.includes('سماعات') || replyText.includes('ساعة') || replyText.includes('شاحن')) {
+      interactiveHtml = `
+        <div class="whatsapp-product-carousel mt-2">
+          <div class="text-success fs-9 fw-bold mb-1"><i class="bi bi-grid-3x3-gap-fill me-1"></i> بطاقات كتالوج واتساب التفاعلية:</div>
+          <div class="d-flex gap-2 overflow-x-auto pb-1" style="scrollbar-width: thin;">
+            <div class="card bg-dark border border-secondary border-opacity-40 rounded-3 shadow-sm flex-shrink-0" style="width: 170px;">
+              <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300" class="card-img-top rounded-top-3" style="height: 80px; object-fit: cover;">
+              <div class="card-body p-2">
+                <div class="fw-bold text-white fs-9 text-truncate">سماعات النخبة Pro</div>
+                <div class="text-gold fw-bold fs-9 mb-1">199.00 ر.س</div>
+                <button class="btn btn-sm btn-success w-100 py-0 fs-9 rounded-pill" onclick="sendPresetPrompt('أريد طلب سماعات النخبة Pro')">طلب فوري 🛍️</button>
+              </div>
+            </div>
+            <div class="card bg-dark border border-secondary border-opacity-40 rounded-3 shadow-sm flex-shrink-0" style="width: 170px;">
+              <img src="https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=300" class="card-img-top rounded-top-3" style="height: 80px; object-fit: cover;">
+              <div class="card-body p-2">
+                <div class="fw-bold text-white fs-9 text-truncate">ساعة AMOLED الذكية</div>
+                <div class="text-gold fw-bold fs-9 mb-1">299.00 ر.س</div>
+                <button class="btn btn-sm btn-success w-100 py-0 fs-9 rounded-pill" onclick="sendPresetPrompt('أريد طلب ساعة AMOLED')">طلب فوري 🛍️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (replyText.includes('مرحبا') || replyText.includes('أهلا') || replyText.includes('خدمتكم')) {
+      interactiveHtml = `
+        <div class="whatsapp-interactive-buttons d-flex flex-wrap gap-1 mt-2 pt-2 border-top border-secondary border-opacity-25">
+          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-2 fs-9 cursor-pointer" onclick="sendPresetPrompt('📦 وين طلبي رقم #10492')"><i class="bi bi-cursor-fill me-1"></i> 📦 تتبع طلبي</span>
+          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-2 fs-9 cursor-pointer" onclick="sendPresetPrompt('🛍️ تصفح كتالوج المنتجات')"><i class="bi bi-cursor-fill me-1"></i> 🛍️ تصفح المنتجات</span>
+          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-2 fs-9 cursor-pointer" onclick="sendPresetPrompt('👨‍💼 التحدث مع موظف')"><i class="bi bi-cursor-fill me-1"></i> 👨‍💼 موظف بشري</span>
+        </div>
+      `;
+    }
 
     bubble.innerHTML = `
       <div class="d-flex align-items-center justify-content-between border-bottom border-secondary border-opacity-25 pb-1 mb-2">
@@ -482,6 +527,7 @@
         ${latencyBadge}
       </div>
       <div class="bot-reply-content">${parsedMarkdown}</div>
+      ${interactiveHtml}
       ${errorNotice}
     `;
 

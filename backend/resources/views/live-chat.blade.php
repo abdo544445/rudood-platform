@@ -180,6 +180,63 @@
             </div>
             @endif
             <div>{{ $msg->content }}</div>
+
+            @if ($msg->interactive_type === 'button' && !empty($msg->interactive_data))
+            <div class="whatsapp-buttons-container d-flex flex-wrap gap-2 mt-2 pt-2 border-top border-white border-opacity-10">
+              @foreach((array)$msg->interactive_data as $b)
+                <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fs-9 d-inline-flex align-items-center gap-1 border-success border-opacity-40 text-success bg-success bg-opacity-10 shadow-sm disabled">
+                  <i class="bi bi-cursor-fill fs-9"></i> {{ is_array($b) ? ($b['title'] ?? $b['id']) : $b }}
+                </button>
+              @endforeach
+            </div>
+            @elseif ($msg->interactive_type === 'list' && !empty($msg->interactive_data))
+            <div class="whatsapp-list-container mt-2 p-2 rounded-3 bg-black bg-opacity-40 border border-secondary border-opacity-30">
+              <div class="d-flex align-items-center justify-content-between text-success fs-9 fw-bold mb-2 pb-1 border-bottom border-secondary border-opacity-25">
+                <span><i class="bi bi-list-ul me-1"></i> قائمة خيارات واتساب التفاعلية (List Menu):</span>
+                <span class="badge bg-dark text-white-50 border border-secondary border-opacity-25">واتساب كلاود</span>
+              </div>
+              @foreach((array)$msg->interactive_data as $sec)
+                <div class="text-gold fs-9 fw-bold mt-1 mb-1">{{ $sec['title'] ?? 'خيارات' }}</div>
+                <div class="d-flex flex-column gap-1 mb-1">
+                  @foreach($sec['rows'] ?? [] as $r)
+                    <div class="p-2 rounded bg-dark bg-opacity-60 border border-secondary border-opacity-20 d-flex justify-content-between align-items-center">
+                      <div>
+                        <div class="text-white fs-9 fw-bold">{{ $r['title'] }}</div>
+                        @if(!empty($r['description']))<div class="text-white-50" style="font-size: 0.75rem;">{{ $r['description'] }}</div>@endif
+                      </div>
+                      <i class="bi bi-chevron-left text-success fs-9"></i>
+                    </div>
+                  @endforeach
+                </div>
+              @endforeach
+            </div>
+            @elseif ($msg->interactive_type === 'carousel' && !empty($msg->interactive_data))
+            <div class="whatsapp-carousel-container mt-2">
+              <div class="text-success fs-9 fw-bold mb-1"><i class="bi bi-grid-3x3-gap-fill me-1"></i> كتالوج بطاقات المنتجات التفاعلي:</div>
+              <div class="d-flex gap-2 overflow-x-auto pb-2" style="scrollbar-width: thin;">
+                @foreach((array)$msg->interactive_data as $card)
+                  <div class="card bg-dark border border-secondary border-opacity-40 rounded-3 shadow-sm flex-shrink-0" style="width: 210px;">
+                    @if(!empty($card['image_url']))
+                      <img src="{{ $card['image_url'] }}" class="card-img-top rounded-top-3" style="height: 110px; object-fit: cover;" alt="{{ $card['name'] ?? $card['title'] }}">
+                    @endif
+                    <div class="card-body p-2 d-flex flex-column">
+                      <div class="fw-bold text-white fs-9 text-truncate mb-1">{{ $card['name'] ?? $card['title'] }}</div>
+                      <div class="text-white-50 fs-9 mb-2" style="font-size: 0.75rem; line-height: 1.3; height: 32px; overflow: hidden;">
+                        {{ $card['description'] }}
+                      </div>
+                      <div class="d-flex align-items-center justify-content-between mt-auto">
+                        <span class="text-gold fw-bold fs-9">{{ $card['price'] }} {{ $card['currency'] ?? 'ر.س' }}</span>
+                        <a href="{{ $card['checkout_url'] ?? '#' }}" target="_blank" class="btn btn-sm btn-success rounded-pill py-0 px-2 fs-9">
+                          {{ $card['button_text'] ?? 'طلب 🛒' }}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                @endforeach
+              </div>
+            </div>
+            @endif
+
             <span class="message-time {{ $msg->sender_type === 'agent' ? 'text-dark' : 'text-white-50' }}">
               {{ $msg->created_at->format('H:i') }}
               @if ($msg->sender_type === 'bot')
@@ -227,9 +284,12 @@
 
           <form id="sendForm" class="d-flex gap-2 align-items-center m-0">
             @csrf
+            <button type="button" class="btn btn-outline-success border-success border-opacity-50 text-success rounded-3 px-2 py-1 d-flex align-items-center gap-1 fs-8 flex-shrink-0" data-bs-toggle="modal" data-bs-target="#waInteractiveModal" title="إرسال رسالة تفاعلية (أزرار / قوائم / كتالوج)">
+              <i class="bi bi-whatsapp"></i> <span class="d-none d-md-inline">رسالة تفاعلية</span>
+            </button>
             <input type="text" id="messageInput" class="form-control custom-chat-input flex-grow-1"
               placeholder="اكتب ردك المباشر هنا (أو اكتب / للردود الجاهزة)..." autocomplete="off">
-            <button type="submit" class="btn btn-gold px-3 py-1 rounded-3 d-flex align-items-center gap-1 fs-8">
+            <button type="submit" class="btn btn-gold px-3 py-1 rounded-3 d-flex align-items-center gap-1 fs-8 flex-shrink-0">
               <span>إرسال</span>
               <i class="bi bi-send-fill"></i>
             </button>
@@ -364,7 +424,7 @@
 
         if (data.sender_type === 'agent' && data.is_self) return;
 
-        appendMessage(data.content, data.sender_type, data.time);
+        appendMessage(data.content, data.sender_type, data.time, data.interactive_type, data.interactive_data);
         playNotificationSound();
       });
 
@@ -498,7 +558,7 @@
     }
 
     // ─── Helpers ─────────────────────────────────────────────────────────────
-    function appendMessage(content, senderType, time) {
+    function appendMessage(content, senderType, time, interactiveType = null, interactiveData = null) {
       if (!chatWindow) return;
 
       const cls = senderType === 'customer' ? 'message-incoming'
@@ -512,7 +572,56 @@
 
       const div = document.createElement('div');
       div.className = `message ${cls}`;
-      div.innerHTML = `${escapeHtml(content)}<span class="message-time ${timeClass}">${time}${label}</span>`;
+      
+      let interactiveHtml = '';
+      if (interactiveType === 'button' && interactiveData) {
+        const buttons = Array.isArray(interactiveData) ? interactiveData : [];
+        interactiveHtml = `<div class="whatsapp-buttons-container d-flex flex-wrap gap-2 mt-2 pt-2 border-top border-white border-opacity-10">` +
+          buttons.map(b => `<button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fs-9 d-inline-flex align-items-center gap-1 border-success border-opacity-40 text-success bg-success bg-opacity-10 shadow-sm disabled"><i class="bi bi-cursor-fill fs-9"></i> ${escapeHtml(typeof b === 'object' ? (b.title || b.id) : b)}</button>`).join('') +
+          `</div>`;
+      } else if (interactiveType === 'list' && interactiveData) {
+        interactiveHtml = `<div class="whatsapp-list-container mt-2 p-2 rounded-3 bg-black bg-opacity-40 border border-secondary border-opacity-30">
+          <div class="d-flex align-items-center justify-content-between text-success fs-9 fw-bold mb-2 pb-1 border-bottom border-secondary border-opacity-25">
+            <span><i class="bi bi-list-ul me-1"></i> قائمة خيارات واتساب التفاعلية (List Menu):</span>
+            <span class="badge bg-dark text-white-50 border border-secondary border-opacity-25">واتساب كلاود</span>
+          </div>`;
+        const sections = Array.isArray(interactiveData) ? interactiveData : [];
+        sections.forEach(sec => {
+          interactiveHtml += `<div class="text-gold fs-9 fw-bold mt-1 mb-1">${escapeHtml(sec.title || 'خيارات')}</div><div class="d-flex flex-column gap-1 mb-1">`;
+          (sec.rows || []).forEach(r => {
+            interactiveHtml += `<div class="p-2 rounded bg-dark bg-opacity-60 border border-secondary border-opacity-20 d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-white fs-9 fw-bold">${escapeHtml(r.title)}</div>
+                ${r.description ? `<div class="text-white-50" style="font-size: 0.75rem;">${escapeHtml(r.description)}</div>` : ''}
+              </div>
+              <i class="bi bi-chevron-left text-success fs-9"></i>
+            </div>`;
+          });
+          interactiveHtml += `</div>`;
+        });
+        interactiveHtml += `</div>`;
+      } else if (interactiveType === 'carousel' && interactiveData) {
+        const cards = Array.isArray(interactiveData) ? interactiveData : [];
+        interactiveHtml = `<div class="whatsapp-carousel-container mt-2">
+          <div class="text-success fs-9 fw-bold mb-1"><i class="bi bi-grid-3x3-gap-fill me-1"></i> كتالوج بطاقات المنتجات التفاعلي:</div>
+          <div class="d-flex gap-2 overflow-x-auto pb-2" style="scrollbar-width: thin;">` +
+          cards.map(c => `
+            <div class="card bg-dark border border-secondary border-opacity-40 rounded-3 shadow-sm flex-shrink-0" style="width: 210px;">
+              ${c.image_url ? `<img src="${escapeHtml(c.image_url)}" class="card-img-top rounded-top-3" style="height: 110px; object-fit: cover;">` : ''}
+              <div class="card-body p-2 d-flex flex-column">
+                <div class="fw-bold text-white fs-9 text-truncate mb-1">${escapeHtml(c.name || c.title || 'منتج')}</div>
+                <div class="text-white-50 fs-9 mb-2" style="font-size: 0.75rem; line-height: 1.3; height: 32px; overflow: hidden;">${escapeHtml(c.description || '')}</div>
+                <div class="d-flex align-items-center justify-content-between mt-auto">
+                  <span class="text-gold fw-bold fs-9">${escapeHtml(c.price || '')} ${escapeHtml(c.currency || 'ر.س')}</span>
+                  <a href="${escapeHtml(c.checkout_url || '#')}" target="_blank" class="btn btn-sm btn-success rounded-pill py-0 px-2 fs-9">${escapeHtml(c.button_text || 'طلب 🛒')}</a>
+                </div>
+              </div>
+            </div>
+          `).join('') +
+          `</div></div>`;
+      }
+
+      div.innerHTML = `<div>${escapeHtml(content)}</div>${interactiveHtml}<span class="message-time ${timeClass}">${time}${label}</span>`;
       chatWindow.appendChild(div);
       chatWindow.scrollTop = chatWindow.scrollHeight;
     }
@@ -536,6 +645,178 @@
         });
       });
     }
+
+    // ─── WhatsApp Interactive Modal Submission ───────────────────────────────
+    const sendInteractiveActionBtn = document.getElementById('sendInteractiveActionBtn');
+    if (sendInteractiveActionBtn && ACTIVE_CONV_ID) {
+      sendInteractiveActionBtn.addEventListener('click', async () => {
+        const activeTab = document.querySelector('#waInteractiveTabs .nav-link.active');
+        const tabType = activeTab ? activeTab.getAttribute('data-type') : 'button';
+        let payload = { type: tabType, content: '' };
+
+        if (tabType === 'button') {
+          payload.content = document.getElementById('waBtnPrompt').value.trim() || 'يرجى اختيار أحد الخيارات التالية للمتابعة:';
+          payload.buttons = [
+            { id: 'btn_1', title: document.getElementById('waBtn1').value.trim() || '📦 تتبع طلبي' },
+            { id: 'btn_2', title: document.getElementById('waBtn2').value.trim() || '🛍️ المنتجات والعروض' },
+            { id: 'btn_3', title: document.getElementById('waBtn3').value.trim() || '👨‍💼 موظف بشري' },
+          ].filter(b => b.title.length > 0);
+        } else if (tabType === 'list') {
+          payload.content = document.getElementById('waListPrompt').value.trim() || 'مرحباً بك! يرجى اختيار الخدمة المطلوبة من القائمة:';
+        } else if (tabType === 'carousel') {
+          payload.content = document.getElementById('waCarouselPrompt').value.trim() || 'إليك أحدث العروض والمنتجات المميزة في المتجر:';
+        }
+
+        sendInteractiveActionBtn.disabled = true;
+        sendInteractiveActionBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> جاري الإرسال...';
+
+        try {
+          const res = await fetch(`/live-chat/${ACTIVE_CONV_ID}/send-interactive`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': CSRF_TOKEN,
+              'Accept':       'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
+          if (data.success) {
+            appendMessage(
+              data.message.content,
+              'agent',
+              new Date().toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' }),
+              data.message.interactive_type,
+              data.message.interactive_data
+            );
+            const modalEl = document.getElementById('waInteractiveModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+          }
+        } catch (e) {
+          console.error(e);
+        } finally {
+          sendInteractiveActionBtn.disabled = false;
+          sendInteractiveActionBtn.innerHTML = '<i class="bi bi-send-fill me-1"></i> إرسال عبر واتساب';
+        }
+      });
+    }
   </script>
+
+  <!-- 🟢 Modal: إرسال رسالة واتساب تفاعلية (Interactive WhatsApp Modal) -->
+  <div class="modal fade" id="waInteractiveModal" tabindex="-1" aria-labelledby="waInteractiveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content bg-dark border border-secondary border-opacity-25 rounded-4 shadow-lg text-white">
+        <div class="modal-header border-bottom border-secondary border-opacity-25 p-3">
+          <div class="d-flex align-items-center gap-2">
+            <div class="p-2 rounded-3 bg-success bg-opacity-20 text-success"><i class="bi bi-whatsapp fs-5"></i></div>
+            <div>
+              <h6 class="modal-title fw-bold fs-7 mb-0" id="waInteractiveModalLabel">إرسال رسالة تفاعلية عبر واتساب (WhatsApp Interactive)</h6>
+              <small class="text-white-50 fs-9">أزرار الرد السريع، القوائم المنسدلة، وبطاقات المنتجات بدلاً من النص العادي</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <ul class="nav nav-pills nav-fill mb-4 gap-2 bg-black bg-opacity-40 p-2 rounded-3 border border-secondary border-opacity-25" id="waInteractiveTabs" role="tablist">
+            <li class="nav-item">
+              <button class="nav-link active py-2 rounded-2 fs-9 fw-bold d-flex align-items-center justify-content-center gap-1" id="buttons-tab" data-bs-toggle="pill" data-bs-target="#tabButtons" type="button" data-type="button">
+                <i class="bi bi-hand-index-thumb-fill text-success"></i> أزرار سريعة (Buttons)
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link py-2 rounded-2 fs-9 fw-bold d-flex align-items-center justify-content-center gap-1" id="list-tab" data-bs-toggle="pill" data-bs-target="#tabList" type="button" data-type="list">
+                <i class="bi bi-list-ul text-gold"></i> قائمة خيارات (List Menu)
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link py-2 rounded-2 fs-9 fw-bold d-flex align-items-center justify-content-center gap-1" id="carousel-tab" data-bs-toggle="pill" data-bs-target="#tabCarousel" type="button" data-type="carousel">
+                <i class="bi bi-grid-3x3-gap-fill text-info"></i> بطاقات الكتالوج (Carousel)
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="waInteractiveTabContent">
+            <!-- 1. أزرار الرد السريع -->
+            <div class="tab-pane fade show active" id="tabButtons" role="tabpanel">
+              <div class="mb-3">
+                <label class="form-label text-white-50 fs-8">نص الرسالة الأساسي (Body):</label>
+                <textarea id="waBtnPrompt" class="form-control bg-black bg-opacity-50 border-secondary border-opacity-25 text-white fs-8 rounded-3" rows="2">يسعدنا خدمتك دائماً! اختر الإجراء المناسب لك من الأزرار التالية:</textarea>
+              </div>
+              <label class="form-label text-white-50 fs-8">أزرار الرد السريع (بحد أقصى 3 أزرار معتمدة من Meta):</label>
+              <div class="row g-2">
+                <div class="col-md-4">
+                  <input type="text" id="waBtn1" class="form-control bg-black bg-opacity-50 border-secondary border-opacity-25 text-white fs-8" value="📦 تتبع طلبي" maxlength="20">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" id="waBtn2" class="form-control bg-black bg-opacity-50 border-secondary border-opacity-25 text-white fs-8" value="🛍️ تصفح المنتجات" maxlength="20">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" id="waBtn3" class="form-control bg-black bg-opacity-50 border-secondary border-opacity-25 text-white fs-8" value="👨‍💼 التحدث مع موظف" maxlength="20">
+                </div>
+              </div>
+              <div class="form-text text-white-50 fs-9 mt-2"><i class="bi bi-info-circle me-1"></i> عند نقر العميل على أي زر يتم إرسال الاختيار فورياً ومعالجته آلياً عبر الذكاء الاصطناعي.</div>
+            </div>
+
+            <!-- 2. القائمة المنسدلة -->
+            <div class="tab-pane fade" id="tabList" role="tabpanel">
+              <div class="mb-3">
+                <label class="form-label text-white-50 fs-8">نص مقدمة القائمة (Body):</label>
+                <textarea id="waListPrompt" class="form-control bg-black bg-opacity-50 border-secondary border-opacity-25 text-white fs-8 rounded-3" rows="2">أهلاً بك في متجرنا! يرجى اختيار الخدمة المطلوبة من القائمة أدناه:</textarea>
+              </div>
+              <div class="p-3 rounded-3 bg-black bg-opacity-40 border border-secondary border-opacity-25">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <span class="text-gold fw-bold fs-8"><i class="bi bi-card-checklist me-1"></i> أقسام القائمة المنسدلة التلقائية:</span>
+                  <span class="badge bg-success bg-opacity-20 text-success fs-9">جاهزة للإرسال</span>
+                </div>
+                <div class="row g-2 fs-9 text-white-50">
+                  <div class="col-6">• 📦 تتبع حالة الشحنة برقم الطلب</div>
+                  <div class="col-6">• 🚚 أوقات وأسعار التوصيل</div>
+                  <div class="col-6">• 🔄 سياسة الاستبدال والاسترجاع</div>
+                  <div class="col-6">• 🛍️ تصفح الكتالوج والعروض</div>
+                  <div class="col-6">• 🔥 الخصومات الأسبوعية</div>
+                  <div class="col-6">• 👨‍💼 التحويل لموظف خدمة العملاء</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. بطاقات الكتالوج -->
+            <div class="tab-pane fade" id="tabCarousel" role="tabpanel">
+              <div class="mb-3">
+                <label class="form-label text-white-50 fs-8">نص الرسالة الأساسي (Body):</label>
+                <textarea id="waCarouselPrompt" class="form-control bg-black bg-opacity-50 border-secondary border-opacity-25 text-white fs-8 rounded-3" rows="2">إليك باقة مختارة من أفضل منتجاتنا المتوفرة للشحن الفوري مع ضمان شامل:</textarea>
+              </div>
+              <div class="p-3 rounded-3 bg-black bg-opacity-40 border border-secondary border-opacity-25">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <span class="text-info fw-bold fs-8"><i class="bi bi-images me-1"></i> البطاقات المتضمنة (3 منتجات):</span>
+                  <span class="badge bg-info bg-opacity-20 text-info fs-9">كتالوج تفاعلي</span>
+                </div>
+                <div class="d-flex gap-2 overflow-x-auto">
+                  <div class="p-2 rounded bg-dark border border-secondary border-opacity-25 text-center" style="width: 140px;">
+                    <div class="fs-9 fw-bold text-white text-truncate">سماعات النخبة Pro</div>
+                    <div class="text-gold fs-9 fw-bold">199.00 ر.س</div>
+                  </div>
+                  <div class="p-2 rounded bg-dark border border-secondary border-opacity-25 text-center" style="width: 140px;">
+                    <div class="fs-9 fw-bold text-white text-truncate">ساعة رياضية AMOLED</div>
+                    <div class="text-gold fs-9 fw-bold">299.00 ر.س</div>
+                  </div>
+                  <div class="p-2 rounded bg-dark border border-secondary border-opacity-25 text-center" style="width: 140px;">
+                    <div class="fs-9 fw-bold text-white text-truncate">شاحن سريع 3 في 1</div>
+                    <div class="text-gold fs-9 fw-bold">149.00 ر.س</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top border-secondary border-opacity-25 p-3">
+          <button type="button" class="btn btn-secondary rounded-pill px-3 fs-9" data-bs-dismiss="modal">إلغاء</button>
+          <button type="button" id="sendInteractiveActionBtn" class="btn btn-success rounded-pill px-4 fs-9 fw-bold d-flex align-items-center gap-1">
+            <i class="bi bi-send-fill me-1"></i> إرسال عبر واتساب
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

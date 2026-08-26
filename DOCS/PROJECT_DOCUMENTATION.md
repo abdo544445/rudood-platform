@@ -257,7 +257,7 @@ The repository features an integrated automated test suite executable via:
 php tests_suite_runner.php
 ```
 
-### Test Suite Coverage (60 Tests, 100% Pass Rate):
+### Test Suite Coverage (67 Tests, 100% Pass Rate):
 - **Suite 1: Auth & Multi-Tenancy (6 tests)**: Super Admin roles, Owner isolation, Atomic registration, Impersonation flow.
 - **Suite 2: Super Admin Command Center (11 tests)**: KPIs, Telemetry stream, Workspace CRUD, User password reset, Articles, System stats, Audit logs, Contact message CRUD & status update.
 - **Suite 3: Store Dashboard & Live Chat (7 tests)**: Metrics calculation, Inbox rendering, Human takeover toggle, Canned replies, CRM notes, CSV export.
@@ -265,3 +265,4 @@ php tests_suite_runner.php
 - **Suite 5: AI Playground (3 tests)**: Simulator interface, Latency measurement, Parameter persistence.
 - **Suite 6: Settings & Omni-Channel (15 tests)**: Bot settings, Custom API keys, Channel connections, Webhook processors, Widget config, Instagram verification, Channel ON/OFF toggles.
 - **Suite 7: Advanced High-Impact AI Suite (10 tests)**: Cosine vector similarity, Normalized vector embeddings, Hybrid RAG scoring, Voice note audio transcription, Store order tracking tool, Product inventory tool, Intent tool calling dispatcher, Context window auto-summarization.
+- **Suite 8: WhatsApp Interactive Messages (7 tests)**: Quick Reply buttons payload builder, Interactive List Menu payload builder, Product catalog carousel cards builder, WhatsApp button click webhook ingestion, WhatsApp list menu row selection webhook ingestion, Agent interactive buttons dispatch, Agent product catalog carousel dispatch.

@@ -47,6 +47,7 @@ class RudoodPlatformTester
         $this->testSuite5_PlaygroundWorkbench();
         $this->testSuite6_SettingsChannelsAndWebhooks();
         $this->testSuite7_AdvancedHighImpactAi();
+        $this->testSuite8_WhatsAppInteractiveMessages();
 
         $this->printSummary();
 
@@ -763,6 +764,170 @@ class RudoodPlatformTester
         $this->assert($suite, 'AiService::summarizeConversationHistory compiles compact context summary', 
             !empty($summary) && is_string($summary)
         );
+
+        echo "\n";
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // SUITE 8: WhatsApp Interactive Messages (Buttons, List Menus, Catalog Cards)
+    // ──────────────────────────────────────────────────────────────────────────
+    private function testSuite8_WhatsAppInteractiveMessages(): void
+    {
+        echo "📦 Suite 8: WhatsApp Interactive Messages (Buttons, List Menus, Catalog)\n";
+        $suite = 'WhatsApp Interactive Messages';
+
+        $waService = app(\App\Services\WhatsAppInteractiveService::class);
+        $webhookCtrl = app(\App\Http\Controllers\WebhookController::class);
+        $convCtrl = app(\App\Http\Controllers\ConversationController::class);
+        $owner = User::where('role', 'owner')->first();
+
+        // 8.1 Quick Reply Buttons Payload Builder
+        $sampleButtons = [
+            ['id' => 'btn_track', 'title' => '📦 تتبع طلبي'],
+            ['id' => 'btn_shop',  'title' => '🛍️ المنتجات'],
+            ['id' => 'btn_agent', 'title' => '👨‍💼 موظف بشري'],
+        ];
+        $btnPayload = $waService->buildButtonPayload('+966550001122', 'أهلاً بك! اختر من الخيارات أدناه:', $sampleButtons);
+        
+        $this->assert($suite, 'WhatsAppInteractiveService::buildButtonPayload formats valid Meta Cloud API JSON', 
+            $btnPayload['type'] === 'interactive' &&
+            $btnPayload['interactive']['type'] === 'button' &&
+            count($btnPayload['interactive']['action']['buttons']) === 3 &&
+            $btnPayload['interactive']['action']['buttons'][0]['reply']['title'] === '📦 تتبع طلبي'
+        );
+
+        // 8.2 Interactive List Menu Payload Builder
+        $menuSections = $waService->getStoreServicesListMenu();
+        $listPayload = $waService->buildListMenuPayload('+966550001122', 'قائمة خدمات المتجر السريعة:', 'عرض الخيارات 📋', $menuSections);
+        
+        $this->assert($suite, 'WhatsAppInteractiveService::buildListMenuPayload formats valid Meta List Menu JSON', 
+            $listPayload['type'] === 'interactive' &&
+            $listPayload['interactive']['type'] === 'list' &&
+            !empty($listPayload['interactive']['action']['sections']) &&
+            $listPayload['interactive']['action']['button'] === 'عرض الخيارات 📋'
+        );
+
+        // 8.3 Product Catalog Carousel Cards Builder
+        $products = $waService->getFeaturedProductCards();
+        $cardsPayload = $waService->buildProductCardsPayload('+966550001122', 'إليك أفضل العروض لدينا:', $products);
+        
+        $this->assert($suite, 'WhatsAppInteractiveService::buildProductCardsPayload formats rich catalog cards', 
+            $cardsPayload['type'] === 'interactive_carousel' &&
+            count($cardsPayload['cards']) >= 3 &&
+            isset($cardsPayload['cards'][0]['price']) &&
+            isset($cardsPayload['cards'][0]['checkout_url'])
+        );
+
+        // 8.4 Inbound Webhook - WhatsApp Quick Reply Button Click
+        $mockBtnWebhook = [
+            'entry' => [
+                [
+                    'changes' => [
+                        [
+                            'value' => [
+                                'metadata' => ['phone_number_id' => '1029384756'],
+                                'contacts' => [['profile' => ['name' => 'عميل واتساب تفاعلي']]],
+                                'messages' => [
+                                    [
+                                        'from' => '966559988776',
+                                        'id'   => 'wamid.HBgL...',
+                                        'type' => 'interactive',
+                                        'interactive' => [
+                                            'type'         => 'button_reply',
+                                            'button_reply' => [
+                                                'id'    => 'btn_track_order',
+                                                'title' => '📦 تتبع طلبي #10492',
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $btnReq = Request::create('/api/webhook/whatsapp', 'POST', $mockBtnWebhook);
+        $btnRes = $webhookCtrl->handleWhatsApp($btnReq);
+        $btnData = json_decode($btnRes->getContent(), true);
+
+        $this->assert($suite, 'WebhookController::handleWhatsApp processes Quick Reply button clicks', 
+            $btnRes->getStatusCode() === 200 && ($btnData['status'] ?? '') === 'ok' && !empty($btnData['message_id'])
+        );
+
+        // 8.5 Inbound Webhook - WhatsApp List Menu Row Selection
+        $mockListWebhook = [
+            'entry' => [
+                [
+                    'changes' => [
+                        [
+                            'value' => [
+                                'metadata' => ['phone_number_id' => '1029384756'],
+                                'contacts' => [['profile' => ['name' => 'عميل واتساب تفاعلي']]],
+                                'messages' => [
+                                    [
+                                        'from' => '966559988776',
+                                        'id'   => 'wamid.HBgL2...',
+                                        'type' => 'interactive',
+                                        'interactive' => [
+                                            'type'       => 'list_reply',
+                                            'list_reply' => [
+                                                'id'          => 'menu_shipping_policy',
+                                                'title'       => '🚚 أوقات وأسعار الشحن',
+                                                'description' => 'شحن سريع لجميع المدن والمناطق',
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $listReq = Request::create('/api/webhook/whatsapp', 'POST', $mockListWebhook);
+        $listRes = $webhookCtrl->handleWhatsApp($listReq);
+        $listData = json_decode($listRes->getContent(), true);
+
+        $this->assert($suite, 'WebhookController::handleWhatsApp processes List Menu row selection', 
+            $listRes->getStatusCode() === 200 && ($listData['status'] ?? '') === 'ok' && !empty($listData['message_id'])
+        );
+
+        // 8.6 ConversationController::sendInteractive - Agent Quick Reply Buttons
+        $testConv = Conversation::where('workspace_id', $owner->workspace_id)->first();
+        if ($testConv) {
+            $agentBtnReq = Request::create("/live-chat/{$testConv->id}/send-interactive", 'POST', [
+                'type'    => 'button',
+                'content' => 'يرجى اختيار أحد الخيارات التالية لمتابعة استفسارك:',
+                'buttons' => [
+                    ['id' => 'b1', 'title' => '📦 مسار الشحنة'],
+                    ['id' => 'b2', 'title' => '🛍️ تصفح العروض'],
+                ],
+            ]);
+            $agentBtnRes = $convCtrl->sendInteractive($agentBtnReq, $testConv->id);
+            $agentBtnData = $agentBtnRes->getData();
+
+            $this->assert($suite, 'ConversationController::sendInteractive stores and dispatches interactive buttons', 
+                $agentBtnRes->getStatusCode() === 200 &&
+                $agentBtnData->success === true &&
+                $agentBtnData->message->interactive_type === 'button'
+            );
+
+            // 8.7 ConversationController::sendInteractive - Agent Product Carousel
+            $agentCarouselReq = Request::create("/live-chat/{$testConv->id}/send-interactive", 'POST', [
+                'type'    => 'carousel',
+                'content' => 'إليك أحدث الأجهزة الذكية المتوفرة في الكتالوج:',
+            ]);
+            $agentCarouselRes = $convCtrl->sendInteractive($agentCarouselReq, $testConv->id);
+            $agentCarouselData = $agentCarouselRes->getData();
+
+            $this->assert($suite, 'ConversationController::sendInteractive stores and dispatches product carousel cards', 
+                $agentCarouselRes->getStatusCode() === 200 &&
+                $agentCarouselData->success === true &&
+                $agentCarouselData->message->interactive_type === 'carousel' &&
+                count($agentCarouselData->message->interactive_data) >= 3
+            );
+        }
 
         echo "\n";
     }
