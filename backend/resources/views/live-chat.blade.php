@@ -45,6 +45,37 @@
     
     .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; opacity: 0.4; }
     #typingIndicator { display: none; font-size: 0.78rem; color: #d4af37; padding: 0 18px 4px; }
+
+    /* ── Interactive Modal: WhatsApp Tab Pills ─────────────────────────────── */
+    #waInteractiveTabs .nav-link {
+      color: rgba(255, 255, 255, 0.75) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      transition: all 0.2s ease;
+      font-weight: 700 !important;
+    }
+    #waInteractiveTabs .nav-link:hover:not(.active) {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-color: rgba(255, 255, 255, 0.25) !important;
+    }
+    #waInteractiveTabs .nav-link.active {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.15)) !important;
+      color: #d4af37 !important;
+      border: 1px solid rgba(212, 175, 55, 0.6) !important;
+      box-shadow: 0 2px 12px rgba(212, 175, 55, 0.2) !important;
+    }
+    /* ── Interactive message rendered inside chat bubble ───────────────────── */
+    .whatsapp-buttons-container .btn {
+      font-weight: 700 !important;
+    }
+    .whatsapp-list-container {
+      font-size: 0.82rem;
+    }
+    .whatsapp-carousel-container .card {
+      background: rgba(15, 23, 42, 0.9) !important;
+      border-color: rgba(212, 175, 55, 0.2) !important;
+    }
   </style>
 </head>
 <body>
@@ -1042,20 +1073,23 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body p-4">
-          <ul class="nav nav-pills nav-fill mb-4 gap-2 bg-black bg-opacity-40 p-2 rounded-3 border border-secondary border-opacity-25" id="waInteractiveTabs" role="tablist">
+          <ul class="nav nav-pills nav-fill mb-4 gap-2 bg-black bg-opacity-40 p-2 rounded-3 border border-secondary border-opacity-20" id="waInteractiveTabs" role="tablist">
             <li class="nav-item">
               <button class="nav-link active py-2 rounded-2 fs-9 fw-bold d-flex align-items-center justify-content-center gap-1" id="buttons-tab" data-bs-toggle="pill" data-bs-target="#tabButtons" type="button" data-type="button">
-                <i class="bi bi-hand-index-thumb-fill text-success"></i> أزرار سريعة (Buttons)
+                <i class="bi bi-hand-index-thumb-fill"></i>
+                <span>أزرار الرد السريع</span>
               </button>
             </li>
             <li class="nav-item">
               <button class="nav-link py-2 rounded-2 fs-9 fw-bold d-flex align-items-center justify-content-center gap-1" id="list-tab" data-bs-toggle="pill" data-bs-target="#tabList" type="button" data-type="list">
-                <i class="bi bi-list-ul text-gold"></i> قائمة خيارات (List Menu)
+                <i class="bi bi-list-ul"></i>
+                <span>القوائم التفاعلية</span>
               </button>
             </li>
             <li class="nav-item">
               <button class="nav-link py-2 rounded-2 fs-9 fw-bold d-flex align-items-center justify-content-center gap-1" id="carousel-tab" data-bs-toggle="pill" data-bs-target="#tabCarousel" type="button" data-type="carousel">
-                <i class="bi bi-grid-3x3-gap-fill text-info"></i> بطاقات الكتالوج (Carousel)
+                <i class="bi bi-grid-3x3-gap-fill"></i>
+                <span>بطاقات الكتالوج</span>
               </button>
             </li>
           </ul>
