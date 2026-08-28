@@ -67,18 +67,44 @@ body {
 
 .form-control, .form-select {
   font-size: 0.88rem !important;
-  padding: 0.45rem 0.85rem !important;
+  padding: 0.5rem 0.9rem !important;
   border-radius: 8px !important;
+  font-weight: 600 !important;
 }
 
+/* Enhanced High-Visibility Button System (Client Requirement #4) */
 .btn {
   font-size: 0.88rem !important;
-  border-radius: 8px !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.2px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
 }
 
 .btn-sm {
-  font-size: 0.78rem !important;
-  padding: 0.25rem 0.7rem !important;
+  font-size: 0.8rem !important;
+  padding: 0.35rem 0.85rem !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+}
+
+.btn-lg {
+  font-size: 1rem !important;
+  padding: 0.75rem 1.75rem !important;
+  font-weight: 800 !important;
+  border-radius: 12px !important;
 }
 
 /* Navigation Tabs Styling */
@@ -211,13 +237,29 @@ body {
 
 /* Common Gold elements */
 .text-gold { color: var(--gold) !important; }
-.bg-gold { background-color: var(--gold) !important; color: var(--bg-dark) !important; }
+.bg-gold { background-color: var(--gold) !important; color: #070a12 !important; }
 .btn-gold { 
-    background-color: var(--gold) !important; 
-    color: var(--bg-dark) !important;
-    font-weight: bold;
+    background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%) !important; 
+    color: #070a12 !important;
+    font-weight: 800 !important;
+    border: 1px solid #d4af37 !important;
+    box-shadow: 0 4px 14px rgba(212, 175, 55, 0.25) !important;
 }
-.btn-gold:hover { background-color: var(--gold-dark) !important; color: #fff !important; }
+.btn-gold:hover { 
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; 
+    color: #ffffff !important;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4) !important;
+}
+.btn-outline-gold {
+    border: 1px solid #d4af37 !important;
+    color: #d4af37 !important;
+    font-weight: 700 !important;
+    background: rgba(212, 175, 55, 0.06) !important;
+}
+.btn-outline-gold:hover {
+    background: #d4af37 !important;
+    color: #070a12 !important;
+}
 
 .icon-box-dash, .stat-card-icon {
   width: 42px;

@@ -6,7 +6,7 @@
   <img src="https://img.shields.io/badge/PostgreSQL-16%20%2B%20pgvector-336791?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL 16" />
   <img src="https://img.shields.io/badge/Redis-Alpine-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
   <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
-  <img src="https://img.shields.io/badge/Tests-88%20Passed%20(100%25)-22C55E?style=for-the-badge&logo=checkmarx&logoColor=white" alt="Tests 100%" />
+  <img src="https://img.shields.io/badge/Tests-95%20Passed%20(100%25)-22C55E?style=for-the-badge&logo=checkmarx&logoColor=white" alt="Tests 100%" />
 </p>
 
 ---
@@ -278,8 +278,9 @@ php tests_suite_runner.php
 💬 Suite 9: Live Chat & Agent Experience Enhancements (7/7 PASS)
 📊 Suite 10: Conversion Analytics & ROI Tracking (7/7 PASS)
 🛠️ Suite 11: System Maintenance Mode & Route Protection (7/7 PASS)
+🚀 Suite 12: Subscriber Onboarding & Lead Approval Workflow (7/7 PASS)
 =========================================================
-Total Tests Run : 88 | Passed Tests : 88 | Success Rate : 100%
+Total Tests Run : 95 | Passed Tests : 95 | Success Rate : 100%
 =========================================================
 ```
 

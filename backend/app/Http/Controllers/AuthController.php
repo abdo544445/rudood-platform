@@ -115,6 +115,45 @@ class AuthController extends Controller
     }
 
     /**
+     * Show the subscription pending page.
+     */
+    public function showSubscriptionPending()
+    {
+        return view('subscription-pending');
+    }
+
+    /**
+     * Handle public subscription request submission (Client Requirement #2).
+     */
+    public function submitSubscriptionRequest(Request $request)
+    {
+        $validated = $request->validate([
+            'name'          => 'required|string|max:255',
+            'email'         => 'required|email|max:255',
+            'phone'         => 'required|string|max:30',
+            'company_name'  => 'nullable|string|max:255',
+            'selected_plan' => 'nullable|string|in:starter,professional,enterprise',
+            'notes'         => 'nullable|string|max:1000',
+        ]);
+
+        $subRequest = \App\Models\SubscriberRequest::create([
+            'name'          => $validated['name'],
+            'email'         => $validated['email'],
+            'phone'         => $validated['phone'],
+            'company_name'  => $validated['company_name'] ?? ($validated['name'] . "'s Store"),
+            'selected_plan' => $validated['selected_plan'] ?? 'professional',
+            'notes'         => $validated['notes'] ?? null,
+            'status'        => 'pending',
+        ]);
+
+        return redirect()->route('subscription.pending')->with([
+            'request_id'    => $subRequest->id,
+            'request_email' => $subRequest->email,
+            'success'       => 'تم استلام طلب اشتراكك بنجاح وجاري المراجعة من قبل مدير النظام.',
+        ]);
+    }
+
+    /**
      * Log the user out.
      */
     public function logout(Request $request)

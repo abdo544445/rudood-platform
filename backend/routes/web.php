@@ -18,15 +18,18 @@ use App\Http\Controllers\Admin\AdminSystemController;
 use App\Http\Controllers\Admin\AdminArticleController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\PlaygroundController;
-
 use App\Http\Controllers\Admin\AdminAuditLogController;
 use App\Http\Controllers\Admin\AdminContactMessageController;
+use App\Http\Controllers\Admin\AdminSubscriberController;
 use App\Models\ContactMessage;
 use App\Models\AuditLog;
 
 // ─── Public Routes (No Auth Required) ────────────────────────────────────────
 Route::get('/', fn() => view('index'))->name('home');
 Route::get('/index', fn() => view('index'));
+Route::get('/how-it-works', fn() => view('how-it-works'))->name('how-it-works');
+Route::get('/subscription-pending', [AuthController::class, 'showSubscriptionPending'])->name('subscription.pending');
+Route::post('/subscribe-request', [AuthController::class, 'submitSubscriptionRequest'])->name('subscription.request');
 Route::get('/maintenance', [AdminSystemController::class, 'showMaintenancePage'])->name('maintenance');
 Route::get('/demo', fn() => view('demo'))->name('demo');
 Route::get('/features', fn() => view('features'));
@@ -114,6 +117,14 @@ Route::middleware(['auth', 'super_admin'])->prefix('admin')->name('admin.')->gro
 
     // Enterprise Audit Logs
     Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])->name('audit-logs.index');
+
+    // Subscriber Requests & Onboarding Management (Client Requirements #2 & #5)
+    Route::get('/subscribers', [AdminSubscriberController::class, 'index'])->name('subscribers.index');
+    Route::get('/subscribers/create', [AdminSubscriberController::class, 'create'])->name('subscribers.create');
+    Route::post('/subscribers', [AdminSubscriberController::class, 'store'])->name('subscribers.store');
+    Route::post('/subscribers/{id}/approve', [AdminSubscriberController::class, 'approve'])->name('subscribers.approve');
+    Route::post('/subscribers/{id}/reject', [AdminSubscriberController::class, 'reject'])->name('subscribers.reject');
+    Route::delete('/subscribers/{id}', [AdminSubscriberController::class, 'destroy'])->name('subscribers.destroy');
 
     // Infrastructure & System Health
     Route::get('/system', [AdminSystemController::class, 'index'])->name('system.index');

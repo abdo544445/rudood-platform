@@ -282,6 +282,15 @@
             </a>
 
             <div class="nav-section-label">إدارة المنصة والشركات</div>
+            <a href="{{ route('admin.subscribers.index') }}" class="sidebar-link {{ request()->routeIs('admin.subscribers.*') ? 'active' : '' }}">
+                <i class="bi bi-person-check-fill text-gold"></i>
+                <span>طلبات المشتركين</span>
+                @php $pendingCount = \App\Models\SubscriberRequest::where('status', 'pending')->count(); @endphp
+                @if($pendingCount > 0)
+                    <span class="badge bg-danger ms-auto rounded-pill px-2 fs-9">{{ $pendingCount }}</span>
+                @endif
+            </a>
+
             <a href="{{ route('admin.workspaces.index') }}" class="sidebar-link {{ request()->routeIs('admin.workspaces.*') ? 'active' : '' }}">
                 <i class="bi bi-building"></i>
                 <span>الشركات والمتاجر</span>
@@ -344,10 +353,10 @@
         <header class="admin-header">
             <div class="d-flex align-items-center gap-3">
                 <h1 class="header-title">@yield('page_title', 'لوحة التحكم والإدارة العليا')</h1>
-                <button type="button" class="btn btn-sm btn-dark border border-secondary border-opacity-50 text-white-50 px-3 rounded-pill fs-8 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#commandPaletteModal">
-                    <i class="bi bi-search text-gold"></i>
-                    <span>بحث سريع...</span>
-                    <kbd class="bg-black text-white-50 border border-secondary border-opacity-50 px-1 fs-9">⌘K</kbd>
+                <button type="button" class="btn btn-sm btn-dark border border-warning border-opacity-40 text-white px-3 py-2 rounded-pill fs-8 fw-bold d-flex align-items-center gap-2 shadow-sm search-trigger-btn" data-bs-toggle="modal" data-bs-target="#commandPaletteModal" style="background: rgba(15, 23, 42, 0.85); min-width: 210px;">
+                    <i class="bi bi-search text-gold fs-7"></i>
+                    <span class="text-white-50">بحث سريع في المنصة...</span>
+                    <kbd class="bg-black text-gold border border-warning border-opacity-30 px-2 py-0.5 rounded fs-9 ms-auto font-monospace">⌘K</kbd>
                 </button>
             </div>
             

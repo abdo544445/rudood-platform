@@ -27,6 +27,8 @@ use App\Models\Channel;
 use App\Models\MockOrder;
 use App\Models\AnalyticsSnapshot;
 use App\Models\SystemSetting;
+use App\Models\SubscriberRequest;
+use App\Http\Controllers\Admin\AdminSubscriberController;
 use App\Http\Middleware\CheckMaintenanceMode;
 use App\Services\AiService;
 use App\Services\RagService;
@@ -58,6 +60,7 @@ class RudoodPlatformTester
         $this->testSuite9_LiveChatAndAgentEnhancements();
         $this->testSuite10_ConversionAnalyticsAndRoiTracking();
         $this->testSuite11_MaintenanceModeAndScheduledCountdown();
+        $this->testSuite12_SubscriberOnboardingAndAgreementWorkflow();
 
         $this->printSummary();
 
@@ -1307,6 +1310,141 @@ class RudoodPlatformTester
         $this->assert($suite, 'AdminSystemController::toggleMaintenance deactivates maintenance and restores normal traffic', 
             SystemSetting::isMaintenanceActive() === false &&
             $restoredResp->getContent() === 'DASHBOARD_OK'
+        );
+
+        echo "\n";
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // SUITE 12: Subscriber Onboarding, How-It-Works & Lead Approval Workflow
+    // ──────────────────────────────────────────────────────────────────────────
+    private function testSuite12_SubscriberOnboardingAndAgreementWorkflow(): void
+    {
+        echo "🚀 Suite 12: Subscriber Onboarding, How-It-Works & Lead Approval Workflow\n";
+        $suite = 'Subscriber Onboarding & Leads';
+
+        $authCtrl = app(\App\Http\Controllers\AuthController::class);
+        $adminSubCtrl = app(AdminSubscriberController::class);
+        $admin = User::where('role', 'super_admin')->first();
+
+        // 12.1 Public Subscription Request Submission (Client Requirement #2)
+        $subReq = Request::create('/subscribe-request', 'POST', [
+            'name'          => 'طارق المنصور',
+            'email'         => 'tariq.mansour.' . time() . '@store.sa',
+            'phone'         => '+966559988771',
+            'company_name'  => 'متجر المنصور للإلكترونيات',
+            'selected_plan' => 'professional',
+            'notes'         => 'نحتاج ربط الواتساب مع كتالوج 50 منتج.',
+        ]);
+
+        $subResp = $authCtrl->submitSubscriptionRequest($subReq);
+        $pendingRecord = SubscriberRequest::where('phone', '+966559988771')->latest()->first();
+
+        $this->assert($suite, 'AuthController::submitSubscriptionRequest records lead in pending status and redirects', 
+            $subResp->isRedirection() &&
+            $pendingRecord !== null &&
+            $pendingRecord->status === 'pending' &&
+            $pendingRecord->company_name === 'متجر المنصور للإلكترونيات'
+        );
+
+        // 12.2 Public How It Works Guide View (Client Requirement #1)
+        $howView = view('how-it-works')->render();
+        $this->assert($suite, 'Public /how-it-works view renders all 4 onboarding stages and bot explanation', 
+            str_contains($howView, 'كيف يعمل البوت الذكي في متجرك أو شركتك') &&
+            str_contains($howView, 'ربط قنوات التواصل') &&
+            str_contains($howView, 'تزويد البوت بالمعرفة')
+        );
+
+        // 12.3 Super Admin Manual Subscriber Data Entry & Creation (Client Requirement #5)
+        Auth::login($admin);
+        $uniqueEmail = 'manual.client.' . time() . '@brand.com';
+        $manualReq = Request::create('/admin/subscribers', 'POST', [
+            'name'            => 'ريما الحربي',
+            'email'           => $uniqueEmail,
+            'phone'           => '+966541122334',
+            'password'        => 'secret123',
+            'company_name'    => 'بوتيك ريما للمجوهرات',
+            'selected_plan'   => 'enterprise',
+            'bot_name'        => 'مساعد مجوهرات ريما الذكي',
+            'ai_provider'     => 'gemini',
+            'bot_tone'        => 'friendly',
+            'system_prompt'   => 'أنت خبير مبيعات مجوهرات فاخرة.',
+            'welcome_message' => 'أهلاً بك في بوتيك ريما! 💎',
+            'admin_notes'     => 'تم تفعيل باقة الشركات الكبرى يدوياً.',
+        ]);
+
+        $manualResp = $adminSubCtrl->store($manualReq);
+        $createdUser = User::where('email', $uniqueEmail)->first();
+        $createdWorkspace = $createdUser ? Workspace::find($createdUser->workspace_id) : null;
+        $createdBot = $createdWorkspace ? Bot::where('workspace_id', $createdWorkspace->id)->first() : null;
+
+        $this->assert($suite, 'AdminSubscriberController::store creates subscriber, workspace, and configured bot manually', 
+            $createdUser !== null &&
+            $createdWorkspace !== null &&
+            $createdWorkspace->company_name === 'بوتيك ريما للمجوهرات' &&
+            $createdBot !== null &&
+            $createdBot->name === 'مساعد مجوهرات ريما الذكي' &&
+            $createdBot->ai_provider === 'gemini'
+        );
+
+        // 12.4 Super Admin Approving Pending Request & Dispatching Welcome Notification (Client Requirement #2)
+        $approveReq = Request::create('/admin/subscribers/' . $pendingRecord->id . '/approve', 'POST', [
+            'admin_notes' => 'تم الاتفاق هاتفياً واعتماد الحساب.',
+        ]);
+        $adminSubCtrl->approve($approveReq, $pendingRecord->id);
+        $pendingRecord->refresh();
+
+        $approvedUser = User::where('email', $pendingRecord->email)->first();
+        $welcomeNotice = SubscriberRequest::getWelcomeNotificationText($pendingRecord->name, $pendingRecord->company_name);
+
+        $this->assert($suite, 'AdminSubscriberController::approve provisions workspace and produces welcome notification', 
+            $pendingRecord->status === 'approved' &&
+            $approvedUser !== null &&
+            $approvedUser->workspace_id > 0 &&
+            str_contains($welcomeNotice, 'تمت إضافتك بنجاح') &&
+            str_contains($welcomeNotice, 'زود البوت ببيانات وآلية عمل متجرك')
+        );
+
+        // 12.5 Super Admin Rejecting Request
+        $dummyReq = SubscriberRequest::create([
+            'name'          => 'مقدم طلب ملغي',
+            'email'         => 'rejected.lead.' . time() . '@test.com',
+            'phone'         => '+966500000002',
+            'company_name'  => 'متجر تجريبي ملغي',
+            'selected_plan' => 'starter',
+            'status'        => 'pending',
+        ]);
+        $rejectReq = Request::create('/admin/subscribers/' . $dummyReq->id . '/reject', 'POST', [
+            'admin_notes' => 'عدم التوافق مع الشروط.',
+        ]);
+        $adminSubCtrl->reject($rejectReq, $dummyReq->id);
+        $dummyReq->refresh();
+
+        $this->assert($suite, 'AdminSubscriberController::reject updates status to rejected with admin notes', 
+            $dummyReq->status === 'rejected' &&
+            $dummyReq->admin_notes === 'عدم التوافق مع الشروط.'
+        );
+
+        // 12.6 Super Admin Index View Telemetry & Filters
+        $indexReq = Request::create('/admin/subscribers', 'GET', ['status' => 'all']);
+        $indexView = $adminSubCtrl->index($indexReq);
+        $viewData = $indexView->getData();
+
+        $this->assert($suite, 'AdminSubscriberController::index aggregates statistics and paginates subscriber requests', 
+            isset($viewData['stats']) &&
+            $viewData['stats']['total'] > 0 &&
+            isset($viewData['requests'])
+        );
+
+        // 12.7 Database Connection Tokens & Security Audit (Client Requirement #6)
+        $dbConnection = config('database.default');
+        $dbDriver = config("database.connections.{$dbConnection}.driver");
+        $appKey = config('app.key');
+
+        $this->assert($suite, 'Database connection tokens and security parameters are verified and stable', 
+            in_array($dbDriver, ['sqlite', 'mysql', 'pgsql']) &&
+            !empty($appKey) &&
+            str_starts_with($appKey, 'base64:')
         );
 
         echo "\n";

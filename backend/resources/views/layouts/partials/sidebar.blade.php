@@ -62,6 +62,12 @@
           <span>اختبار البوت (Playground)</span>
         </a>
       </li>
+      <li class="nav-item">
+        <a href="{{ url('/how-it-works') }}" class="nav-link {{ request()->is('how-it-works*') ? 'active' : '' }} d-flex align-items-center gap-3 text-gold">
+          <i class="bi bi-magic text-gold"></i>
+          <span>دليل تشغيل البوت لمتجرك</span>
+        </a>
+      </li>
       
       <div class="nav-section-label">القنوات والتكاملات</div>
       <li class="nav-item">
@@ -83,6 +89,12 @@
         <a href="{{ route('admin.dashboard') }}" class="nav-link d-flex align-items-center gap-3" style="color: var(--gold) !important; border: 1px dashed rgba(212,175,55,0.4);">
           <i class="bi bi-shield-lock-fill"></i>
           <span>لوحة Super Admin المركزية</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{{ route('admin.subscribers.index') }}" class="nav-link d-flex align-items-center gap-3" style="color: #fcd34d !important;">
+          <i class="bi bi-person-check-fill"></i>
+          <span>طلبات المشتركين ({{ \App\Models\SubscriberRequest::where('status', 'pending')->count() }})</span>
         </a>
       </li>
       <li class="nav-item">
