@@ -232,7 +232,51 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
         }
 
-        /* Some custom admin classes, others handled by theme.blade.php */
+        /* ──────────────────────────────────────────────────────────────────
+           Super Admin Universal Dark Table Styling
+           ────────────────────────────────────────────────────────────────── */
+        .table, .table-custom, .table-dark-custom, table {
+            --bs-table-bg: transparent !important;
+            --bs-table-color: #f8fafc !important;
+            --bs-table-border-color: rgba(255, 255, 255, 0.08) !important;
+            --bs-table-hover-bg: rgba(212, 175, 55, 0.08) !important;
+            --bs-table-hover-color: #ffffff !important;
+            color: #f8fafc !important;
+            background-color: transparent !important;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table thead th, .table-custom thead th, .table-dark-custom thead th {
+            background: linear-gradient(180deg, rgba(212, 175, 55, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
+            color: #d4af37 !important;
+            font-weight: 700 !important;
+            font-size: 0.82rem !important;
+            padding: 14px 18px !important;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3) !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .table tbody tr td, .table-custom tbody tr td, .table-dark-custom tbody tr td {
+            background-color: rgba(15, 23, 42, 0.65) !important;
+            color: #f8fafc !important;
+            padding: 14px 18px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+            vertical-align: middle !important;
+            font-size: 0.85rem;
+        }
+
+        .table tbody tr:hover td, .table-custom tbody tr:hover td, .table-dark-custom tbody tr:hover td {
+            background-color: rgba(212, 175, 55, 0.1) !important;
+            color: #ffffff !important;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none !important;
+        }
+
         .stat-val {
             font-size: 1.85rem;
             font-weight: 800;
