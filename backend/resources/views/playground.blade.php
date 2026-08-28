@@ -96,20 +96,33 @@
     border: 1px solid #f1c40f;
   }
   .preset-pill {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(212, 175, 55, 0.2);
-    color: rgba(255, 255, 255, 0.8);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    color: rgba(255, 255, 255, 0.85);
     font-size: 0.78rem;
-    padding: 5px 12px;
-    border-radius: 50px;
+    font-family: 'Cairo', sans-serif;
+    padding: 5px 14px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.18s ease;
     white-space: nowrap;
+    flex-shrink: 0;
+    height: 32px;
   }
   .preset-pill:hover {
-    background: rgba(212, 175, 55, 0.15);
-    color: var(--gold);
-    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.18);
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.7);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(212, 175, 55, 0.15);
+  }
+  .preset-pill:active {
+    transform: translateY(0);
+    box-shadow: none;
   }
   .chunk-card {
     background: rgba(15, 23, 42, 0.9);
@@ -316,8 +329,10 @@
         </div>
 
         <!-- Presets Bar -->
-        <div class="px-3 py-2 border-bottom border-secondary border-opacity-25 d-flex gap-2 overflow-auto" style="background: rgba(11,15,25,0.6);">
-          <span class="text-white-50 fs-9 align-self-center me-1"><i class="bi bi-lightning-fill text-gold"></i> أسئلة تجريبية:</span>
+        <div class="px-3 py-2 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-2 overflow-auto" style="background: rgba(11,15,25,0.6); flex-wrap: nowrap; scrollbar-width: thin; scrollbar-color: rgba(212,175,55,0.3) transparent;">
+          <span class="text-white-50 fs-9 flex-shrink-0 d-flex align-items-center gap-1" style="white-space: nowrap;">
+            <i class="bi bi-lightning-fill text-gold"></i> أسئلة تجريبية:
+          </span>
           @foreach($presetPrompts as $preset)
             <span class="preset-pill" onclick="sendPresetPrompt('{{ addslashes($preset) }}')">{{ $preset }}</span>
           @endforeach
