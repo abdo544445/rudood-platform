@@ -173,7 +173,7 @@
                   <span class="badge bg-warning text-dark fs-9 px-2"><i class="bi bi-emoji-frown-fill me-1"></i> مستاء</span>
                 @endif
               </div>
-              <span class="text-white-50 fs-9">{{ $active->customer->phone ?? 'محادثة عبر الويب' }}</span>
+              <span class="text-white-50 fs-9 phone-num" dir="ltr">{{ $active->customer->phone ?? 'محادثة عبر الويب' }}</span>
             </div>
           </div>
 
@@ -395,7 +395,7 @@
         <div class="text-center pb-3 border-bottom border-secondary border-opacity-25 mb-3">
           <div class="avatar avatar-lg mx-auto mb-2">{{ mb_substr($active->customer->name ?? 'ع', 0, 2) }}</div>
           <h6 class="text-white fw-bold mb-1 fs-7">{{ $active->customer->name ?? 'عميل جديد' }}</h6>
-          <span class="text-white-50 fs-9 d-block">{{ $active->customer->phone ?? 'لا يوجد رقم مسجل' }}</span>
+          <span class="text-white-50 fs-9 d-block phone-num" dir="ltr">{{ $active->customer->phone ?? 'لا يوجد رقم مسجل' }}</span>
           <span class="badge bg-secondary bg-opacity-25 text-white-50 fs-9 mt-1">
             بدأت: {{ $active->created_at->format('Y-m-d') }}
           </span>

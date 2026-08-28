@@ -126,7 +126,7 @@
                 </div>
                 <div>
                   <span class="d-block text-white-50 fs-7">الدعم الفني عبر الواتساب</span>
-                  <strong class="text-white" dir="ltr">+968 9000 0000</strong>
+                  <strong class="text-white phone-num" dir="ltr">+968 9000 0000</strong>
                 </div>
               </div>
 

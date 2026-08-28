@@ -250,7 +250,7 @@
                                     <td>
                                         <span class="badge bg-dark border border-secondary text-gold fs-9 text-uppercase">{{ $u->role }}</span>
                                     </td>
-                                    <td class="text-white-50 fs-8">{{ $u->phone ?? '—' }}</td>
+                                    <td class="text-white-50 fs-8 phone-num" dir="ltr">{{ $u->phone ?? '—' }}</td>
                                     <td class="text-center">
                                         <button type="button" class="btn btn-outline-warning btn-sm rounded-pill px-3 py-1 fs-9" data-bs-toggle="modal" data-bs-target="#resetUserPassModal{{ $u->id }}">
                                             <i class="bi bi-key me-1"></i> إعادة تعيين كلمة المرور

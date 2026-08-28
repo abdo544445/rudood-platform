@@ -413,3 +413,22 @@ body {
 .fs-7 {
     font-size: 0.875rem;
 }
+/* ── Phone Number LTR Fix (RTL layout reversal prevention) ──────────────────
+   Phone numbers with + prefix get reversed in dir=rtl context.
+   These classes ensure phone numbers always render left-to-right.
+   Use class="phone-num" or dir="ltr" on any phone number element. */
+.phone-num,
+a[href^="tel:"],
+a[href^="https://wa.me/"],
+[data-phone] {
+    direction: ltr !important;
+    unicode-bidi: embed;
+    display: inline-block;
+}
+
+/* Global rule: any span/div inside RTL page that contains only digits and + */
+.ltr-text {
+    direction: ltr !important;
+    unicode-bidi: embed;
+    display: inline-block;
+}

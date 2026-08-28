@@ -272,7 +272,7 @@
                         <div class="d-flex align-items-center gap-2">
                             <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $req->phone) }}" target="_blank" class="badge rounded-pill badge-whatsapp py-1.5 px-3 fw-bold text-decoration-none d-inline-flex align-items-center gap-1">
                                 <i class="bi bi-whatsapp"></i>
-                                <span>{{ $req->phone }}</span>
+                                <span dir="ltr">{{ $req->phone }}</span>
                             </a>
                         </div>
                     </td>

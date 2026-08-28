@@ -339,7 +339,7 @@
         <!-- بيانات التواصل -->
         <div class="py-3 border-bottom border-secondary border-opacity-25">
           <h6 class="fw-bold text-gold fs-7 mb-3">بيانات التواصل</h6>
-          <p class="mb-2 text-white-50 fs-7"><i class="bi bi-telephone me-2 text-gold"></i> +968 9123 4567</p>
+          <p class="mb-2 text-white-50 fs-7 phone-num" dir="ltr"><i class="bi bi-telephone me-2 text-gold"></i> +968 9123 4567</p>
           <p class="mb-2 text-white-50 fs-7"><i class="bi bi-envelope me-2 text-gold"></i> ahmed@example.com</p>
           <p class="mb-0 text-white-50 fs-7"><i class="bi bi-geo-alt me-2 text-gold"></i> مسقط، عمان</p>
         </div>

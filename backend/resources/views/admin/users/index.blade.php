@@ -78,7 +78,7 @@
                     </td>
                     <td>
                         <div class="text-white small mb-1"><i class="bi bi-envelope me-1 text-gold"></i>{{ $user->email }}</div>
-                        <div class="text-muted small"><i class="bi bi-telephone me-1 text-gold"></i>{{ $user->phone ?? 'غير محدد' }}</div>
+                        <div class="text-muted small phone-num" dir="ltr"><i class="bi bi-telephone me-1 text-gold"></i>{{ $user->phone ?? 'غير محدد' }}</div>
                     </td>
                     <td>
                         @if($user->workspace)
