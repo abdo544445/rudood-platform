@@ -398,11 +398,14 @@
     <div class="admin-main-wrapper">
         <!-- Top Header -->
         <header class="admin-header">
-            <div class="d-flex align-items-center gap-3">
-                <h1 class="header-title">@yield('page_title', 'لوحة التحكم والإدارة العليا')</h1>
-                <button type="button" class="btn btn-sm btn-dark border border-warning border-opacity-40 text-white px-3 py-2 rounded-pill fs-8 fw-bold d-flex align-items-center gap-2 shadow-sm search-trigger-btn" data-bs-toggle="modal" data-bs-target="#commandPaletteModal" style="background: rgba(15, 23, 42, 0.85); min-width: 210px;">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-dark border border-warning border-opacity-40 text-gold btn-sm rounded-3 py-1 px-2.5 d-lg-none" id="adminMobileSidebarToggle" aria-label="القائمة الجانبية">
+                    <i class="bi bi-list fs-5"></i>
+                </button>
+                <h1 class="header-title mb-0">@yield('page_title', 'لوحة التحكم والإدارة العليا')</h1>
+                <button type="button" class="btn btn-sm btn-dark border border-warning border-opacity-40 text-white px-3 py-2 rounded-pill fs-8 fw-bold d-flex align-items-center gap-2 shadow-sm search-trigger-btn ms-md-2" data-bs-toggle="modal" data-bs-target="#commandPaletteModal" style="background: rgba(15, 23, 42, 0.85); min-width: 190px;">
                     <i class="bi bi-search text-gold fs-7"></i>
-                    <span class="text-white-50">بحث سريع في المنصة...</span>
+                    <span class="text-white-50">بحث سريع...</span>
                     <kbd class="bg-black text-gold border border-warning border-opacity-30 px-2 py-0.5 rounded fs-9 ms-auto font-monospace">⌘K</kbd>
                 </button>
             </div>
@@ -510,11 +513,33 @@
         </div>
     </div>
 
+    <!-- ستارة الخلفية للشاشات الصغيرة -->
+    <div class="sidebar-backdrop" id="adminSidebarBackdrop"></div>
+
     <!-- Global Command Palette Modal (Cmd + K / Quick Search) -->
     @include('layouts.partials.command-palette')
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('adminMobileSidebarToggle');
+            const sidebar = document.querySelector('.admin-sidebar');
+            const backdrop = document.getElementById('adminSidebarBackdrop');
+
+            if (toggleBtn && sidebar && backdrop) {
+                toggleBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('show');
+                    backdrop.classList.toggle('show');
+                });
+
+                backdrop.addEventListener('click', () => {
+                    sidebar.classList.remove('show');
+                    backdrop.classList.remove('show');
+                });
+            }
+        });
+    </script>
     @yield('scripts')
 </body>
 </html>

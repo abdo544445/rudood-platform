@@ -76,9 +76,43 @@
       background: rgba(15, 23, 42, 0.9) !important;
       border-color: rgba(212, 175, 55, 0.2) !important;
     }
+
+    /* ── Mobile & Tablet Split-Pane Responsiveness ────────────────────────── */
+    @media (max-width: 991.98px) {
+      body { overflow-y: auto !important; }
+      .main-content { margin-right: 0 !important; padding: 10px 12px 60px !important; height: auto !important; min-height: 100vh !important; }
+      .chat-container { height: 80vh !important; min-height: 520px !important; }
+      .chat-sidebar { width: 100% !important; border-left: none !important; }
+      .chat-main { display: none !important; width: 100% !important; }
+      .chat-crm-sidebar { display: none !important; }
+
+      .chat-container.chat-active-view .chat-sidebar { display: none !important; }
+      .chat-container.chat-active-view .chat-main { display: flex !important; width: 100% !important; }
+      .btn-mobile-back-to-inbox { display: inline-flex !important; }
+    }
   </style>
-</head>
 <body>
+
+  <!-- شريط الموبايل العلوي -->
+  <div class="mobile-top-bar">
+    <div class="d-flex align-items-center gap-2">
+      <button type="button" class="btn btn-dark border border-warning border-opacity-40 text-gold btn-sm rounded-3 py-1 px-2.5" id="mobileSidebarToggle" aria-label="القائمة الجانبية">
+        <i class="bi bi-list fs-5"></i>
+      </button>
+      <a href="{{ url('/') }}" class="d-inline-flex align-items-center">
+        <img src="{{ asset('images/img.png') }}" alt="منصة ردود" style="height: 32px;">
+      </a>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <button type="button" class="btn btn-dark border border-secondary border-opacity-40 text-gold btn-sm rounded-circle p-1" data-bs-toggle="modal" data-bs-target="#commandPaletteModal" style="width:34px; height:34px;" title="بحث سريع (⌘K)">
+        <i class="bi bi-search fs-7"></i>
+      </button>
+      <span class="badge bg-gold text-dark fw-bold fs-9 px-2 py-1">شات مباشر</span>
+    </div>
+  </div>
+
+  <!-- ستارة الخلفية للشاشات الصغيرة -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
   <!-- الشريط الجانبي -->
   @include('layouts.partials.sidebar')
@@ -87,7 +121,7 @@
   <main class="main-content">
 
     <!-- شريط العنوان والمسارات والإجراءات -->
-    <div class="mb-2 d-flex justify-content-between align-items-center flex-shrink-0">
+    <div class="mb-2 d-flex justify-content-between align-items-center flex-shrink-0 flex-wrap gap-2">
       <div>
         <div class="d-flex align-items-center gap-2 mb-1">
           <h5 class="fw-bold text-white mb-0"><i class="bi bi-chat-dots-fill text-gold me-2"></i>المحادثات المباشرة 2.0</h5>
@@ -107,7 +141,7 @@
     </div>
 
     <!-- حاوية المحادثات المكونة من 3 أعمدة -->
-    <div class="chat-container">
+    <div class="chat-container {{ $active ? 'chat-active-view' : '' }}">
 
       <!-- 1. القائمة الجانبية للمحادثات (Left Sidebar) -->
       <div class="chat-sidebar">
@@ -158,6 +192,9 @@
         <!-- هيدر المحادثة التفاعلي -->
         <div class="chat-header d-flex justify-content-between align-items-center">
           <div class="d-flex align-items-center gap-2">
+            <a href="{{ url('/live-chat') }}" class="btn btn-dark border border-secondary text-gold btn-sm rounded-3 py-1 px-2.5 d-none btn-mobile-back-to-inbox me-1" title="العودة لصندوق المحادثات">
+              <i class="bi bi-arrow-right fs-6"></i>
+            </a>
             <div class="avatar">{{ mb_substr($active->customer->name ?? 'ع', 0, 2) }}</div>
             <div>
               <div class="d-flex align-items-center gap-2">
@@ -1176,5 +1213,25 @@
       </div>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleBtn = document.getElementById('mobileSidebarToggle');
+      const sidebar = document.querySelector('.sidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+
+      if (toggleBtn && sidebar && backdrop) {
+        toggleBtn.addEventListener('click', () => {
+          sidebar.classList.toggle('show');
+          backdrop.classList.toggle('show');
+        });
+
+        backdrop.addEventListener('click', () => {
+          sidebar.classList.remove('show');
+          backdrop.classList.remove('show');
+        });
+      }
+    });
+  </script>
 </body>
 </html>

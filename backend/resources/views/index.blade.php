@@ -62,6 +62,16 @@
       100% { transform: translateY(-6px); }
     }
 
+    @media (max-width: 767.98px) {
+      .arabic-brand-title { font-size: 2.3rem !important; }
+      .arabic-brand-container { gap: 8px !important; }
+      .hero-container { padding: 20px 0 !important; min-height: auto !important; }
+      .hero-mockup-window { transform: none !important; margin-top: 25px !important; }
+      .corner-demo-floater { bottom: 12px !important; left: 12px !important; }
+      .stat-box { padding: 16px 12px !important; margin-bottom: 12px !important; }
+      .stat-number { font-size: 1.85rem !important; }
+    }
+
     /* Live Demo Button with Pulse */
     .btn-live-demo {
       background: rgba(239, 68, 68, 0.15);
