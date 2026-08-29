@@ -36,13 +36,34 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
             $user = Auth::user();
 
             if ($user->isSuperAdmin()) {
+                $request->session()->regenerate();
                 return redirect()->route('admin.dashboard')->with('success', 'مرحباً بك في لوحة الإدارة العليا (Super Admin) 👑');
             }
 
+            $workspace = $user->workspace;
+            if ($workspace && $workspace->status === 'pending') {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return redirect()->route('subscription.pending')->with([
+                    'request_email' => $user->email,
+                    'info'          => 'حسابك ومساحة عمل متجرك قيد المراجعة والاعتماد من قبل مدير النظام (Super Admin). يرجى الانتظار حتى يتم تفعيل الحساب.',
+                ]);
+            }
+
+            if ($workspace && in_array($workspace->status, ['suspended', 'inactive'])) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return back()->withErrors([
+                    'email' => 'تم إيقاف هذا الحساب أو مساحة العمل مؤقتاً. يرجى التواصل مع إدارة النظام.',
+                ])->withInput($request->only('email'));
+            }
+
+            $request->session()->regenerate();
             return redirect()->intended('/dashboard');
         }
 
@@ -66,8 +87,8 @@ class AuthController extends Controller
 
     /**
      * Handle registration form submission.
-     * Creates: Workspace → Bot → User (linked together atomically).
-     * Also creates a SubscriberRequest record for admin visibility.
+     * Creates: Workspace (pending) → Bot → User (linked together atomically).
+     * Also creates a SubscriberRequest record for admin visibility and approval.
      */
     public function register(Request $request)
     {
@@ -79,10 +100,10 @@ class AuthController extends Controller
         ]);
 
         $user = DB::transaction(function () use ($request) {
-            // 1. Create workspace for this user
+            // 1. Create workspace for this user with pending status
             $workspace = Workspace::create([
                 'company_name' => $request->full_name . "'s Store",
-                'status'       => 'active',
+                'status'       => 'pending',
             ]);
 
             // 2. Create the default Bot for this workspace
@@ -107,28 +128,25 @@ class AuthController extends Controller
                 'role'         => 'owner',
             ]);
 
-            // 4. Create a SubscriberRequest record for admin visibility & audit trail
-            //    Status is 'approved' because user self-registered (bypassed approval)
+            // 4. Create a SubscriberRequest record for admin visibility & approval
             \App\Models\SubscriberRequest::create([
                 'name'            => $request->full_name,
                 'email'           => $request->email,
                 'phone'           => $request->phone,
                 'company_name'    => $request->full_name . "'s Store",
                 'selected_plan'   => 'starter',
-                'notes'           => 'طلب تسجيل ذاتي عبر صفحة التسجيل',
-                'status'          => 'approved',
-                'approved_at'     => now(),
+                'notes'           => 'طلب تسجيل ذاتي جديد - بانتظار اعتماد الإدارة',
+                'status'          => 'pending',
                 'created_user_id' => $newUser->id,
             ]);
 
             return $newUser;
         });
 
-        // 5. Log the user in
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        return redirect('/dashboard');
+        return redirect()->route('subscription.pending')->with([
+            'request_email' => $user->email,
+            'success'       => 'تم استلام طلب تسجيل متجرك بنجاح! حسابك الآن قيد المراجعة والاعتماد من قبل مدير النظام.',
+        ]);
     }
 
     /**

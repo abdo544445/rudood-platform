@@ -18,9 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\CheckMaintenanceMode::class,
         ]);
         $middleware->alias([
-            'super_admin' => \App\Http\Middleware\SuperAdminMiddleware::class,
-            'csp'         => \App\Http\Middleware\ContentSecurityPolicy::class,
-            'maintenance' => \App\Http\Middleware\CheckMaintenanceMode::class,
+            'super_admin'      => \App\Http\Middleware\SuperAdminMiddleware::class,
+            'csp'              => \App\Http\Middleware\ContentSecurityPolicy::class,
+            'maintenance'      => \App\Http\Middleware\CheckMaintenanceMode::class,
+            'workspace_active' => \App\Http\Middleware\EnsureWorkspaceIsActive::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

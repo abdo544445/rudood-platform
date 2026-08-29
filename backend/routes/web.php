@@ -143,7 +143,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // ─── Authenticated Dashboard Routes ──────────────────────────────────────────
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'workspace_active'])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout.get');

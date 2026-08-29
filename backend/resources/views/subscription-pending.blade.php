@@ -81,6 +81,20 @@
         </p>
       </div>
 
+      @if(session('info'))
+      <div class="alert alert-warning border border-warning border-opacity-40 bg-dark text-gold fs-8 mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-exclamation-triangle-fill fs-5 flex-shrink-0"></i>
+        <div>{{ session('info') }}</div>
+      </div>
+      @endif
+
+      @if(session('success'))
+      <div class="alert alert-success border border-success border-opacity-40 bg-dark text-success fs-8 mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-check-circle-fill fs-5 flex-shrink-0"></i>
+        <div>{{ session('success') }}</div>
+      </div>
+      @endif
+
       @if(session('request_email') || request('email'))
       <div class="p-3 rounded-3 mb-4 border border-secondary border-opacity-25 text-center" style="background: rgba(255, 255, 255, 0.03);">
         <span class="text-white-50 fs-8">البريد الإلكتروني المسجل للطلب: </span>
