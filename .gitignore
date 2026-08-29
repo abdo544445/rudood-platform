@@ -1,4 +1,4 @@
-# Environment files
+# Environment & Sensitive Credentials
 .env
 .env.*
 !.env.example
@@ -6,4 +6,8 @@ backend/.env
 backend/.env.*
 !backend/.env.example
 *.env
+DIGITALOCEAN_GUIDE.md
+VPS_*.md
+credentials.md
+
 
