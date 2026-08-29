@@ -68,22 +68,25 @@
 
   /* Explicit High-Contrast Badges */
   .badge-status-approved {
-    background: rgba(16, 185, 129, 0.25) !important;
-    color: #34d399 !important;
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #86efac !important;
     border: 1px solid rgba(16, 185, 129, 0.5) !important;
     font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
   }
   .badge-status-pending {
-    background: rgba(245, 158, 11, 0.25) !important;
-    color: #fbbf24 !important;
+    background: rgba(245, 158, 11, 0.2) !important;
+    color: #fde047 !important;
     border: 1px solid rgba(245, 158, 11, 0.5) !important;
     font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
   }
   .badge-status-rejected {
-    background: rgba(239, 68, 68, 0.25) !important;
-    color: #f87171 !important;
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #fca5a5 !important;
     border: 1px solid rgba(239, 68, 68, 0.5) !important;
     font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
   }
   .badge-plan-enterprise {
     background: rgba(168, 85, 247, 0.25) !important;
