@@ -1,13 +1,29 @@
 services:
+  caddy:
+    image: caddy:alpine
+    container_name: rudood_caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+      - websocket
+    networks:
+      - rudood_network
+
   app:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: rudood_app
     restart: always
-    ports:
-      - "80:80"
-      - "8000:80"
+    expose:
+      - "80"
     env_file:
       - ./backend/.env
     environment:
@@ -39,6 +55,8 @@ services:
     container_name: rudood_websocket
     restart: always
     command: node /var/www/html/websocket/server.js
+    expose:
+      - "3000"
     ports:
       - "3000:3000"
     environment:
@@ -90,3 +108,5 @@ networks:
 volumes:
   postgres_data:
   redis_data:
+  caddy_data:
+  caddy_config:

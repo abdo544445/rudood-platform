@@ -1,0 +1,42 @@
+# Global Caddy Configuration
+{
+    email support@rudood.com
+    admin off
+}
+
+# Default HTTP/HTTPS configuration (Works directly with Public IP or Localhost)
+# Note: When you buy a domain (e.g. app.rudood.com), simply replace the first line with your domain name!
+:80, :443 {
+    # Automatic self-signed SSL for IP / Localhost
+    tls internal
+
+    # Security Headers
+    header {
+        X-Robots-Tag "noindex, nofollow"
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
+    }
+
+    # Route WebSocket connections to the Node.js realtime server
+    @websocket {
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
+    reverse_proxy @websocket websocket:3000
+
+    handle /socket.io/* {
+        reverse_proxy websocket:3000
+    }
+
+    # Route all standard web requests to Laravel Application (Nginx + PHP-FPM)
+    handle {
+        reverse_proxy app:80 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+}
