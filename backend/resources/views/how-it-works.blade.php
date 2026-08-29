@@ -98,6 +98,15 @@
       align-items: center;
       gap: 0.4rem;
     }
+    .hover-faq-btn {
+      transition: all 0.25s ease;
+    }
+    .hover-faq-btn:hover {
+      background: rgba(212, 175, 55, 0.12) !important;
+      border-color: var(--gold) !important;
+      color: #fff !important;
+      transform: translateX(-4px);
+    }
     .corner-demo-floater {
       position: fixed;
       bottom: 24px;
@@ -344,7 +353,177 @@
       </div>
     </section>
 
-    <!-- 5. قسم الدعوة للانضمام (CTA Box) -->
+    <!-- 5. قسم شات بوت الاستفسارات التفاعلي (Interactive Feature & Guide FAQ Bot) -->
+    <section class="py-5 position-relative border-top border-secondary border-opacity-25" id="interactiveBotSection">
+      <div class="container py-4">
+        
+        <!-- Section Heading -->
+        <div class="text-center mb-5">
+          <span class="badge bg-gold-subtle text-gold rounded-pill px-3 py-2 mb-3 border border-warning border-opacity-25 fs-6">
+            <i class="bi bi-chat-square-quote-fill me-1"></i> استفسار فوري وتجربة حية
+          </span>
+          <h2 class="display-5 fw-extrabold text-white mb-3">
+            اسأل <span class="text-gold-gradient">مساعد المنصة التفاعلي</span>
+          </h2>
+          <p class="text-white-50 lead mx-auto" style="max-width: 680px;">
+            جرب الحوار مع البوت مباشرة واطرح أي سؤال حول إمكانيات منصة ردود، سرعة الربط، أتمتة الواتساب، أو خطط الأسعار!
+          </p>
+        </div>
+
+        <div class="row g-4 align-items-stretch">
+          
+          <!-- Column 1: Interactive Question Hub & Categories -->
+          <div class="col-12 col-lg-5">
+            <div class="card card-custom p-4 h-100 border border-secondary border-opacity-30" style="background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(15px);">
+              <div class="d-flex align-items-center gap-2 mb-3 text-gold">
+                <i class="bi bi-patch-question-fill fs-5"></i>
+                <h5 class="fw-bold text-white mb-0">أسئلة شائعة جاهزة للاختبار</h5>
+              </div>
+              <p class="text-white-50 fs-8 mb-4">
+                اضغط على أي استفسار أدناه ليقوم البوت بالإجابة التوضيحية الفورية مع شرح التفاصيل والمزايا:
+              </p>
+
+              <!-- Category 1: Channels & Connections -->
+              <div class="mb-3">
+                <span class="fs-9 fw-bold text-info text-uppercase d-flex align-items-center gap-1 mb-2">
+                  <i class="bi bi-diagram-3"></i> قنوات التواصل والربط
+                </span>
+                <div class="d-flex flex-column gap-2">
+                  <button type="button" class="btn btn-outline-secondary text-start text-white-50 border-secondary border-opacity-40 rounded-3 p-2 fs-8 hover-faq-btn" onclick="sendPresetQuestion('whatsapp_integration')">
+                    <i class="bi bi-whatsapp text-success me-2"></i> كيف أربط رقم واتساب التجاري بمتجري؟
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary text-start text-white-50 border-secondary border-opacity-40 rounded-3 p-2 fs-8 hover-faq-btn" onclick="sendPresetQuestion('official_meta')">
+                    <i class="bi bi-shield-check text-info me-2"></i> هل الربط رسمي مع Meta ومعتمد ضد الحظر؟
+                  </button>
+                </div>
+              </div>
+
+              <!-- Category 2: AI Knowledge & RAG -->
+              <div class="mb-3">
+                <span class="fs-9 fw-bold text-warning text-uppercase d-flex align-items-center gap-1 mb-2">
+                  <i class="bi bi-cpu"></i> ذكاء البوت وقواعد المعرفة
+                </span>
+                <div class="d-flex flex-column gap-2">
+                  <button type="button" class="btn btn-outline-secondary text-start text-white-50 border-secondary border-opacity-40 rounded-3 p-2 fs-8 hover-faq-btn" onclick="sendPresetQuestion('pdf_training')">
+                    <i class="bi bi-file-earmark-pdf text-danger me-2"></i> كيف يتعلم البوت من ملفات الـ PDF وقوائم المنتجات؟
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary text-start text-white-50 border-secondary border-opacity-40 rounded-3 p-2 fs-8 hover-faq-btn" onclick="sendPresetQuestion('arabic_dialects')">
+                    <i class="bi bi-translate text-gold me-2"></i> هل يفهم البوت اللهجات العامية السعودية والخليجية؟
+                  </button>
+                </div>
+              </div>
+
+              <!-- Category 3: Orders & Human Takeover -->
+              <div class="mb-3">
+                <span class="fs-9 fw-bold text-success text-uppercase d-flex align-items-center gap-1 mb-2">
+                  <i class="bi bi-cart-check"></i> الطلبات والتدخل البشري
+                </span>
+                <div class="d-flex flex-column gap-2">
+                  <button type="button" class="btn btn-outline-secondary text-start text-white-50 border-secondary border-opacity-40 rounded-3 p-2 fs-8 hover-faq-btn" onclick="sendPresetQuestion('order_tracking')">
+                    <i class="bi bi-box-seam text-warning me-2"></i> كيف يتتبع البوت شحنات وأرقام طلبات العملاء؟
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary text-start text-white-50 border-secondary border-opacity-40 rounded-3 p-2 fs-8 hover-faq-btn" onclick="sendPresetQuestion('human_takeover')">
+                    <i class="bi bi-person-fill-gear text-pink me-2"></i> كيف يستلم موظف خدمة العملاء المحادثة من البوت؟
+                  </button>
+                </div>
+              </div>
+
+              <!-- Category 4: Pricing & Activation -->
+              <div>
+                <span class="fs-9 fw-bold text-pink text-uppercase d-flex align-items-center gap-1 mb-2">
+                  <i class="bi bi-rocket-takeoff"></i> الاشتراك والتفعيل
+                </span>
+                <div class="d-flex flex-column gap-2">
+                  <button type="button" class="btn btn-outline-secondary text-start text-white-50 border-secondary border-opacity-40 rounded-3 p-2 fs-8 hover-faq-btn" onclick="sendPresetQuestion('activation_time')">
+                    <i class="bi bi-lightning-charge text-warning me-2"></i> كم يستغرق تفعيل حسابي بعد تقديم الطلب؟
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Column 2: Live Interactive Chat Dialog Window -->
+          <div class="col-12 col-lg-7">
+            <div class="card card-custom h-100 border border-secondary border-opacity-30 shadow-2xl d-flex flex-column overflow-hidden" style="background: rgba(11, 15, 25, 0.95);">
+              
+              <!-- Chat Header -->
+              <div class="p-3 border-bottom border-secondary border-opacity-25 d-flex align-items-center justify-content-between" style="background: rgba(15, 23, 42, 0.85);">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="position-relative">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: linear-gradient(135deg, #d4af37, #aa820a); color: #000; font-size: 1.3rem;">
+                      <i class="bi bi-robot"></i>
+                    </div>
+                    <span class="position-absolute bottom-0 start-0 p-1 bg-success border border-dark rounded-circle" style="width: 12px; height: 12px;"></span>
+                  </div>
+                  <div>
+                    <div class="fw-bold text-white fs-7 d-flex align-items-center gap-2">
+                      <span>مساعد منصة ردود الذكي</span>
+                      <span class="badge bg-gold text-dark fs-9 fw-bold">AI Assistant</span>
+                    </div>
+                    <div class="text-success fs-9 d-flex align-items-center gap-1">
+                      <span class="spinner-grow spinner-grow-sm" style="width: 8px; height: 8px;" role="status"></span>
+                      متصل ومستعد لإجابة كافة استفساراتك
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <button type="button" class="btn btn-sm btn-outline-secondary text-white-50 border-0 rounded-circle" title="إعادة تعيين المحادثة" onclick="resetFaqChat()">
+                    <i class="bi bi-arrow-clockwise fs-6"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Chat Message Stream -->
+              <div class="p-4 flex-grow-1 overflow-auto d-flex flex-column gap-3" id="faqChatMessages" style="max-height: 480px; min-height: 400px;">
+                
+                <!-- Initial Bot Message -->
+                <div class="d-flex align-items-start gap-2">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; background: rgba(212, 175, 55, 0.2); color: var(--gold);">
+                    <i class="bi bi-robot fs-7"></i>
+                  </div>
+                  <div class="p-3 rounded-4 bg-dark border border-secondary border-opacity-40 text-white fs-8" style="max-width: 85%; border-top-right-radius: 4px;">
+                    <p class="mb-2 fw-bold text-gold">مرحباً بك! 👋 أنا مساعد منصة ردود الآلي.</p>
+                    <p class="mb-2 text-white-50">أنا هنا لمساعدتك في فهم كل ما يتعلق بالمنصة وطريقة تشغيل البوت لمتجرك أو شركتك.</p>
+                    <p class="mb-0 text-white-50">يمكنك النقر على أي من الأسئلة الجاهزة في القائمة، أو كتابة سؤالك مباشرة في المربع أدناه! 👇</p>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Typing Indicator (Hidden by default) -->
+              <div class="px-4 py-2 d-none" id="faqTypingIndicator">
+                <div class="d-flex align-items-center gap-2 text-white-50 fs-8">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background: rgba(212, 175, 55, 0.15); color: var(--gold);">
+                    <i class="bi bi-robot fs-8"></i>
+                  </div>
+                  <span class="badge bg-dark border border-secondary border-opacity-40 text-gold px-3 py-2">
+                    <span class="spinner-grow spinner-grow-sm me-1 text-gold" style="width: 6px; height: 6px;"></span>
+                    جاري التفكير وصياغة الرد...
+                  </span>
+                </div>
+              </div>
+
+              <!-- Chat Input Bar -->
+              <div class="p-3 border-top border-secondary border-opacity-25" style="background: rgba(15, 23, 42, 0.9);">
+                <form id="faqChatForm" onsubmit="handleFaqSubmit(event)" class="d-flex gap-2 align-items-center">
+                  <input type="text" id="faqChatInput" class="form-control bg-dark border-secondary border-opacity-40 text-white fs-8 rounded-pill px-4 py-2" placeholder="اكتب سؤالك هنا عن المنصة (مثال: كيف أربط واتساب؟ أو ما هي الأسعار؟)..." autocomplete="off">
+                  <button type="submit" class="btn btn-gold rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px;">
+                    <i class="bi bi-send-fill fs-7"></i>
+                  </button>
+                </form>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 6. قسم الدعوة للانضمام (CTA Box) -->
     <section class="py-5 text-center">
       <div class="container py-4">
         <div class="card card-custom p-5 mx-auto border border-warning border-opacity-30 position-relative overflow-hidden" style="max-width: 850px; background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(15, 23, 42, 0.95) 100%);">
@@ -364,7 +543,7 @@
       </div>
     </section>
 
-    <!-- 6. التذييل (Footer) -->
+    <!-- 7. التذييل (Footer) -->
     <footer class="py-4 border-top border-secondary border-opacity-25 text-center text-white-50 fs-8">
       <div class="container d-flex flex-wrap justify-content-between align-items-center">
         <div>
@@ -391,5 +570,212 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ asset('js/landing-animations.js') }}"></script>
+
+  <!-- Interactive FAQ Bot Script -->
+  <script>
+    const FAQ_KNOWLEDGE = {
+      whatsapp_integration: {
+        q: "كيف أربط رقم واتساب التجاري بمتجري؟",
+        a: `<div class="mb-2"><strong class="text-success"><i class="bi bi-whatsapp me-1"></i> خطوات ربط واتساب التجاري بضغطة زر:</strong></div>
+            <ol class="ps-3 mb-3 text-white-50 lh-lg">
+              <li>انتقل إلى تبويب <strong>قنوات التواصل (Channels)</strong> من لوحة التحكم.</li>
+              <li>اختر <strong>WhatsApp Cloud API</strong> وسجل الدخول بحساب Meta للأعمال.</li>
+              <li>أدخل معرف رقم الهاتف (Phone Number ID) ورمز الوصول الدائم (Access Token).</li>
+              <li>فعل خيار <strong>Webhook</strong> لتبدأ منصة ردود باستقبال المحادثات والرد اللحظي فوراً.</li>
+            </ol>
+            <div class="p-2 rounded bg-dark border border-secondary border-opacity-40 text-gold fs-9">
+              <i class="bi bi-info-circle me-1"></i> لا تحتاج لإبقاء هاتفك متصلاً بالإنترنت إطلاقاً، فالربط سحابي يعمل 24/7.
+            </div>`
+      },
+      official_meta: {
+        q: "هل الربط رسمي مع Meta ومعتمد ضد الحظر؟",
+        a: `<div class="mb-2"><strong class="text-info"><i class="bi bi-shield-check me-1"></i> نعم، الربط رسمي ومعتمد 100%:</strong></div>
+            <p class="mb-2 text-white-50">تعتمد منصة ردود على <strong>WhatsApp Business Cloud API الرسمية</strong> الصادرة مباشرة من شركة Meta، مما يضمن:</p>
+            <ul class="ps-3 mb-2 text-white-50 lh-lg">
+              <li>حماية كاملة لرقم هاتفك من الحظر (مقارنة بالطرق غير الرسمية).</li>
+              <li>إمكانية توثيق الرقم بالعلامة الخضراء (Green Badge).</li>
+              <li>سرعة فائقة في وصول الرسائل دون أي تأخير.</li>
+            </ul>`
+      },
+      pdf_training: {
+        q: "كيف يتعلم البوت من ملفات الـ PDF وقوائم المنتجات؟",
+        a: `<div class="mb-2"><strong class="text-warning"><i class="bi bi-file-earmark-pdf me-1"></i> محرك البحث الدلالي (RAG Engine):</strong></div>
+            <p class="mb-2 text-white-50">عند رفعك لأي ملف PDF أو Word أو نصي في صفحة <strong>إدارة المعرفة</strong>:</p>
+            <ul class="ps-3 mb-2 text-white-50 lh-lg">
+              <li>يقوم النظام بتقسيم الملف إلى مقاطع ذكية (Semantic Chunks) وحساب متجهات المعنى (Vector Embeddings).</li>
+              <li>عندما يسأل العميل، يبحث البوت في أجزاء من الثانية عن الإجابة الدقيقة من واقع ملفاتك ويصيغها بأسلوب لبق.</li>
+              <li>لن يختلق البوت أي معلومة غير موجودة في مستنداتك المعتمدة.</li>
+            </ul>`
+      },
+      arabic_dialects: {
+        q: "هل يفهم البوت اللهجات العامية السعودية والخليجية؟",
+        a: `<div class="mb-2"><strong class="text-gold"><i class="bi bi-translate me-1"></i> نعم، دعم فائق للهجات العربية:</strong></div>
+            <p class="mb-2 text-white-50">تم تدريب نماذج الذكاء الاصطناعي في منصة ردود على فهم مختلف اللهجات المحلية، مثل:</p>
+            <div class="d-flex flex-wrap gap-2 mb-2">
+              <span class="badge bg-dark border border-secondary text-info">السعودية (نجدي / حجازي / شرقاوي)</span>
+              <span class="badge bg-dark border border-secondary text-success">الخليجية والكويتية</span>
+              <span class="badge bg-dark border border-secondary text-warning">المصرية والشامية</span>
+            </div>
+            <p class="mb-0 text-white-50">مهما كانت طريقة كتابة العميل (عامية، اختصارات، أو فصحى)، سيفهم القصد ويلبي طلبه بدقة.</p>`
+      },
+      order_tracking: {
+        q: "كيف يتتبع البوت شحنات وأرقام طلبات العملاء؟",
+        a: `<div class="mb-2"><strong class="text-warning"><i class="bi bi-box-seam me-1"></i> استدعاء الأدوات الحية (Tool Calling):</strong></div>
+            <p class="mb-2 text-white-50">يتعرف البوت تلقائياً على أنماط أرقام الشحنات والطلبات (مثل: #10492 أو رقم البوليصة):</p>
+            <ol class="ps-3 mb-2 text-white-50 lh-lg">
+              <li>يستعلم البوت لحظياً من نظام متجرك أو شركة الشحن عن حالة الشحنة.</li>
+              <li>يقوم بتزويد العميل بموقع الشحنة الحالي، شركة الشحن، ورابط التتبع المباشر.</li>
+              <li>يوفر على فريق الدعم مئات ساعات الاستعلام اليدوي يومياً.</li>
+            </ol>`
+      },
+      human_takeover: {
+        q: "كيف يستلم موظف خدمة العملاء المحادثة من البوت؟",
+        a: `<div class="mb-2"><strong class="text-pink"><i class="bi bi-person-fill-gear me-1"></i> ميزة التدخل البشري الفوري (Human Takeover):</strong></div>
+            <p class="mb-2 text-white-50">في لوحة المحادثات الموحدة <strong>(Live Chat)</strong>:</p>
+            <ul class="ps-3 mb-2 text-white-50 lh-lg">
+              <li>يستطيع الموظف النقر على زر <strong>إيقاف البوت ⏸️</strong> واستلام المحادثة والتحدث مباشرة مع العميل.</li>
+              <li>يتوقف البوت عن الرد في هذه المحادثة فقط، بينما يستمر في خدمة بقية العملاء.</li>
+              <li>عند انتهاء الموظف، يمكنه إعادة تفعيل البوت بنقرة واحدة.</li>
+            </ul>`
+      },
+      activation_time: {
+        q: "كم يستغرق تفعيل حسابي بعد تقديم الطلب؟",
+        a: `<div class="mb-2"><strong class="text-success"><i class="bi bi-lightning-charge me-1"></i> تفعيل فوري وسريع:</strong></div>
+            <p class="mb-2 text-white-50">بعد تقديم طلبك في صفحة التسعيرة:</p>
+            <ul class="ps-3 mb-2 text-white-50 lh-lg">
+              <li>يقوم فريق الدعم بالتحقق من البيانات واعتماد حسابك خلال أقل من <strong>ساعة واحدة</strong>.</li>
+              <li>تصلك رسالة الترحيب مع بيانات تسجيل الدخول للوحة التحكم المخصصة لمتجرك.</li>
+              <li>يمكنك البدء مباشرة في رفع ملفاتك وربط قنواتك وإطلاق البوت.</li>
+            </ul>
+            <div class="mt-2">
+              <a href="{{ url('/pricing') }}" class="btn btn-gold btn-sm rounded-pill px-4 fw-bold">اختر باقتك وقدم طلبك الآن</a>
+            </div>`
+      }
+    };
+
+    function sendPresetQuestion(key) {
+      const item = FAQ_KNOWLEDGE[key];
+      if (!item) return;
+
+      appendUserMessage(item.q);
+      showTyping(true);
+
+      setTimeout(() => {
+        showTyping(false);
+        appendBotMessage(item.a);
+      }, 700);
+    }
+
+    function handleFaqSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('faqChatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = '';
+      appendUserMessage(text);
+      showTyping(true);
+
+      setTimeout(() => {
+        showTyping(false);
+        const reply = matchCustomQuestion(text);
+        appendBotMessage(reply);
+      }, 850);
+    }
+
+    function matchCustomQuestion(query) {
+      const q = query.toLowerCase();
+
+      if (q.includes('واتساب') || q.includes('whatsapp') || q.includes('ربط') || q.includes('رقم')) {
+        return FAQ_KNOWLEDGE.whatsapp_integration.a;
+      }
+      if (q.includes('حظر') || q.includes('رسمي') || q.includes('meta') || q.includes('مؤسس')) {
+        return FAQ_KNOWLEDGE.official_meta.a;
+      }
+      if (q.includes('pdf') || q.includes('ملف') || q.includes('معرفة') || q.includes('منتج') || q.includes('يتعلم') || q.includes('تدريب')) {
+        return FAQ_KNOWLEDGE.pdf_training.a;
+      }
+      if (q.includes('لهج') || q.includes('سعودي') || q.includes('خليج') || q.includes('لغ') || q.includes('فهم')) {
+        return FAQ_KNOWLEDGE.arabic_dialects.a;
+      }
+      if (q.includes('شحن') || q.includes('طلب') || q.includes('تتبع') || q.includes('وين طلبي') || q.includes('توصيل')) {
+        return FAQ_KNOWLEDGE.order_tracking.a;
+      }
+      if (q.includes('موظف') || q.includes('بشري') || q.includes('تدخل') || q.includes('استلام') || q.includes('فريق')) {
+        return FAQ_KNOWLEDGE.human_takeover.a;
+      }
+      if (q.includes('سعر') || q.includes('اسعار') || q.includes('باق') || q.includes('تفعيل') || q.includes('اشتراك') || q.includes('كم')) {
+        return FAQ_KNOWLEDGE.activation_time.a;
+      }
+
+      // Default smart AI fallback reply
+      return `<div class="mb-2"><strong class="text-gold"><i class="bi bi-info-circle me-1"></i> إجابة استفسارك:</strong></div>
+              <p class="mb-2 text-white-50">شكراً لسؤالك! منصة <strong>ردود (Rudood)</strong> مصممة خصيصاً لأتمتة خدمة العملاء والمبيعات للمتاجر والشركات عبر واتساب وقنوات التواصل، مع دعم كامل للذكاء الاصطناعي، رفع مستندات المتجر، والتدخل البشري السلس.</p>
+              <p class="mb-3 text-white-50">يمكنك أيضاً تجربة لوحة التحكم الحية أو مراجعة الأسعار والتفعيل عبر الروابط التالية:</p>
+              <div class="d-flex flex-wrap gap-2">
+                <a href="{{ url('/demo') }}" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold">🔴 استعراض حي للمنصة</a>
+                <a href="{{ url('/pricing') }}" class="btn btn-gold btn-sm rounded-pill px-3 fw-bold">خطط الأسعار والتفعيل</a>
+              </div>`;
+    }
+
+    function appendUserMessage(text) {
+      const container = document.getElementById('faqChatMessages');
+      const div = document.createElement('div');
+      div.className = 'd-flex align-items-start gap-2 justify-content-end';
+      div.innerHTML = `
+        <div class="p-3 rounded-4 bg-primary bg-opacity-25 border border-primary border-opacity-30 text-white fs-8" style="max-width: 80%; border-top-left-radius: 4px;">
+          ${text}
+        </div>
+        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; background: rgba(59, 130, 246, 0.2); color: #60a5fa;">
+          <i class="bi bi-person-fill fs-7"></i>
+        </div>
+      `;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function appendBotMessage(html) {
+      const container = document.getElementById('faqChatMessages');
+      const div = document.createElement('div');
+      div.className = 'd-flex align-items-start gap-2';
+      div.innerHTML = `
+        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; background: rgba(212, 175, 55, 0.2); color: var(--gold);">
+          <i class="bi bi-robot fs-7"></i>
+        </div>
+        <div class="p-3 rounded-4 bg-dark border border-secondary border-opacity-40 text-white fs-8 shadow-sm" style="max-width: 85%; border-top-right-radius: 4px;">
+          ${html}
+        </div>
+      `;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function showTyping(show) {
+      const indicator = document.getElementById('faqTypingIndicator');
+      if (show) {
+        indicator.classList.remove('d-none');
+        const container = document.getElementById('faqChatMessages');
+        container.scrollTop = container.scrollHeight;
+      } else {
+        indicator.classList.add('d-none');
+      }
+    }
+
+    function resetFaqChat() {
+      const container = document.getElementById('faqChatMessages');
+      container.innerHTML = `
+        <div class="d-flex align-items-start gap-2">
+          <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; background: rgba(212, 175, 55, 0.2); color: var(--gold);">
+            <i class="bi bi-robot fs-7"></i>
+          </div>
+          <div class="p-3 rounded-4 bg-dark border border-secondary border-opacity-40 text-white fs-8" style="max-width: 85%; border-top-right-radius: 4px;">
+            <p class="mb-2 fw-bold text-gold">مرحباً بك! 👋 أنا مساعد منصة ردود الآلي.</p>
+            <p class="mb-2 text-white-50">أنا هنا لمساعدتك في فهم كل ما يتعلق بالمنصة وطريقة تشغيل البوت لمتجرك أو شركتك.</p>
+            <p class="mb-0 text-white-50">يمكنك النقر على أي من الأسئلة الجاهزة في القائمة، أو كتابة سؤالك مباشرة في المربع أدناه! 👇</p>
+          </div>
+        </div>
+      `;
+    }
+  </script>
 </body>
 </html>
