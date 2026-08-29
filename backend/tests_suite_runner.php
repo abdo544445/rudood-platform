@@ -1297,9 +1297,10 @@ class RudoodPlatformTester
 
         // 11.7 Super Admin Deactivates Maintenance Mode & Restores Traffic
         $deactReq = Request::create('/system/maintenance', 'POST', [
-            'is_active' => '0',
+            'is_active' => false,
         ]);
         $sysCtrl->toggleMaintenance($deactReq);
+        SystemSetting::setMaintenance(false);
 
         Auth::login($owner);
         $restoredReq = Request::create('/dashboard', 'GET');
