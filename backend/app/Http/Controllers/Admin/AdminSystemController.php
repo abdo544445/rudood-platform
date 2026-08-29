@@ -142,9 +142,20 @@ class AdminSystemController extends Controller
         $recent_logs = [];
         $log_file = storage_path('logs/laravel.log');
         if (File::exists($log_file)) {
-            $log_content = File::get($log_file);
-            $lines = explode("\n", trim($log_content));
-            $recent_logs = array_slice(array_reverse($lines), 0, 30);
+            try {
+                $fileSize = filesize($log_file);
+                $fp = fopen($log_file, 'r');
+                if ($fp) {
+                    $offset = max(0, $fileSize - 50000);
+                    fseek($fp, $offset);
+                    $chunk = fread($fp, 50000);
+                    fclose($fp);
+                    $lines = explode("\n", trim($chunk));
+                    $recent_logs = array_slice(array_reverse($lines), 0, 30);
+                }
+            } catch (\Throwable $e) {
+                $recent_logs = [];
+            }
         }
 
         // 7. System Maintenance Mode Configuration
