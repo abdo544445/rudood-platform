@@ -67,7 +67,7 @@ class AiService
         }
 
         if (!$apiKey) {
-            $this->lastError = "مفتاح API الخاص بمزود الذكاء الاصطناعي ({$provider}) غير متوفر. يرجى إضافته في ملف .env أو إعدادات البوت.";
+            $this->lastError = "مفتاح API الخاص بمزود الذكاء الاصطناعي غير متوفر.";
             return $this->getFallbackReply();
         }
 

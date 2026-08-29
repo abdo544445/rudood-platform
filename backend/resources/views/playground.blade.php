@@ -485,11 +485,6 @@
 
     const latencyBadge = `<span class="text-white-50 fs-9 ms-2"><i class="bi bi-stopwatch"></i> ${data.latency_ms} ms</span>`;
     const parsedMarkdown = (typeof marked !== 'undefined') ? marked.parse(data.reply || '') : (data.reply || '');
-    const errorNotice = (data.trigger === 'fallback' && data.error_detail) ? `
-      <div class="mt-2 p-2 rounded-2 bg-danger bg-opacity-15 border border-danger border-opacity-25 text-danger fs-9">
-        <i class="bi bi-info-circle-fill me-1"></i><strong>ملاحظة تشخيصية:</strong> ${data.error_detail}
-      </div>
-    ` : '';
 
     let interactiveHtml = '';
     const replyText = data.reply || '';
@@ -543,7 +538,6 @@
       </div>
       <div class="bot-reply-content">${parsedMarkdown}</div>
       ${interactiveHtml}
-      ${errorNotice}
     `;
 
     chatBox.appendChild(bubble);
