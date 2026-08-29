@@ -4,9 +4,13 @@
     admin off
 }
 
-# 1. Real Valid Let's Encrypt SSL Domain (Free instant DNS mapping to our Droplet IP)
-178.128.38.186.nip.io {
+# 1. Real Valid Let's Encrypt SSL Domain (sslip.io)
+178-128-38-186.sslip.io {
     encode zstd gzip
+
+    tls {
+        issuer letsencrypt
+    }
 
     header {
         X-Robots-Tag "noindex, nofollow"
