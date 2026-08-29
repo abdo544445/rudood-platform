@@ -42,18 +42,20 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/contact', fn() => view('try'))->name('contact');
 Route::get('/try', fn() => view('try'));
 Route::post('/contact', function (\Illuminate\Http\Request $request) {
-    $validated = $request->validate([
-        'sender_name'    => 'required|string|max:255',
-        'sender_email'   => 'required|email|max:255',
-        'sender_subject' => 'nullable|string|max:255',
-        'sender_message' => 'required|string|max:2000',
-    ]);
+    $name = $request->input('sender_name') ?: $request->input('name');
+    $email = $request->input('sender_email') ?: $request->input('email');
+    $subject = $request->input('sender_subject') ?: $request->input('subject') ?: 'استفسار عام';
+    $message = $request->input('sender_message') ?: $request->input('message');
+
+    if (empty($name) || empty($email) || empty($message)) {
+        return back()->withErrors(['msg' => 'يرجى تعبئة كافة الحقول المطلوبة (الاسم، البريد، ونص الرسالة).'])->withInput();
+    }
 
     $contact = ContactMessage::create([
-        'name'       => $validated['sender_name'],
-        'email'      => $validated['sender_email'],
-        'subject'    => $validated['sender_subject'] ?? 'استفسار عام',
-        'message'    => $validated['sender_message'],
+        'name'       => $name,
+        'email'      => $email,
+        'subject'    => $subject,
+        'message'    => $message,
         'status'     => 'new',
         'ip_address' => $request->ip(),
     ]);

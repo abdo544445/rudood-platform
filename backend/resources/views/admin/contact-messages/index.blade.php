@@ -5,46 +5,52 @@
 
 @section('styles')
 <style>
-    /* High-contrast status badges for contact messages */
+    /* Crystal-clear, high-contrast solid status badges for contact messages */
     .badge-status-new {
-        background: rgba(239, 68, 68, 0.18) !important;
-        color: #fca5a5 !important;
-        border: 1px solid rgba(239, 68, 68, 0.5) !important;
+        background-color: #dc2626 !important;
+        color: #ffffff !important;
+        border: 1px solid #ef4444 !important;
         font-weight: 700 !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     }
     .badge-status-new:hover, .badge-status-new:focus {
-        background: rgba(239, 68, 68, 0.3) !important;
+        background-color: #b91c1c !important;
         color: #ffffff !important;
-        border-color: #ef4444 !important;
+        border-color: #f87171 !important;
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
     }
 
     .badge-status-in_progress {
-        background: rgba(245, 158, 11, 0.18) !important;
-        color: #fde047 !important;
-        border: 1px solid rgba(245, 158, 11, 0.5) !important;
+        background-color: #d97706 !important;
+        color: #ffffff !important;
+        border: 1px solid #f59e0b !important;
         font-weight: 700 !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     }
     .badge-status-in_progress:hover, .badge-status-in_progress:focus {
-        background: rgba(245, 158, 11, 0.3) !important;
+        background-color: #b45309 !important;
         color: #ffffff !important;
-        border-color: #f59e0b !important;
+        border-color: #fbbf24 !important;
+        box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
     }
 
     .badge-status-resolved {
-        background: rgba(34, 197, 94, 0.18) !important;
-        color: #86efac !important;
-        border: 1px solid rgba(34, 197, 94, 0.5) !important;
+        background-color: #16a34a !important;
+        color: #ffffff !important;
+        border: 1px solid #22c55e !important;
         font-weight: 700 !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     }
     .badge-status-resolved:hover, .badge-status-resolved:focus {
-        background: rgba(34, 197, 94, 0.3) !important;
+        background-color: #15803d !important;
         color: #ffffff !important;
-        border-color: #22c55e !important;
+        border-color: #4ade80 !important;
+        box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
     }
 
     .status-toggle-btn {
         transition: all 0.2s ease;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
     .status-toggle-btn:after {
         margin-right: 0.35rem;
