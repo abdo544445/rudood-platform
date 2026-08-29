@@ -179,7 +179,9 @@
         <span class="badge bg-gold-subtle text-gold rounded-pill px-3 py-2 mb-3 border border-warning border-opacity-25 fs-6">
           <i class="bi bi-magic me-1"></i> دليل البدء والتشغيل الفوري لمتجرك
         </span>
-        <h1 class="display-4 fw-extrabold mb-3 text-white">كيف يعمل البوت الذكي في <span class="text-gold-gradient">متجرك أو شركتك؟</span></h1>
+        <h1 class="display-4 fw-extrabold mb-3 text-white">
+          <span class="text-gold-gradient">كيف يعمل البوت الذكي في متجرك أو شركتك؟</span>
+        </h1>
         <p class="lead text-white-50 mx-auto" style="max-width: 780px;">
           خطوات مدروسة وبسيطة لنقل خدمة العملاء والمبيعات في متجرك إلى الجيل القادم من الذكاء الاصطناعي. بعد اشتراكك واعتماد حسابك، إليك كيف يتم إعداد وتشغيل البوت ليعمل بدقة واحترافية كأفضل موظف مبيعات لديك.
         </p>
