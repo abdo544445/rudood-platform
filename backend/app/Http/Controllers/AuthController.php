@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Models\Bot;
+use App\Models\SystemSetting;
 
 class AuthController extends Controller
 {
@@ -17,6 +18,10 @@ class AuthController extends Controller
      */
     public function showLogin()
     {
+        if (SystemSetting::isMaintenanceActive() && (!Auth::check() || !Auth::user()->isSuperAdmin())) {
+            return redirect()->route('maintenance');
+        }
+
         if (Auth::check()) {
             return Auth::user()->isSuperAdmin()
                 ? redirect()->route('admin.dashboard')
@@ -26,10 +31,62 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle login form submission.
+     * Show dedicated Super Admin login page (accessible during maintenance).
+     */
+    public function showAdminLogin()
+    {
+        if (Auth::check() && Auth::user()->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+        return view('login');
+    }
+
+    /**
+     * Handle Super Admin login during maintenance or normal operations.
+     */
+    public function adminLogin(Request $request)
+    {
+        $credentials = $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            $user = Auth::user();
+
+            if ($user->isSuperAdmin()) {
+                $request->session()->regenerate();
+                return redirect()->route('admin.dashboard')->with('success', 'مرحباً بك في لوحة الإدارة العليا (Super Admin) 👑');
+            }
+
+            // Non-superadmins are rejected if logging in through admin portal or in maintenance
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            if (SystemSetting::isMaintenanceActive()) {
+                return redirect()->route('maintenance')->with('info', 'المنصة في وضع الصيانة حالياً. تسجيل الدخول متاح فقط لمدير النظام.');
+            }
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'هذه البوابة مخصصة للمشرفين العامين فقط.',
+            ])->withInput($request->only('email'));
+        }
+
+        return back()->withErrors([
+            'email' => 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
+        ])->withInput($request->only('email'));
+    }
+
+    /**
+     * Handle standard login form submission.
      */
     public function login(Request $request)
     {
+        if (SystemSetting::isMaintenanceActive()) {
+            return redirect()->route('maintenance')->with('info', 'المنصة في وضع الصيانة حالياً. تسجيل الدخول متاح فقط لمدير النظام.');
+        }
+
         $credentials = $request->validate([
             'email'    => 'required|email',
             'password' => 'required',
@@ -77,6 +134,10 @@ class AuthController extends Controller
      */
     public function showRegister()
     {
+        if (SystemSetting::isMaintenanceActive()) {
+            return redirect()->route('maintenance');
+        }
+
         if (Auth::check()) {
             return Auth::user()->isSuperAdmin()
                 ? redirect()->route('admin.dashboard')
@@ -92,6 +153,10 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        if (SystemSetting::isMaintenanceActive()) {
+            return redirect()->route('maintenance');
+        }
+
         $request->validate([
             'full_name' => 'required|string|max:255',
             'email'     => 'required|email|unique:users,email',
@@ -162,6 +227,10 @@ class AuthController extends Controller
      */
     public function submitSubscriptionRequest(Request $request)
     {
+        if (SystemSetting::isMaintenanceActive()) {
+            return redirect()->route('maintenance');
+        }
+
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
             'email'         => 'required|email|max:255',

@@ -74,10 +74,12 @@ Route::post('/contact', function (\Illuminate\Http\Request $request) {
 })->name('contact.submit');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::get('/admin/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
 
 Route::middleware(['throttle:login'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.submit');
 });
 
 // ─── Super Admin Routes (Admin Auth Required) ─────────────────────────────────

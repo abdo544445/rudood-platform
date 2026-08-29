@@ -21,17 +21,17 @@ class CheckMaintenanceMode
             return $next($request);
         }
 
-        // 2. Allow Super Admins to bypass maintenance completely
+        // 2. Allow authenticated Super Admins to bypass maintenance completely
         if (auth()->check() && method_exists(auth()->user(), 'isSuperAdmin') && auth()->user()->isSuperAdmin()) {
             return $next($request);
         }
 
-        // 3. Allow Super Admin routes (/admin/*) so administrators can log in and manage the platform
-        if ($request->is('admin*')) {
+        // 3. Allow Super Admin login routes (/admin/login) so administrators can log in
+        if ($request->is('admin/login*')) {
             return $next($request);
         }
 
-        // 4. Allow public index / general landing page (Explicit user requirement)
+        // 4. Allow public index / general landing page only (Explicit user requirement)
         if ($request->is('/') || $request->path() === '' || $request->is('index')) {
             return $next($request);
         }
@@ -41,7 +41,7 @@ class CheckMaintenanceMode
             return $next($request);
         }
 
-        // 6. Allow public assets, health checks, and inbound webhooks
+        // 6. Allow public static assets, health checks, and inbound webhooks
         if ($request->is([
             'api/webhooks*',
             'widget.js',
