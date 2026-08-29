@@ -8,10 +8,6 @@
 178-128-38-186.sslip.io {
     encode zstd gzip
 
-    tls {
-        issuer letsencrypt
-    }
-
     header {
         X-Robots-Tag "noindex, nofollow"
         X-Frame-Options "SAMEORIGIN"
