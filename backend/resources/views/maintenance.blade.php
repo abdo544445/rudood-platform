@@ -308,7 +308,7 @@
 
         <!-- Super Admin Subtle Portal Link -->
         <div>
-            <a href="{{ route('admin.login') }}" class="admin-bypass-link">
+            <a href="{{ url('/admin/login') }}" class="admin-bypass-link">
                 <i class="bi bi-shield-lock"></i>
                 <span>بوابة دخول المشرف العام (Super Admin)</span>
             </a>
