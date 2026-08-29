@@ -1,22 +1,6 @@
-# Global Caddy Configuration
-{
-    email support@rudood.com
-    admin off
-}
-
-# 1. Real Valid Let's Encrypt SSL Domain (sslip.io)
-178-128-38-186.sslip.io {
-    encode zstd gzip
-
-    header {
-        X-Robots-Tag "noindex, nofollow"
-        X-Frame-Options "SAMEORIGIN"
-        X-Content-Type-Options "nosniff"
-        Referrer-Policy "strict-origin-when-cross-origin"
-        -Server
-    }
-
-    # Route WebSocket connections
+# Clean Direct HTTP Setup for Droplet IP: 178.128.38.186
+:80 {
+    # Route WebSocket connections for Live Chat
     @websocket {
         header Connection *Upgrade*
         header Upgrade websocket
@@ -27,7 +11,7 @@
         reverse_proxy websocket:3000
     }
 
-    # Route standard web requests to Laravel Application
+    # Route all standard web requests to Laravel Application
     handle {
         reverse_proxy app:80 {
             header_up Host {host}
@@ -37,14 +21,3 @@
         }
     }
 }
-
-# 2. Raw IP HTTP fallback
-:80 {
-    handle /socket.io/* {
-        reverse_proxy websocket:3000
-    }
-    handle {
-        reverse_proxy app:80
-    }
-}
-
