@@ -87,10 +87,13 @@ class AdminSystemController extends Controller
         $redis_memory = 'N/A';
 
         try {
-            $redis_info = Redis::info();
-            $redis_status = 'متصل (Connected)';
-            $redis_memory = round(($redis_info['used_memory'] ?? 0) / 1024 / 1024, 2) . ' MB';
-            $redis_keys_count = Redis::dbSize();
+            if (class_exists(\Illuminate\Support\Facades\Redis::class)) {
+                $redis_info = \Illuminate\Support\Facades\Redis::info();
+                $redis_status = 'متصل (Connected)';
+                $used_mem = $redis_info['used_memory'] ?? ($redis_info['Memory']['used_memory'] ?? 0);
+                $redis_memory = round((int)$used_mem / 1024 / 1024, 2) . ' MB';
+                $redis_keys_count = \Illuminate\Support\Facades\Redis::dbSize();
+            }
         } catch (\Throwable $e) {
             $redis_status = 'غير مفعل (مكتبي)';
         }

@@ -81,7 +81,7 @@ class DashboardController extends Controller
         // --- 2. New Secondary Cards ---
         $active_bots = Bot::where('workspace_id', $workspace_id)->where('is_active', true)->count();
         $team_users = User::where('workspace_id', $workspace_id)->count();
-        $knowledge_docs = KnowledgeBase::where('workspace_id', $workspace_id)->count();
+        $knowledge_docs = KnowledgeBase::whereHas('bot', fn($q) => $q->where('workspace_id', $workspace_id))->count();
         
         $connected_channels = 0;
         $channels = collect();
