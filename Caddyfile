@@ -4,13 +4,10 @@
     admin off
 }
 
-# Default HTTP/HTTPS configuration (Works directly with Public IP or Localhost)
-# Note: When you buy a domain (e.g. app.rudood.com), simply replace the first line with your domain name!
-:80, :443 {
-    # Automatic self-signed SSL for IP / Localhost
-    tls internal
+# 1. Real Valid Let's Encrypt SSL Domain (Free instant DNS mapping to our Droplet IP)
+178.128.38.186.nip.io {
+    encode zstd gzip
 
-    # Security Headers
     header {
         X-Robots-Tag "noindex, nofollow"
         X-Frame-Options "SAMEORIGIN"
@@ -19,7 +16,7 @@
         -Server
     }
 
-    # Route WebSocket connections to the Node.js realtime server
+    # Route WebSocket connections
     @websocket {
         header Connection *Upgrade*
         header Upgrade websocket
@@ -30,7 +27,7 @@
         reverse_proxy websocket:3000
     }
 
-    # Route all standard web requests to Laravel Application (Nginx + PHP-FPM)
+    # Route standard web requests to Laravel Application
     handle {
         reverse_proxy app:80 {
             header_up Host {host}
@@ -40,3 +37,14 @@
         }
     }
 }
+
+# 2. Raw IP HTTP fallback
+:80 {
+    handle /socket.io/* {
+        reverse_proxy websocket:3000
+    }
+    handle {
+        reverse_proxy app:80
+    }
+}
+
