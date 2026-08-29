@@ -35,6 +35,8 @@ RUN cd websocket && npm install --production
 # Create storage directory structure and set permissions
 RUN mkdir -p storage/logs storage/framework/views storage/framework/sessions storage/framework/cache \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Copy entrypoint script and set executable
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
