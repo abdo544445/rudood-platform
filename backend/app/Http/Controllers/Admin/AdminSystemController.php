@@ -19,9 +19,15 @@ class AdminSystemController extends Controller
         $db_status = 'متصل (Connected)';
         $db_size_mb = 0;
         $tables_info = [];
+        $driver = DB::getDriverName();
+        $db_driver_name = match($driver) {
+            'pgsql'  => 'PostgreSQL (Vector DB)',
+            'mysql'  => 'MySQL 8.0 Primary',
+            'sqlite' => 'SQLite 3 (Dev / Local)',
+            default  => strtoupper($driver),
+        };
 
         try {
-            $driver = DB::getDriverName();
             if ($driver === 'sqlite') {
                 $dbPath = config('database.connections.sqlite.database');
                 if (File::exists($dbPath)) {
@@ -142,6 +148,7 @@ class AdminSystemController extends Controller
         $maintenance = SystemSetting::getMaintenanceDetails();
 
         return view('admin.system.index', compact(
+            'db_driver_name',
             'db_status',
             'db_size_mb',
             'tables_info',

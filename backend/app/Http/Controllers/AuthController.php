@@ -67,6 +67,7 @@ class AuthController extends Controller
     /**
      * Handle registration form submission.
      * Creates: Workspace → Bot → User (linked together atomically).
+     * Also creates a SubscriberRequest record for admin visibility.
      */
     public function register(Request $request)
     {
@@ -80,24 +81,24 @@ class AuthController extends Controller
         $user = DB::transaction(function () use ($request) {
             // 1. Create workspace for this user
             $workspace = Workspace::create([
-                'company_name' => $request->full_name . "'s Workspace",
+                'company_name' => $request->full_name . "'s Store",
                 'status'       => 'active',
             ]);
 
             // 2. Create the default Bot for this workspace
             Bot::create([
-                'workspace_id'  => $workspace->id,
-                'name'          => 'مساعد ردود الذكي',
-                'system_prompt' => 'أنت مساعد ذكاء اصطناعي مفيد ومهني. رد على أسئلة العملاء بدقة ولطف.',
-                'ai_provider'   => 'openai',
-                'model_type'    => 'gpt-4o-mini',
-                'bot_tone'      => 'friendly',
+                'workspace_id'    => $workspace->id,
+                'name'            => 'مساعد ردود الذكي',
+                'system_prompt'   => 'أنت مساعد ذكاء اصطناعي مفيد ومهني. رد على أسئلة العملاء بدقة ولطف.',
+                'ai_provider'     => 'gemini',
+                'model_type'      => 'gemini-1.5-flash',
+                'bot_tone'        => 'friendly',
                 'welcome_message' => 'أهلاً بك! 👋 أنا مساعدك الذكي، كيف يمكنني خدمتك اليوم؟',
-                'is_active'     => true,
+                'is_active'       => true,
             ]);
 
             // 3. Create the user linked to this workspace
-            return User::create([
+            $newUser = User::create([
                 'name'         => $request->full_name,
                 'email'        => $request->email,
                 'phone'        => $request->phone,
@@ -105,9 +106,25 @@ class AuthController extends Controller
                 'workspace_id' => $workspace->id,
                 'role'         => 'owner',
             ]);
+
+            // 4. Create a SubscriberRequest record for admin visibility & audit trail
+            //    Status is 'approved' because user self-registered (bypassed approval)
+            \App\Models\SubscriberRequest::create([
+                'name'            => $request->full_name,
+                'email'           => $request->email,
+                'phone'           => $request->phone,
+                'company_name'    => $request->full_name . "'s Store",
+                'selected_plan'   => 'starter',
+                'notes'           => 'طلب تسجيل ذاتي عبر صفحة التسجيل',
+                'status'          => 'approved',
+                'approved_at'     => now(),
+                'created_user_id' => $newUser->id,
+            ]);
+
+            return $newUser;
         });
 
-        // 4. Log the user in
+        // 5. Log the user in
         Auth::login($user);
         $request->session()->regenerate();
 

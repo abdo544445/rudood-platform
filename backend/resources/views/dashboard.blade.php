@@ -76,7 +76,7 @@
       <div class="stat-card p-3 border border-gold border-opacity-30 position-relative overflow-hidden" style="background: linear-gradient(145deg, rgba(212,175,55,0.08) 0%, rgba(15,23,42,0.9) 100%);">
         <div class="d-flex justify-content-between align-items-start mb-2">
           <span class="text-white-50 fs-8">الإيرادات المحققة بواسطة ردود</span>
-          <span class="badge bg-gold text-dark fs-9 fw-bold px-2 py-1"><i class="bi bi-arrow-up-right me-1"></i>+24.5%</span>
+          <span class="badge badge-roi-gold rounded-pill px-2.5 py-1 fs-9 fw-bold"><i class="bi bi-arrow-up-right me-1"></i>+24.5%</span>
         </div>
         <h3 class="fw-bold text-gold mb-1" id="roiRevenueVal">{{ number_format($roi_stats['revenue_generated'] ?? 0, 2) }} <span class="fs-8 text-white-50">ر.س</span></h3>
         <small class="text-white-50 fs-9 d-block">مبيعات مكتملة ناتجة عن محادثات AI</small>
@@ -88,7 +88,7 @@
       <div class="stat-card p-3 border border-success border-opacity-30" style="background: linear-gradient(145deg, rgba(34,197,94,0.08) 0%, rgba(15,23,42,0.9) 100%);">
         <div class="d-flex justify-content-between align-items-start mb-2">
           <span class="text-white-50 fs-8">معدل تجنيب الموظفين (Deflection)</span>
-          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-25 fs-9">آلي بالكامل</span>
+          <span class="badge badge-roi-success rounded-pill px-2.5 py-1 fs-9">آلي بالكامل</span>
         </div>
         <h3 class="fw-bold text-success mb-1" id="roiDeflectionVal">{{ $roi_stats['deflection_rate'] ?? 0 }}%</h3>
         <small class="text-white-50 fs-9 d-block">{{ $roi_stats['bot_resolved'] ?? 0 }} استفسار حُل دون تدخل بشري</small>
@@ -100,7 +100,7 @@
       <div class="stat-card p-3 border border-info border-opacity-30" style="background: linear-gradient(145deg, rgba(14,165,233,0.08) 0%, rgba(15,23,42,0.9) 100%);">
         <div class="d-flex justify-content-between align-items-start mb-2">
           <span class="text-white-50 fs-8">ساعات عمل الموظفين الموفرة</span>
-          <span class="badge bg-info bg-opacity-20 text-info border border-info border-opacity-25 fs-9">وفر تشغيلي</span>
+          <span class="badge badge-roi-info rounded-pill px-2.5 py-1 fs-9">وفر تشغيلي</span>
         </div>
         <h3 class="fw-bold text-info mb-1" id="roiHoursVal">{{ $roi_stats['hours_saved'] ?? 0 }} <span class="fs-8 text-white-50">ساعة</span></h3>
         <small class="text-white-50 fs-9 d-block">توفير تكلفة قدره ~{{ number_format($roi_stats['cost_savings_amount'] ?? 0) }} ر.س</small>
@@ -112,7 +112,7 @@
       <div class="stat-card p-3 border border-warning border-opacity-30" style="background: linear-gradient(145deg, rgba(245,158,11,0.08) 0%, rgba(15,23,42,0.9) 100%);">
         <div class="d-flex justify-content-between align-items-start mb-2">
           <span class="text-white-50 fs-8">طلبات الشراء المحولة</span>
-          <span class="badge bg-warning bg-opacity-20 text-warning border border-warning border-opacity-25 fs-9">تحويل {{ $roi_stats['conversion_rate'] ?? 0 }}%</span>
+          <span class="badge badge-roi-warning rounded-pill px-2.5 py-1 fs-9">تحويل {{ $roi_stats['conversion_rate'] ?? 0 }}%</span>
         </div>
         <h3 class="fw-bold text-white mb-1" id="roiOrdersVal">{{ $roi_stats['converted_orders_count'] ?? 0 }} <span class="fs-8 text-white-50">طلب</span></h3>
         <small class="text-white-50 fs-9 d-block">متوسط قيمة الطلب: {{ number_format($roi_stats['average_order_value'] ?? 0) }} ر.س</small>
@@ -229,7 +229,7 @@
           <h5 class="fw-bold text-white mb-0"><i class="bi bi-cart-check-fill text-gold me-2"></i>أحدث المبيعات المحولة عبر AI</h5>
           <small class="text-white-50 fs-9">طلبات تمت بعد تفاعل مباشر مع المساعد الذكي</small>
         </div>
-        <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-25 fs-9">محققة</span>
+        <span class="badge badge-roi-success rounded-pill px-2.5 py-1 fs-9">محققة</span>
       </div>
       <div class="table-responsive">
         <table class="custom-dark-table mb-0">

@@ -28,6 +28,9 @@ use App\Models\AuditLog;
 Route::get('/', fn() => view('index'))->name('home');
 Route::get('/index', fn() => view('index'));
 Route::get('/how-it-works', fn() => view('how-it-works'))->name('how-it-works');
+Route::get('/auto', fn() => view('auto'))->name('public.auto');
+Route::get('/chat', fn() => view('chat'))->name('public.chat');
+Route::get('/ai', fn() => view('ai'))->name('public.ai');
 Route::get('/subscription-pending', [AuthController::class, 'showSubscriptionPending'])->name('subscription.pending');
 Route::post('/subscribe-request', [AuthController::class, 'submitSubscriptionRequest'])->name('subscription.request');
 Route::get('/maintenance', [AdminSystemController::class, 'showMaintenancePage'])->name('maintenance');
@@ -256,8 +259,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/ai-manage/test', [BotController::class, 'testAi']);
 
     // Legacy Route Redirects (Ensures all URLs load the active dynamic modules)
-    Route::get('/chat', fn() => redirect('/live-chat'));
-    Route::get('/auto', fn() => redirect('/ai-manage'));
-    Route::get('/ai', fn() => redirect('/playground'));
     Route::get('/article', fn() => redirect('/blog'));
 });

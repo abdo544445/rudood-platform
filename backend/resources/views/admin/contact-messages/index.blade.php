@@ -3,6 +3,56 @@
 @section('title', 'رسائل واستفسارات تواصل معنا | الإدارة العليا')
 @section('header_title', 'رسائل واستفسارات تواصل معنا (Contact Us Inquiries)')
 
+@section('styles')
+<style>
+    /* High-contrast status badges for contact messages */
+    .badge-status-new {
+        background: rgba(239, 68, 68, 0.18) !important;
+        color: #fca5a5 !important;
+        border: 1px solid rgba(239, 68, 68, 0.5) !important;
+        font-weight: 700 !important;
+    }
+    .badge-status-new:hover, .badge-status-new:focus {
+        background: rgba(239, 68, 68, 0.3) !important;
+        color: #ffffff !important;
+        border-color: #ef4444 !important;
+    }
+
+    .badge-status-in_progress {
+        background: rgba(245, 158, 11, 0.18) !important;
+        color: #fde047 !important;
+        border: 1px solid rgba(245, 158, 11, 0.5) !important;
+        font-weight: 700 !important;
+    }
+    .badge-status-in_progress:hover, .badge-status-in_progress:focus {
+        background: rgba(245, 158, 11, 0.3) !important;
+        color: #ffffff !important;
+        border-color: #f59e0b !important;
+    }
+
+    .badge-status-resolved {
+        background: rgba(34, 197, 94, 0.18) !important;
+        color: #86efac !important;
+        border: 1px solid rgba(34, 197, 94, 0.5) !important;
+        font-weight: 700 !important;
+    }
+    .badge-status-resolved:hover, .badge-status-resolved:focus {
+        background: rgba(34, 197, 94, 0.3) !important;
+        color: #ffffff !important;
+        border-color: #22c55e !important;
+    }
+
+    .status-toggle-btn {
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .status-toggle-btn:after {
+        margin-right: 0.35rem;
+        vertical-align: 0.15em;
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="row g-3 mb-4">
     <!-- Header Summary Card -->
@@ -10,7 +60,7 @@
         <div class="card-custom p-3 d-flex flex-row justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <h5 class="fw-bold text-white mb-1"><i class="bi bi-envelope-paper-heart text-gold me-2"></i>صندوق استفسارات العملاء والزوار</h5>
-                <p class="text-white-50 fs-8 mb-0">متابعة كافة الرسائل والاستفسارات الواردة عبر صفحة "تواصل معنا" مع إمكانية تحديث الحالة والرد.</p>
+                <p class="text-white-50 fs-8 mb-0">متابعة كافة الرسائل والاستفسارات الواردة عبر صفحة "تواصل معنا" مع إمكانية تعديل الحالة مباشرة من الجدول أو الرد.</p>
             </div>
             <div class="d-flex align-items-center gap-2">
                 <span class="badge bg-gold text-dark px-3 py-2 fw-bold fs-8 rounded-pill">
@@ -24,25 +74,25 @@
     <div class="col-sm-6 col-lg-3">
         <div class="card-custom p-3 text-center border-start border-4 border-info">
             <span class="text-white-50 fs-8">إجمالي الوارد</span>
-            <h3 class="fw-bold text-white mb-0 mt-1">{{ $stats['total'] }}</h3>
+            <h3 class="fw-bold text-white mb-0 mt-1" id="statTotal">{{ $stats['total'] }}</h3>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
         <div class="card-custom p-3 text-center border-start border-4 border-danger">
             <span class="text-white-50 fs-8">رسائل جديدة (لم تُعالج)</span>
-            <h3 class="fw-bold text-danger mb-0 mt-1">{{ $stats['new'] }}</h3>
+            <h3 class="fw-bold text-danger mb-0 mt-1" id="statNew">{{ $stats['new'] }}</h3>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
         <div class="card-custom p-3 text-center border-start border-4 border-warning">
             <span class="text-white-50 fs-8">قيد المتابعة والتواصل</span>
-            <h3 class="fw-bold text-gold mb-0 mt-1">{{ $stats['in_progress'] }}</h3>
+            <h3 class="fw-bold text-gold mb-0 mt-1" id="statProgress">{{ $stats['in_progress'] }}</h3>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
         <div class="card-custom p-3 text-center border-start border-4 border-success">
             <span class="text-white-50 fs-8">تم الحل والرد</span>
-            <h3 class="fw-bold text-success mb-0 mt-1">{{ $stats['resolved'] }}</h3>
+            <h3 class="fw-bold text-success mb-0 mt-1" id="statResolved">{{ $stats['resolved'] }}</h3>
         </div>
     </div>
 
@@ -83,7 +133,7 @@
                             <th>المرسل والمعلومات</th>
                             <th>موضوع الرسالة</th>
                             <th>مقتطف الرسالة</th>
-                            <th>الحالة</th>
+                            <th style="min-width: 170px;">الحالة (انقر للتعديل)</th>
                             <th>تاريخ الاستلام</th>
                             <th class="pe-3 text-end">الإجراءات</th>
                         </tr>
@@ -110,9 +160,44 @@
                                 <div class="text-white-50 fs-8 text-truncate">{{ $msg->message }}</div>
                             </td>
                             <td>
-                                <span class="badge {{ $msg->status_badge_class }} rounded-pill px-2.5 py-1 fs-9">
-                                    {{ $msg->status_label }}
-                                </span>
+                                <!-- Interactive Status Dropdown Toggle Directly in Table -->
+                                <div class="dropdown d-inline-block">
+                                    @php
+                                        $badgeClass = match($msg->status) {
+                                            'new'         => 'badge-status-new',
+                                            'in_progress' => 'badge-status-in_progress',
+                                            'resolved'    => 'badge-status-resolved',
+                                            default       => 'badge-status-new',
+                                        };
+                                        $iconClass = match($msg->status) {
+                                            'new'         => 'bi-exclamation-circle-fill',
+                                            'in_progress' => 'bi-hourglass-split',
+                                            'resolved'    => 'bi-check-circle-fill',
+                                            default       => 'bi-circle',
+                                        };
+                                    @endphp
+                                    <button class="btn btn-sm dropdown-toggle rounded-pill px-3 py-1 fs-9 status-toggle-btn status-btn-{{ $msg->id }} {{ $badgeClass }}" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="انقر لتعديل الحالة فورياً">
+                                        <i class="bi {{ $iconClass }} me-1 status-icon-{{ $msg->id }}"></i>
+                                        <span class="status-text-{{ $msg->id }}">{{ $msg->status_label }}</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow-lg border border-secondary border-opacity-25 rounded-3 fs-9 p-1">
+                                        <li>
+                                            <a class="dropdown-item py-2 rounded-2 text-danger fw-bold d-flex align-items-center gap-2" href="javascript:void(0)" onclick="quickUpdateContactStatus({{ $msg->id }}, 'new', 'جديدة', 'badge-status-new', 'bi-exclamation-circle-fill')">
+                                                <i class="bi bi-exclamation-circle-fill"></i> جديدة (New)
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item py-2 rounded-2 text-warning fw-bold d-flex align-items-center gap-2" href="javascript:void(0)" onclick="quickUpdateContactStatus({{ $msg->id }}, 'in_progress', 'قيد المتابعة', 'badge-status-in_progress', 'bi-hourglass-split')">
+                                                <i class="bi bi-hourglass-split"></i> قيد المتابعة (In Progress)
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item py-2 rounded-2 text-success fw-bold d-flex align-items-center gap-2" href="javascript:void(0)" onclick="quickUpdateContactStatus({{ $msg->id }}, 'resolved', 'تم الحل والرد', 'badge-status-resolved', 'bi-check-circle-fill')">
+                                                <i class="bi bi-check-circle-fill"></i> تم الحل والرد (Resolved)
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </td>
                             <td>
                                 <div class="text-white fs-8">{{ $msg->created_at->format('Y-m-d') }}</div>
@@ -121,7 +206,7 @@
                             <td class="pe-3 text-end">
                                 <div class="btn-group btn-group-sm">
                                     <!-- View Modal Trigger Button -->
-                                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#msgModal{{ $msg->id }}" title="قراءة الرسالة">
+                                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#msgModal{{ $msg->id }}" title="قراءة الرسالة الكاملة">
                                         <i class="bi bi-eye"></i>
                                     </button>
 
@@ -195,7 +280,7 @@
                                                     </div>
                                                     <div class="modal-footer border-secondary border-opacity-25 mt-4 px-0 pb-0 d-flex justify-content-between">
                                                         <a href="mailto:{{ $msg->email }}?subject={{ rawurlencode('رد على استفسارك: ' . ($msg->subject ?: 'منصة ردود')) }}" class="btn btn-outline-info rounded-pill px-4 fs-8">
-                                                            <i class="bi bi-reply-fill me-1"></i> الرد عبر البريد الإلكتروني
+                                                             <i class="bi bi-reply-fill me-1"></i> الرد عبر البريد الإلكتروني
                                                         </a>
                                                         <button type="submit" class="btn btn-gold rounded-pill px-4 fs-8 fw-bold">
                                                             <i class="bi bi-check2-circle me-1"></i> حفظ التحديثات
@@ -235,3 +320,49 @@
     </div>
 </div>
 @endsection
+
+@section('scripts')
+<script>
+async function quickUpdateContactStatus(msgId, newStatus, newLabel, badgeClass, iconClass) {
+    const btn = document.querySelector(`.status-btn-${msgId}`);
+    const textSpan = document.querySelector(`.status-text-${msgId}`);
+    const iconEl = document.querySelector(`.status-icon-${msgId}`);
+
+    if (!btn) return;
+
+    // Visual feedback
+    btn.style.opacity = '0.5';
+
+    try {
+        const response = await fetch(`{{ url('/admin/contacts') }}/${msgId}/status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ status: newStatus })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Update button styling classes
+            btn.className = `btn btn-sm dropdown-toggle rounded-pill px-3 py-1 fs-9 status-toggle-btn status-btn-${msgId} ${badgeClass}`;
+            textSpan.textContent = newLabel;
+            if (iconEl) {
+                iconEl.className = `bi ${iconClass} me-1 status-icon-${msgId}`;
+            }
+        } else {
+            alert('تعذر تحديث الحالة: ' + (data.message || 'حدث خطأ غير متوقع'));
+        }
+    } catch (err) {
+        console.error('Status update failed:', err);
+        alert('حدث خطأ في الاتصال بالخادم.');
+    } finally {
+        btn.style.opacity = '1';
+    }
+}
+</script>
+@endsection
+

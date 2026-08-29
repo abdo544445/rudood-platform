@@ -40,7 +40,7 @@
         <div class="card card-custom p-3 h-100">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="stat-lbl">قاعدة البيانات (MySQL)</div>
+                    <div class="stat-lbl">{{ $db_driver_name ?? 'قاعدة البيانات (DB)' }}</div>
                     <div class="stat-val mt-1 fs-4 text-white">{{ $db_size_mb }} MB</div>
                     <div class="small mt-1 {{ str_contains($db_status, 'متصل') ? 'text-success' : 'text-danger' }}">
                         <i class="bi bi-circle-fill"></i> {{ $db_status }}

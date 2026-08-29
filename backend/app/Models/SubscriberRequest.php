@@ -64,6 +64,22 @@ class SubscriberRequest extends Model
     public function approveAndProvision(array $customParams = [], ?int $adminId = null): User
     {
         return DB::transaction(function () use ($customParams, $adminId) {
+            // 4. Find existing user by email
+            $user = User::where('email', $this->email)->first();
+
+            // If user already has a workspace (self-registered), don't create duplicates
+            if ($user && $user->workspace_id) {
+                // Just mark this request as approved and link to the existing user
+                $this->update([
+                    'status'          => 'approved',
+                    'approved_by'     => $adminId ?? (auth()->id() ?? null),
+                    'approved_at'     => now(),
+                    'created_user_id' => $user->id,
+                    'admin_notes'     => ($customParams['admin_notes'] ?? '') . ' [المستخدم مسجل مسبقاً بمساحة عمل قائمة - تم الاعتماد دون إنشاء موارد جديدة]',
+                ]);
+                return $user;
+            }
+
             $companyName = $customParams['company_name'] ?? $this->company_name ?? ($this->name . "'s Store");
             $plan = $customParams['selected_plan'] ?? $this->selected_plan ?? 'professional';
             $password = $customParams['password'] ?? 'password123';
@@ -74,7 +90,7 @@ class SubscriberRequest extends Model
             $systemPrompt = $customParams['system_prompt'] ?? 'أنت مساعد خدمة عملاء ذكي وخبير لمتجر ' . $companyName . '، تجيب على استفسارات الأسعار والمنتجات والشحن بلباقة وسرعة.';
             $welcomeMessage = $customParams['welcome_message'] ?? 'أهلاً بك! 👋 مرحباً بكم في ' . $companyName . '، كيف يمكنني مساعدتك اليوم؟';
 
-            // 1. Create or Find Workspace
+            // 1. Create Workspace
             $workspace = Workspace::create([
                 'company_name' => $companyName,
                 'status'       => 'active',
@@ -82,7 +98,7 @@ class SubscriberRequest extends Model
             ]);
 
             // 2. Create Bot
-            $bot = Bot::create([
+            Bot::create([
                 'workspace_id'    => $workspace->id,
                 'name'            => $botName,
                 'system_prompt'   => $systemPrompt,
@@ -108,8 +124,7 @@ class SubscriberRequest extends Model
                 'renews_at'    => now()->addMonth(),
             ]);
 
-            // 4. Create or Update Owner User
-            $user = User::where('email', $this->email)->first();
+            // 4. Create new user (no existing user without workspace)
             if (!$user) {
                 $user = User::create([
                     'name'         => $this->name,
@@ -120,6 +135,7 @@ class SubscriberRequest extends Model
                     'role'         => 'owner',
                 ]);
             } else {
+                // User exists but has no workspace — assign the new one
                 $user->update([
                     'workspace_id' => $workspace->id,
                     'role'         => 'owner',

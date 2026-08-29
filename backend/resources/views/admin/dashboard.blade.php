@@ -158,16 +158,16 @@
                                 <div class="fw-bold text-white">{{ $ws->company_name }}</div>
                                 <div class="small text-muted">ID: #{{ $ws->id }}</div>
                             </td>
-                            <td><span class="badge bg-secondary bg-opacity-50">{{ $ws->users_count }}</span></td>
-                            <td><span class="badge bg-info bg-opacity-25 text-info">{{ $ws->bots_count }}</span></td>
-                            <td><span class="badge bg-primary bg-opacity-25 text-primary">{{ $ws->conversations_count }}</span></td>
+                            <td><span class="badge bg-dark border border-secondary text-white-50 px-2.5 py-1">{{ $ws->users_count }}</span></td>
+                            <td><span class="badge badge-custom-info px-2.5 py-1">{{ $ws->bots_count }}</span></td>
+                            <td><span class="badge badge-custom-gold px-2.5 py-1">{{ $ws->conversations_count }}</span></td>
                             <td>
                                 @if($ws->status === 'active')
-                                    <span class="badge bg-success bg-opacity-25 text-success">نشطة</span>
+                                    <span class="badge badge-custom-success px-2.5 py-1">نشطة</span>
                                 @elseif($ws->status === 'suspended')
-                                    <span class="badge bg-danger bg-opacity-25 text-danger">موقوفة</span>
+                                    <span class="badge badge-custom-danger px-2.5 py-1">موقوفة</span>
                                 @else
-                                    <span class="badge bg-warning bg-opacity-25 text-warning">{{ $ws->status }}</span>
+                                    <span class="badge badge-custom-warning px-2.5 py-1">{{ $ws->status }}</span>
                                 @endif
                             </td>
                             <td class="text-muted small">{{ $ws->created_at->diffForHumans() }}</td>
@@ -193,14 +193,14 @@
                     <div class="d-flex align-items-center gap-3">
                         <i class="bi-database fs-5 text-primary"></i>
                         <div>
-                            <div class="fw-bold">قاعدة البيانات (MySQL)</div>
-                            <div class="small text-muted">MySQL 8.0 Primary</div>
+                            <div class="fw-bold">قاعدة البيانات (Primary DB)</div>
+                            <div class="small text-muted">PostgreSQL / Vector DB</div>
                         </div>
                     </div>
                     @if($system_health['database'])
-                        <span class="badge bg-success bg-opacity-25 text-success px-3 py-2 rounded-pill"><i class="bi-circle-fill text-success me-1"></i> متصل</span>
+                        <span class="badge badge-custom-success px-3 py-1.5 rounded-pill"><i class="bi-circle-fill me-1"></i> متصل</span>
                     @else
-                        <span class="badge bg-danger bg-opacity-25 text-danger px-3 py-2 rounded-pill"><i class="bi-circle-fill text-danger me-1"></i> غير متصل</span>
+                        <span class="badge badge-custom-danger px-3 py-1.5 rounded-pill"><i class="bi-circle-fill me-1"></i> غير متصل</span>
                     @endif
                 </div>
 
@@ -213,9 +213,9 @@
                         </div>
                     </div>
                     @if($system_health['redis'])
-                        <span class="badge bg-success bg-opacity-25 text-success px-3 py-2 rounded-pill"><i class="bi-circle-fill text-success me-1"></i> متصل</span>
+                        <span class="badge badge-custom-success px-3 py-1.5 rounded-pill"><i class="bi-circle-fill me-1"></i> متصل</span>
                     @else
-                        <span class="badge bg-danger bg-opacity-25 text-danger px-3 py-2 rounded-pill"><i class="bi-circle-fill text-danger me-1"></i> غير متصل</span>
+                        <span class="badge badge-custom-danger px-3 py-1.5 rounded-pill"><i class="bi-circle-fill me-1"></i> غير متصل</span>
                     @endif
                 </div>
 
@@ -228,9 +228,9 @@
                         </div>
                     </div>
                     @if($system_health['websocket'])
-                        <span class="badge bg-success bg-opacity-25 text-success px-3 py-2 rounded-pill"><i class="bi-circle-fill text-success me-1"></i> يعمل</span>
+                        <span class="badge badge-custom-success px-3 py-1.5 rounded-pill"><i class="bi-circle-fill me-1"></i> يعمل</span>
                     @else
-                        <span class="badge bg-danger bg-opacity-25 text-danger px-3 py-2 rounded-pill"><i class="bi-circle-fill text-danger me-1"></i> معطل</span>
+                        <span class="badge badge-custom-danger px-3 py-1.5 rounded-pill"><i class="bi-circle-fill me-1"></i> معطل</span>
                     @endif
                 </div>
             </div>

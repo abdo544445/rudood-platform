@@ -181,32 +181,46 @@
       <div class="collapse navbar-collapse" id="navbarRodood">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
           <li class="nav-item">
-            <a class="nav-link px-3" href="{{ url('/index') }}">الرئيسية</a>
+            <a class="nav-link px-3 text-white-50" href="{{ url('/index') }}">الرئيسية</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3" href="{{ url("/index#features") }}">المميزات</a>
+            <a class="nav-link px-3 text-white-50" href="{{ url('/features') }}">المميزات</a>
           </li>
-           <li class="nav-item">
-            <a class="nav-link px-3" href="{{ url('/blog') }}">المدونة</a>
+          <li class="nav-item">
+            <a class="nav-link px-3 text-white-50" href="{{ url('/pricing') }}">التسعيرة</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 text-white-50" href="{{ url('/blog') }}">المدونة</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 text-white-50" href="{{ url('/how-it-works') }}">دليل التشغيل</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle px-3 active text-gold fw-bold" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               أقسام المنصة
             </a>
             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow border border-secondary border-opacity-25 rounded-3 mt-2">
-              <li><a class="dropdown-item py-2" href="{{ url('/auto') }}"><i class="bi bi-robot me-2 text-gold"></i>خدمات الرد الآلي</a></li>
-              <li><a class="dropdown-item py-2 active text-gold fw-bold" href="{{ url('/chat') }}"><i class="bi bi-chat-dots me-2 text-gold"></i>إدارة المحادثات (العرض التجريبي)</a></li>
-              <li><a class="dropdown-item py-2" href="{{ url('/ai') }}"><i class="bi bi-cpu me-2 text-gold"></i>الذكاء الاصطناعي 24/7</a></li>
+              <li><a class="dropdown-item py-2" href="{{ url('/auto') }}"><i class="bi bi-robot me-2 text-gold"></i>الرد الآلي (استعراض حي)</a></li>
+              <li><a class="dropdown-item py-2 active text-gold fw-bold" href="{{ url('/chat') }}"><i class="bi bi-chat-dots me-2 text-gold"></i>المحادثات (استعراض حي)</a></li>
+              <li><a class="dropdown-item py-2" href="{{ url('/ai') }}"><i class="bi bi-cpu me-2 text-gold"></i>الذكاء الاصطناعي (استعراض حي)</a></li>
+              <li><hr class="dropdown-divider border-secondary opacity-25"></li>
+              <li><a class="dropdown-item py-2 text-gold fw-bold" href="{{ url('/how-it-works') }}"><i class="bi bi-book-half me-2 text-gold"></i>دليل تشغيل البوت</a></li>
+              <li><a class="dropdown-item py-2 text-danger fw-bold" href="{{ url('/demo') }}"><i class="bi bi-broadcast me-2 text-danger"></i>استعراض حي شامل</a></li>
             </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 text-white-50" href="{{ url('/contact') }}">تواصل معنا</a>
           </li>
         </ul>
          
-
         <div class="d-flex align-items-center gap-2">
-          <span class="badge bg-gold text-dark px-3 py-2 rounded-pill d-none d-md-inline-block">
-            <i class="bi bi-play-circle-fill me-1"></i> وضع العرض التجريبي
-          </span>
-          <a href="{{ url('/login') }}" class="btn btn-gold px-4 py-2 rounded-pill">ابدأ التجربة المجانية</a>
+          <a href="{{ url('/demo') }}" class="btn btn-outline-danger rounded-pill px-3 fs-8 fw-bold d-flex align-items-center gap-1">
+            <i class="bi bi-broadcast text-danger"></i> استعراض حي
+          </a>
+          <a href="{{ url('/login') }}" class="btn btn-outline-light rounded-pill px-3 fs-8">تسجيل الدخول</a>
+          <a href="{{ url('/register') }}" class="btn btn-gold rounded-pill px-3 fw-bold fs-8 d-flex align-items-center gap-1">
+            <i class="bi bi-headset"></i> ابدأ الآن
+          </a>
         </div>
       </div>
 
