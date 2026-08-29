@@ -220,10 +220,13 @@ Route::middleware('auth')->group(function () {
         if ($user?->isSuperAdmin()) {
             $adminPages = [
                 ['title' => 'مركز قيادة الإدارة العليا', 'subtitle' => 'لوحة الـ Super Admin و MRR', 'url' => url('/admin/dashboard'), 'icon' => 'bi-shield-shaded', 'badge' => 'إدارة'],
-                ['title' => 'إدارة الشركات والمتاجر', 'subtitle' => 'عرض وتعديل والتحكم بجميع المتاجر', 'url' => url('/admin/workspaces'), 'icon' => 'bi-buildings-fill', 'badge' => 'إدارة'],
-                ['title' => 'دليل المستخدمين وملاك المتاجر', 'subtitle' => 'إدارة الحسابات وتعيين كلمات المرور', 'url' => url('/admin/users'), 'icon' => 'bi-people-fill', 'badge' => 'إدارة'],
+                ['title' => 'إدارة طلبات المشتركين وتفعيل المتاجر', 'subtitle' => 'مراجعة واعتماد وتفعيل اشتراكات المتاجر', 'url' => url('/admin/subscribers'), 'icon' => 'bi-person-check-fill', 'badge' => 'اشتراكات'],
+                ['title' => 'إدارة الشركات والمتاجر', 'subtitle' => 'عرض وتعديل والتحكم بجميع المتاجر', 'url' => url('/admin/workspaces'), 'icon' => 'bi-buildings-fill', 'badge' => 'متاجر'],
+                ['title' => 'دليل المستخدمين وملاك المتاجر', 'subtitle' => 'إدارة الحسابات وتعيين كلمات المرور', 'url' => url('/admin/users'), 'icon' => 'bi-people-fill', 'badge' => 'مستخدمين'],
+                ['title' => 'صندوق استفسارات تواصل معنا', 'subtitle' => 'متابعة وتعديل حالة رسائل العملاء والزوار', 'url' => url('/admin/contacts'), 'icon' => 'bi-envelope-paper-heart-fill', 'badge' => 'رسائل'],
                 ['title' => 'التقرير الإحصائي العالمي', 'subtitle' => 'تحليلات المنصة والمحادثات', 'url' => url('/admin/statistics'), 'icon' => 'bi-bar-chart-line-fill', 'badge' => 'إحصائيات'],
                 ['title' => 'سجل تدقيق الأنشطة', 'subtitle' => 'مراقبة العمليات والتغييرات', 'url' => url('/admin/audit-logs'), 'icon' => 'bi-shield-check', 'badge' => 'أمان'],
+                ['title' => 'إدارة مقالات المدونة', 'subtitle' => 'كتابة ونشر المقالات وتحسين السيو', 'url' => url('/admin/articles'), 'icon' => 'bi-newspaper', 'badge' => 'مقالات'],
                 ['title' => 'تشخيص صحة النظام والـ Redis', 'subtitle' => 'حالة الخوادم والاتصالات', 'url' => url('/admin/system'), 'icon' => 'bi-hdd-network-fill', 'badge' => 'نظام'],
             ];
             $pages = array_merge($adminPages, $pages);
@@ -235,26 +238,80 @@ Route::middleware('auth')->group(function () {
                 || str_contains(mb_strtolower($p['subtitle']), $q) 
                 || str_contains(mb_strtolower($p['badge']), $q)
                 || ($q === 'شات' && str_contains(mb_strtolower($p['url']), 'chat'))
+                || ($q === 'مشترك' && str_contains(mb_strtolower($p['url']), 'subscribers'))
+                || ($q === 'رسائل' && str_contains(mb_strtolower($p['url']), 'contacts'))
             ) {
                 $results[] = $p;
             }
         }
 
-        // 2. Stores / Workspaces (if Super Admin)
-        if ($user?->isSuperAdmin() && !empty($q)) {
-            $stores = \App\Models\Workspace::where('company_name', 'like', "%{$q}%")->limit(4)->get();
-            foreach ($stores as $s) {
-                $results[] = [
-                    'title'    => 'متجر: ' . $s->company_name,
-                    'subtitle' => 'الانتقال لمعاينة وتعديل بيانات المتجر',
-                    'url'      => url('/admin/workspaces/' . $s->id),
-                    'icon'     => 'bi-shop',
-                    'badge'    => 'متجر',
-                ];
+        // 2. Dynamic Live Database Searches (for Super Admin or Tenant)
+        if (!empty($q)) {
+            if ($user?->isSuperAdmin()) {
+                // Search Workspaces
+                $stores = \App\Models\Workspace::where('company_name', 'like', "%{$q}%")->limit(3)->get();
+                foreach ($stores as $s) {
+                    $results[] = [
+                        'title'    => 'متجر: ' . $s->company_name,
+                        'subtitle' => 'الانتقال لمعاينة وتعديل بيانات المتجر (#' . $s->id . ')',
+                        'url'      => url('/admin/workspaces/' . $s->id),
+                        'icon'     => 'bi-shop',
+                        'badge'    => 'متجر',
+                    ];
+                }
+
+                // Search Subscriber Requests
+                $subs = \App\Models\SubscriberRequest::where('name', 'like', "%{$q}%")
+                    ->orWhere('email', 'like', "%{$q}%")
+                    ->orWhere('company_name', 'like', "%{$q}%")
+                    ->limit(3)->get();
+                foreach ($subs as $sub) {
+                    $results[] = [
+                        'title'    => 'مشترك: ' . $sub->name . ' (' . ($sub->company_name ?: 'متجر') . ')',
+                        'subtitle' => $sub->email . ' — الحالة: ' . $sub->status_label,
+                        'url'      => url('/admin/subscribers?search=' . urlencode($sub->email)),
+                        'icon'     => 'bi-person-badge',
+                        'badge'    => 'طلب اشتراك',
+                    ];
+                }
+
+                // Search Contact Messages
+                $contacts = \App\Models\ContactMessage::where('name', 'like', "%{$q}%")
+                    ->orWhere('email', 'like', "%{$q}%")
+                    ->orWhere('subject', 'like', "%{$q}%")
+                    ->limit(3)->get();
+                foreach ($contacts as $c) {
+                    $results[] = [
+                        'title'    => 'رسالة: ' . ($c->subject ?: 'استفسار') . ' — ' . $c->name,
+                        'subtitle' => $c->email . ' — الحالة: ' . $c->status_label,
+                        'url'      => url('/admin/contacts?search=' . urlencode($c->email)),
+                        'icon'     => 'bi-envelope-check',
+                        'badge'    => 'استفسار',
+                    ];
+                }
+            } else {
+                // Search Knowledge Base for Store Owner
+                $wsId = $user->workspace_id;
+                if ($wsId) {
+                    $kbs = \App\Models\KnowledgeBase::where('workspace_id', $wsId)
+                        ->where(function($b) use ($q) {
+                            $b->where('title', 'like', "%{$q}%")
+                              ->orWhere('content', 'like', "%{$q}%");
+                        })->limit(3)->get();
+                    foreach ($kbs as $kb) {
+                        $results[] = [
+                            'title'    => 'مستند: ' . $kb->title,
+                            'subtitle' => 'معاينة مستند المعرفة المدرب',
+                            'url'      => url('/ai-manage'),
+                            'icon'     => 'bi-file-earmark-text',
+                            'badge'    => 'قاعدة معرفة',
+                        ];
+                    }
+                }
             }
         }
 
-        return response()->json(['results' => array_slice($results, 0, 8)]);
+        return response()->json(['results' => array_slice($results, 0, 10)]);
     })->name('command-palette.search');
 
     // Legacy AI playground (RAG testing fallback)

@@ -34,6 +34,16 @@
     </div>
     @endif
 
+    <div class="px-2 mb-2">
+      <button type="button" class="btn btn-dark border border-secondary border-opacity-40 text-white-50 w-100 rounded-3 py-2 px-3 fs-8 d-flex align-items-center justify-content-between" data-bs-toggle="modal" data-bs-target="#commandPaletteModal" style="background: rgba(15, 23, 42, 0.7);">
+        <span class="d-flex align-items-center gap-2">
+          <i class="bi bi-search text-gold"></i>
+          <span>بحث سريع...</span>
+        </span>
+        <kbd class="bg-black text-gold border border-warning border-opacity-30 px-1.5 py-0.5 rounded fs-9 font-monospace">⌘K</kbd>
+      </button>
+    </div>
+
     <ul class="nav nav-pills flex-column px-2">
       <div class="nav-section-label">لوحة المتجر الحالي</div>
       <li class="nav-item">
