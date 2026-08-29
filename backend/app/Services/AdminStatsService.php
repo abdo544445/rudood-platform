@@ -392,9 +392,11 @@ class AdminStatsService
                 $query->select('id')->from('bots');
             })->count();
 
-        $docsPerWorkspace = KnowledgeBase::select('workspace_id', DB::raw('count(*) as count'))
-            ->groupBy('workspace_id')
-            ->with('workspace')
+        $docsPerWorkspace = DB::table('knowledge_bases')
+            ->join('bots', 'knowledge_bases.bot_id', '=', 'bots.id')
+            ->join('workspaces', 'bots.workspace_id', '=', 'workspaces.id')
+            ->select('workspaces.id as workspace_id', 'workspaces.company_name', DB::raw('count(knowledge_bases.id) as count'))
+            ->groupBy('workspaces.id', 'workspaces.company_name')
             ->orderBy('count', 'desc')
             ->take(10)
             ->get();
