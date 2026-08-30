@@ -184,10 +184,6 @@ class AdminSubscriberController extends Controller
     {
         $subRequest = SubscriberRequest::findOrFail($id);
 
-        if ($subRequest->status === 'approved') {
-            return back()->with('info', 'هذا الطلب معتمد ومفعل مسبقاً.');
-        }
-
         $user = $subRequest->approveAndProvision([
             'admin_notes' => $request->input('admin_notes'),
         ], auth()->id());

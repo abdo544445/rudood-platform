@@ -67,15 +67,40 @@ class SubscriberRequest extends Model
             // 4. Find existing user by email
             $user = User::where('email', $this->email)->first();
 
-            // If user already has a workspace (self-registered), don't create duplicates
+            // If user already has a workspace (self-registered), activate their workspace & bot!
             if ($user && $user->workspace_id) {
+                if ($user->workspace) {
+                    $user->workspace->update([
+                        'status'  => 'active',
+                        'plan_id' => $customParams['selected_plan'] ?? $this->selected_plan ?? $user->workspace->plan_id ?? 'starter',
+                    ]);
+
+                    // Activate bot if inactive
+                    $user->workspace->bots()->update(['is_active' => true]);
+
+                    // Ensure subscription record exists and is active
+                    Subscription::updateOrCreate(
+                        ['workspace_id' => $user->workspace->id],
+                        [
+                            'plan_name' => $user->workspace->plan_id ?: 'starter',
+                            'price'     => match($user->workspace->plan_id) {
+                                'starter'    => 39.00,
+                                'enterprise' => 199.00,
+                                default      => 79.00,
+                            },
+                            'status'    => 'active',
+                            'renews_at' => now()->addMonth(),
+                        ]
+                    );
+                }
+
                 // Just mark this request as approved and link to the existing user
                 $this->update([
                     'status'          => 'approved',
                     'approved_by'     => $adminId ?? (auth()->id() ?? null),
                     'approved_at'     => now(),
                     'created_user_id' => $user->id,
-                    'admin_notes'     => ($customParams['admin_notes'] ?? '') . ' [المستخدم مسجل مسبقاً بمساحة عمل قائمة - تم الاعتماد دون إنشاء موارد جديدة]',
+                    'admin_notes'     => ($customParams['admin_notes'] ?? '') . ' [تم اعتماد وتفعيل مساحة العمل للمستخدم بنجاح]',
                 ]);
                 return $user;
             }
