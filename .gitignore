@@ -13,6 +13,7 @@ credentials.md
 # Dependencies (install via composer install / npm install)
 backend/vendor/
 backend/node_modules/
+backend/websocket/node_modules/
 node_modules/
 
 # Redis dumps
