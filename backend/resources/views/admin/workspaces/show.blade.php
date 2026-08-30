@@ -136,12 +136,13 @@
                 <div class="tab-pane fade show active" id="tab-bot" role="tabpanel">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="fw-bold text-gold mb-0"><i class="bi bi-sliders me-1"></i>التحكم المباشر في المساعد الذكي للمتجر</h6>
-                        <span class="badge {{ $bot->is_active ? 'bg-success' : 'bg-danger' }} bg-opacity-25 {{ $bot->is_active ? 'text-success' : 'text-danger' }}">
-                            {{ $bot->is_active ? 'البوت مفعل' : 'البوت معطل' }}
+                        <span id="adminBotActiveBadge" class="badge {{ $bot->is_active ? 'bg-success' : 'bg-danger' }} bg-opacity-25 {{ $bot->is_active ? 'text-success' : 'text-danger' }} border {{ $bot->is_active ? 'border-success' : 'border-danger' }} px-3 py-1">
+                            <i class="bi {{ $bot->is_active ? 'bi-check-circle-fill' : 'bi-pause-circle-fill' }} me-1" id="adminBotActiveIcon"></i>
+                            <span id="adminBotActiveText">{{ $bot->is_active ? 'البوت مفعل ونشط' : 'البوت معطل (إيقاف مؤقت)' }}</span>
                         </span>
                     </div>
 
-                    <form action="{{ route('admin.workspaces.update-bot', $workspace->id) }}" method="POST">
+                    <form id="adminBotForm" action="{{ route('admin.workspaces.update-bot', $workspace->id) }}" method="POST">
                         @csrf
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -223,19 +224,19 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" name="is_active" id="botIsActive" {{ $bot->is_active ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" role="switch" name="is_active" id="botIsActive" value="1" {{ $bot->is_active ? 'checked' : '' }} style="cursor: pointer;" onchange="toggleAdminBotSetting(this)">
                                     <label class="form-check-label text-white fs-8" for="botIsActive">تفعيل الرد التلقائي للبوت</label>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" name="enable_rag" id="botEnableRag" {{ ($bot->enable_rag ?? true) ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" role="switch" name="enable_rag" id="botEnableRag" value="1" {{ ($bot->enable_rag ?? true) ? 'checked' : '' }} style="cursor: pointer;" onchange="toggleAdminBotSetting(this)">
                                     <label class="form-check-label text-white fs-8" for="botEnableRag">تفعيل استرجاع المعرفة (RAG)</label>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" name="enable_auto_rules" id="botEnableRules" {{ ($bot->enable_auto_rules ?? true) ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" role="switch" name="enable_auto_rules" id="botEnableRules" value="1" {{ ($bot->enable_auto_rules ?? true) ? 'checked' : '' }} style="cursor: pointer;" onchange="toggleAdminBotSetting(this)">
                                     <label class="form-check-label text-white fs-8" for="botEnableRules">تفعيل القواعد الفورية (FAQ)</label>
                                 </div>
                             </div>
@@ -501,13 +502,67 @@ async function fetchAdminModels() {
                     ${optionsHtml}
                 </select>
             `;
-        } else {
-            container.innerHTML = `<input type="text" name="model_type" id="admin_model_type" class="form-control bg-dark text-white border-secondary" value="${currentModel}" required>`;
-            alert(data.message || 'تعذر جلب النماذج.');
         }
     } catch (e) {
         container.innerHTML = `<input type="text" name="model_type" id="admin_model_type" class="form-control bg-dark text-white border-secondary" value="${currentModel}" required>`;
         alert('خطأ في جلب النماذج: ' + e.message);
+    }
+}
+
+async function toggleAdminBotSetting(checkbox) {
+    const fieldName = checkbox.name;
+    const isChecked = checkbox.checked;
+
+    if (fieldName === 'is_active') {
+        const badge = document.getElementById('adminBotActiveBadge');
+        const text = document.getElementById('adminBotActiveText');
+        const icon = document.getElementById('adminBotActiveIcon');
+        if (badge && text) {
+            if (isChecked) {
+                badge.className = 'badge bg-success bg-opacity-25 text-success border border-success px-3 py-1';
+                text.innerText = 'البوت مفعل ونشط';
+                if (icon) icon.className = 'bi bi-check-circle-fill me-1';
+            } else {
+                badge.className = 'badge bg-danger bg-opacity-25 text-danger border border-danger px-3 py-1';
+                text.innerText = 'البوت معطل (إيقاف مؤقت)';
+                if (icon) icon.className = 'bi bi-pause-circle-fill me-1';
+            }
+        }
+    }
+
+    try {
+        const form = document.getElementById('adminBotForm');
+        const formData = new FormData(form);
+        // Explicitly override the toggled field
+        formData.set(fieldName, isChecked ? '1' : '0');
+
+        const res = await fetch(form.action, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Accept": "application/json"
+            },
+            body: formData
+        });
+
+        const data = await res.json();
+        if (!data.success) {
+            throw new Error(data.message || 'فشل التحديث');
+        }
+
+        // Show toast notification
+        let oldToast = document.getElementById('adminBotToast');
+        if (oldToast) oldToast.remove();
+        const toast = document.createElement('div');
+        toast.id = 'adminBotToast';
+        toast.className = 'position-fixed bottom-0 start-50 translate-middle-x mb-4 px-4 py-2 bg-success text-white rounded-pill shadow fs-8 fw-bold';
+        toast.style.zIndex = '99999';
+        toast.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> تم حفظ وتحديث حالة الإعداد فوراً بنجاح ✓';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+    } catch (e) {
+        alert('حدث خطأ أثناء حفظ الحالة: ' + e.message);
+        checkbox.checked = !isChecked;
     }
 }
 </script>

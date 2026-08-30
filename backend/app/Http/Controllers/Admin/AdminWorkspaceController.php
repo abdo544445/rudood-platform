@@ -185,6 +185,16 @@ class AdminWorkspaceController extends Controller
 
         $bot->update($validated);
 
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success'           => true,
+                'message'           => "تم تحديث إعدادات البوت والذكاء الاصطناعي لمتجر ({$workspace->company_name}) بنجاح ✓",
+                'is_active'         => (bool) $bot->is_active,
+                'enable_rag'        => (bool) $bot->enable_rag,
+                'enable_auto_rules' => (bool) $bot->enable_auto_rules,
+            ]);
+        }
+
         return back()->with('success', "تم تحديث إعدادات البوت والذكاء الاصطناعي لمتجر ({$workspace->company_name}) بنجاح ✓");
     }
 

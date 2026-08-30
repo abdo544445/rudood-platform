@@ -64,15 +64,54 @@
     color: #fff;
   }
   .bubble-bot {
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(15, 23, 42, 0.8) 100%);
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(15, 23, 42, 0.9) 100%);
     border: 1px solid rgba(212, 175, 55, 0.35);
     border-right: 3px solid var(--gold);
     align-self: flex-end;
     border-bottom-left-radius: 3px;
     color: #fff;
   }
-  .bubble-bot p:last-child {
+  .bot-reply-content {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    word-break: break-word;
+  }
+  .bot-reply-content p {
+    margin-bottom: 0.4rem;
+  }
+  .bot-reply-content p:last-child {
     margin-bottom: 0;
+  }
+  .bot-reply-content ul, .bot-reply-content ol {
+    margin-bottom: 0.4rem;
+    padding-right: 1.2rem;
+  }
+  .bot-reply-content code {
+    background: rgba(0, 0, 0, 0.4);
+    color: #f1c40f;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+  .quick-reply-btn {
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    color: #d4af37;
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  .quick-reply-btn:hover {
+    background: rgba(212, 175, 55, 0.25);
+    color: #fff;
+    border-color: var(--gold);
+    transform: translateY(-1px);
   }
   .tag-trigger {
     font-size: 0.72rem;
@@ -491,42 +530,25 @@
 
     if (data.trigger === 'ai_tool:check_order_status' || replyText.includes('تتبع') || replyText.includes('طلبك رقم')) {
       interactiveHtml = `
-        <div class="whatsapp-interactive-buttons d-flex flex-wrap gap-1 mt-2 pt-2 border-top border-secondary border-opacity-25">
-          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-2 fs-9 cursor-pointer" onclick="sendPresetPrompt('📦 مسار الشحنة')"><i class="bi bi-cursor-fill me-1"></i> 📦 مسار الشحنة</span>
-          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-2 fs-9 cursor-pointer" onclick="sendPresetPrompt('🔄 سياسة الاسترجاع')"><i class="bi bi-cursor-fill me-1"></i> 🔄 طلب استرجاع</span>
-          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-2 fs-9 cursor-pointer" onclick="sendPresetPrompt('👨‍💼 تحويل لموظف')"><i class="bi bi-cursor-fill me-1"></i> 👨‍💼 موظف بشري</span>
+        <div class="d-flex flex-wrap gap-2 mt-2 pt-2 border-top border-secondary border-opacity-25">
+          <button type="button" class="quick-reply-btn" onclick="sendPresetPrompt('📦 مسار الشحنة')"><i class="bi bi-box-seam me-1"></i> مسار الشحنة</button>
+          <button type="button" class="quick-reply-btn" onclick="sendPresetPrompt('🔄 سياسة الاسترجاع')"><i class="bi bi-arrow-repeat me-1"></i> طلب استرجاع</button>
+          <button type="button" class="quick-reply-btn" onclick="sendPresetPrompt('👨‍💼 تحويل لموظف')"><i class="bi bi-person me-1"></i> التحدث مع موظف</button>
         </div>
       `;
     } else if (data.trigger === 'ai_tool:check_product_stock' || replyText.includes('سماعات') || replyText.includes('ساعة') || replyText.includes('شاحن')) {
       interactiveHtml = `
-        <div class="whatsapp-product-carousel mt-2">
-          <div class="text-success fs-9 fw-bold mb-1"><i class="bi bi-grid-3x3-gap-fill me-1"></i> بطاقات كتالوج واتساب التفاعلية:</div>
-          <div class="d-flex gap-2 overflow-x-auto pb-1" style="scrollbar-width: thin;">
-            <div class="card bg-dark border border-secondary border-opacity-40 rounded-3 shadow-sm flex-shrink-0" style="width: 170px;">
-              <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300" class="card-img-top rounded-top-3" style="height: 80px; object-fit: cover;">
-              <div class="card-body p-2">
-                <div class="fw-bold text-white fs-9 text-truncate">سماعات النخبة Pro</div>
-                <div class="text-gold fw-bold fs-9 mb-1">199.00 ر.س</div>
-                <button class="btn btn-sm btn-success w-100 py-0 fs-9 rounded-pill" onclick="sendPresetPrompt('أريد طلب سماعات النخبة Pro')">طلب فوري 🛍️</button>
-              </div>
-            </div>
-            <div class="card bg-dark border border-secondary border-opacity-40 rounded-3 shadow-sm flex-shrink-0" style="width: 170px;">
-              <img src="https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=300" class="card-img-top rounded-top-3" style="height: 80px; object-fit: cover;">
-              <div class="card-body p-2">
-                <div class="fw-bold text-white fs-9 text-truncate">ساعة AMOLED الذكية</div>
-                <div class="text-gold fw-bold fs-9 mb-1">299.00 ر.س</div>
-                <button class="btn btn-sm btn-success w-100 py-0 fs-9 rounded-pill" onclick="sendPresetPrompt('أريد طلب ساعة AMOLED')">طلب فوري 🛍️</button>
-              </div>
-            </div>
-          </div>
+        <div class="d-flex flex-wrap gap-2 mt-2 pt-2 border-top border-secondary border-opacity-25">
+          <button type="button" class="quick-reply-btn" onclick="sendPresetPrompt('أريد طلب سماعات النخبة Pro')"><i class="bi bi-bag-check me-1"></i> طلب سماعات النخبة Pro</button>
+          <button type="button" class="quick-reply-btn" onclick="sendPresetPrompt('أريد طلب ساعة AMOLED')"><i class="bi bi-bag-check me-1"></i> طلب ساعة AMOLED</button>
         </div>
       `;
     } else if (replyText.includes('مرحبا') || replyText.includes('أهلا') || replyText.includes('خدمتكم')) {
       interactiveHtml = `
-        <div class="whatsapp-interactive-buttons d-flex flex-wrap gap-1 mt-2 pt-2 border-top border-secondary border-opacity-25">
-          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-2 fs-9 cursor-pointer" onclick="sendPresetPrompt('📦 وين طلبي رقم #10492')"><i class="bi bi-cursor-fill me-1"></i> 📦 تتبع طلبي</span>
-          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-2 fs-9 cursor-pointer" onclick="sendPresetPrompt('🛍️ تصفح كتالوج المنتجات')"><i class="bi bi-cursor-fill me-1"></i> 🛍️ تصفح المنتجات</span>
-          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-2 fs-9 cursor-pointer" onclick="sendPresetPrompt('👨‍💼 التحدث مع موظف')"><i class="bi bi-cursor-fill me-1"></i> 👨‍💼 موظف بشري</span>
+        <div class="d-flex flex-wrap gap-2 mt-2 pt-2 border-top border-secondary border-opacity-25">
+          <button type="button" class="quick-reply-btn" onclick="sendPresetPrompt('📦 وين طلبي رقم #10492')"><i class="bi bi-search me-1"></i> تتبع طلبي</button>
+          <button type="button" class="quick-reply-btn" onclick="sendPresetPrompt('🛍️ تصفح كتالوج المنتجات')"><i class="bi bi-grid me-1"></i> تصفح المنتجات</button>
+          <button type="button" class="quick-reply-btn" onclick="sendPresetPrompt('👨‍💼 التحدث مع موظف')"><i class="bi bi-headset me-1"></i> موظف الدعم</button>
         </div>
       `;
     }
