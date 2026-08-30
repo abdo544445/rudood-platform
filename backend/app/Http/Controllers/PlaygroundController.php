@@ -84,6 +84,9 @@ class PlaygroundController extends Controller
         $context = '';
         $ruleReply = null;
 
+        $aiServiceInspector = new AiService($bot);
+        $aiServiceInspector->setOverrides($overrides);
+
         // 1. Instant Auto-Rule matching (if enabled)
         if ($enableRules) {
             $ruleMatch = $ragService->checkAutoRules($bot->workspace_id, $message);
@@ -108,11 +111,9 @@ class PlaygroundController extends Controller
             }
 
             // Call AI Service with parameter overrides
-            $aiService = new AiService($bot);
-            $aiService->setOverrides($overrides);
-            $reply = $aiService->generateReply($message, $context, $history);
+            $reply = $aiServiceInspector->generateReply($message, $context, $history);
 
-            if ($reply === $aiService->getFallbackReply()) {
+            if ($reply === $aiServiceInspector->getFallbackReply()) {
                 $trigger = 'fallback';
             }
         }
@@ -138,8 +139,6 @@ class PlaygroundController extends Controller
         }
 
         // Build raw system prompt preview for inspector
-        $aiServiceInspector = new AiService($bot);
-        $aiServiceInspector->setOverrides($overrides);
         $fullSystemPrompt = $aiServiceInspector->buildSystemPrompt($context);
 
         return response()->json([
@@ -153,7 +152,7 @@ class PlaygroundController extends Controller
             'provider'           => $overrides['ai_provider'] ?? $bot->ai_provider ?: 'gemini',
             'model'              => $overrides['model_type'] ?? $bot->model_type ?: 'gemini-1.5-flash',
             'system_prompt_used' => $fullSystemPrompt,
-            'error_detail'       => $aiService->getLastError(),
+            'error_detail'       => $aiServiceInspector->getLastError(),
         ]);
     }
 
