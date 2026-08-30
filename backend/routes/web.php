@@ -177,9 +177,10 @@ Route::middleware(['auth', 'workspace_active'])->group(function () {
     Route::delete('/ai-manage/doc/{id}', [BotController::class, 'deleteDocument']);
 
     // Settings
-    Route::get('/settings', [SettingsController::class, 'index']);
-    Route::post('/settings/save-bot', [SettingsController::class, 'saveBotSettings']);
-    Route::post('/settings/save-ai-key', [SettingsController::class, 'saveAiKey']);
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings/toggle-bot', [SettingsController::class, 'toggleBot'])->name('settings.toggle-bot');
+    Route::post('/settings/save-bot', [SettingsController::class, 'saveBotSettings'])->name('settings.save-bot');
+    Route::post('/settings/save-ai-key', [SettingsController::class, 'saveAiKey'])->name('settings.save-ai-key');
     Route::post('/settings/fetch-models', [SettingsController::class, 'fetchModels'])->name('settings.fetch-models');
 
     // Dedicated Channels & Integrations Hub

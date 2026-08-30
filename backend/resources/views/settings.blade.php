@@ -60,10 +60,26 @@
       <!-- إعدادات المساعد الذكي -->
       <div class="col-lg-7">
         <div class="glass-card">
-          <h4 class="fw-bold text-white mb-4"><i class="bi bi-robot text-gold me-2"></i>تخصيص سلوك البوت</h4>
+          <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+            <div>
+              <h4 class="fw-bold text-white mb-1"><i class="bi bi-robot text-gold me-2"></i>تخصيص سلوك البوت</h4>
+              <p class="text-white-50 fs-8 mb-0">تحكم بهوية المساعد ونصوص الترحيب وتفعيل الردود الذكية</p>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+              <span id="botActiveBadge" class="badge {{ $bot->is_active ? 'bg-success' : 'bg-danger' }} bg-opacity-25 {{ $bot->is_active ? 'text-success' : 'text-danger' }} border {{ $bot->is_active ? 'border-success' : 'border-danger' }} px-3 py-2 fs-8 fw-bold">
+                <i class="bi {{ $bot->is_active ? 'bi-check-circle-fill' : 'bi-pause-circle-fill' }} me-1" id="botActiveIcon"></i>
+                <span id="botActiveText">{{ $bot->is_active ? 'البوت مفعّل ونشط' : 'البوت معطّل (إيقاف مؤقت)' }}</span>
+              </span>
+              <div class="form-check form-switch m-0" style="transform: scale(1.3);" title="تبديل تفعيل / إيقاف البوت فوراً">
+                <input class="form-check-input" type="checkbox" role="switch" id="botIsActiveSwitch" name="is_active" value="1" {{ $bot->is_active ? 'checked' : '' }} style="cursor: pointer;" onchange="toggleBotStatus(this)">
+              </div>
+            </div>
+          </div>
           
           <form action="{{ url('/settings/save-bot') }}" method="POST" id="botSettingsForm">
             @csrf
+            <input type="hidden" name="is_active" id="hiddenIsActiveInput" value="{{ $bot->is_active ? '1' : '0' }}">
+            
             <div class="mb-3">
               <label for="botName" class="form-label text-white-50 fs-7">اسم البوت (المساعد الذكي)</label>
               <input type="text" id="botName" name="bot_name" class="form-control form-control-dark" value="{{ $bot->name }}" required>
@@ -88,37 +104,32 @@
               <textarea id="systemPrompt" name="system_prompt" class="form-control form-control-dark" rows="4" placeholder="حدد شخصية البوت، مجال عمله، وسلوكه...">{{ $bot->system_prompt }}</textarea>
             </div>
 
-            <button type="submit" class="btn btn-gold px-4 rounded-pill">حفظ التغييرات</button>
+            <button type="submit" class="btn btn-gold px-4 rounded-pill">
+              <i class="bi bi-save me-1"></i> حفظ إعدادات البوت
+            </button>
           </form>
         </div>
       </div>
 
-      <!-- إعدادات مزود الذكاء الاصطناعي -->
+      <!-- إعدادات مزود الذكاء الاصطناعي ومفتاح API -->
       <div class="col-lg-5">
         <div class="glass-card">
-          @php $isSuperAdmin = auth()->user() && auth()->user()->isSuperAdmin(); @endphp
-          <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold text-white mb-0"><i class="bi bi-cpu text-gold me-2"></i>مزود الذكاء الاصطناعي</h4>
-            @if($isSuperAdmin)
-              <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fs-8"><i class="bi bi-shield-lock-fill me-1"></i> صلاحية الإدارة العليا</span>
-            @elseif($workspace->allow_custom_api_key ?? false)
-              <span class="badge bg-success bg-opacity-25 text-success border border-success fs-8"><i class="bi bi-unlock-fill me-1"></i> مخصص (BYOK)</span>
+            @if($bot->api_key_encrypted)
+              <span class="badge bg-success bg-opacity-25 text-success border border-success fs-8">
+                <i class="bi bi-shield-lock-fill me-1"></i> مفتاح API محفوظ ومشفّر
+              </span>
             @else
-              <span class="badge bg-secondary bg-opacity-25 text-white-50 border border-secondary fs-8"><i class="bi bi-lock-fill me-1"></i> خادم المنصة</span>
+              <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fs-8">
+                <i class="bi bi-key me-1"></i> بانتظار إدخال المفتاح
+              </span>
             @endif
           </div>
 
-          @if($isSuperAdmin)
-          <div class="alert alert-info py-2 px-3 mb-3 fs-8" style="background: rgba(52, 152, 219, 0.15); border: 1px solid #3498db; color: #3498db;">
-            <i class="bi bi-shield-check me-1"></i> <strong>وضع المدير العام:</strong> لديك صلاحية تحكم مطلقة لتغيير المزود والمفتاح والنموذج لهذا المتجر.
-          </div>
-          @elseif(!($workspace->allow_custom_api_key ?? false))
-          <div class="alert alert-warning py-2 px-3 mb-3 fs-8" style="background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3); color: #d4af37;">
-            <i class="bi bi-info-circle-fill me-1"></i> <strong>الذكاء الاصطناعي مفعل تلقائياً:</strong> يعمل حسابك عبر خوادم المنصة المركزية السريعة. للترقية واستخدام مفتاح مخصص خاص بك (BYOK)، يرجى التواصل مع الإدارة.
-          </div>
-          @else
-          <p class="text-white-50 mb-3 fs-7">بياناتك محفوظة ومشفرة. يدعم OpenAI وGemini وAnthropic وأي مزود متوافق مع OpenAI.</p>
-          @endif
+          <p class="text-white-50 mb-3 fs-7">
+            بياناتك ومفاتيحك مشفرة تماماً في قاعدة البيانات (AES-256). يمكنك استخدام Gemini أو OpenAI أو Claude أو أي مزود متوافق.
+          </p>
 
           <form action="{{ url('/settings/save-ai-key') }}" method="POST" id="aiKeyForm">
             @csrf
@@ -131,7 +142,6 @@
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="ai_provider" id="provider_{{ $key }}" value="{{ $key }}"
                     {{ $bot->ai_provider === $key ? 'checked' : '' }}
-                    {{ (!($workspace->allow_custom_api_key ?? false) && !$isSuperAdmin) ? 'disabled' : '' }}
                     onchange="handleProviderChange('{{ $key }}')">
                   <label class="form-check-label text-white" for="provider_{{ $key }}">
                     <i class="bi {{ $label[1] }} me-1"></i>{{ $label[0] }}
@@ -145,34 +155,34 @@
             <div class="mb-3">
               <div class="d-flex justify-content-between align-items-center mb-1">
                 <label for="model_type" class="form-label text-white-50 fs-7 mb-0">اسم النموذج (Model)</label>
-                @if(($workspace->allow_custom_api_key ?? false) || $isSuperAdmin)
                 <button type="button" class="btn btn-link text-gold p-0 fs-8 text-decoration-none" id="fetchModelsBtn" onclick="fetchModelsForProvider()">
                   <i class="bi bi-arrow-repeat me-1"></i> جلب النماذج المتاحة
                 </button>
-                @endif
               </div>
               <div id="modelInputContainer">
                 <input type="text" id="model_type" name="model_type" class="form-control form-control-dark"
-                  value="{{ $bot->model_type }}" placeholder="gpt-4o-mini, gemini-1.5-flash, moonshotai/Kimi-K2.6..." 
-                  {{ (!($workspace->allow_custom_api_key ?? false) && !$isSuperAdmin) ? 'readonly' : 'required' }}>
+                  value="{{ $bot->model_type }}" placeholder="gpt-4o-mini, gemini-1.5-flash, moonshotai/Kimi-K2.6..." required>
               </div>
             </div>
 
             <!-- مفتاح API -->
             <div class="mb-3">
               <label for="ai_api_key" class="form-label text-white-50 fs-7">مفتاح API الخاص بك</label>
-              <input type="password" id="ai_api_key" name="ai_api_key" class="form-control form-control-dark"
-                placeholder="{{ $bot->api_key_encrypted ? '•••••••• (تم الحفظ)' : 'أدخل مفتاح API...' }}" 
-                {{ (!($workspace->allow_custom_api_key ?? false) && !$isSuperAdmin) ? 'disabled' : '' }}>
-              <div class="form-text text-white-50 fs-8"><i class="bi bi-shield-lock text-gold"></i> مخزن بشكل مشفر تماماً في قاعدة البيانات</div>
+              <div class="input-group">
+                <input type="password" id="ai_api_key" name="ai_api_key" class="form-control form-control-dark"
+                  placeholder="{{ $bot->api_key_encrypted ? '•••••••••••••••• (مفتاحك محفوظ ومشفّر - املأ هنا للتحديث)' : 'أدخل مفتاح API الخاص بك هنا...' }}" autocomplete="new-password">
+                <button class="btn btn-outline-secondary border-opacity-25 text-white-50" type="button" onclick="togglePasswordVisibility('ai_api_key')">
+                  <i class="bi bi-eye" id="ai_api_key_eye"></i>
+                </button>
+              </div>
+              <div class="form-text text-white-50 fs-8"><i class="bi bi-shield-lock text-gold me-1"></i> يتم تشفير المفتاح وتخزينه في جدول البوت بقاعدة البيانات بشكل فوري.</div>
             </div>
 
             <!-- Base URL (للمزودين المتوافقين فقط) -->
             <div class="mb-3" id="baseUrlSection" style="display: {{ $bot->ai_provider === 'openai_compatible' ? 'block' : 'none' }}">
-              <label for="api_base_url" class="form-label text-white-50 fs-7">Base URL للمزود</label>
+              <label for="api_base_url" class="form-label text-white-50 fs-7">Base URL للمزود (OpenAI Compatible API Base)</label>
               <input type="url" id="api_base_url" name="api_base_url" class="form-control form-control-dark"
-                value="{{ $bot->api_base_url }}" placeholder="https://api.your-provider.com/v1"
-                {{ (!($workspace->allow_custom_api_key ?? false) && !$isSuperAdmin) ? 'disabled' : '' }}>
+                value="{{ $bot->api_base_url }}" placeholder="https://api.your-provider.com/v1">
             </div>
 
             <!-- إعدادات متقدمة -->
@@ -317,6 +327,64 @@
       } finally {
         btn.innerHTML = originalBtnText;
         btn.disabled = false;
+      }
+    }
+
+    async function toggleBotStatus(checkbox) {
+      const isChecked = checkbox.checked;
+      const badge = document.getElementById('botActiveBadge');
+      const text = document.getElementById('botActiveText');
+      const icon = document.getElementById('botActiveIcon');
+      const hiddenInput = document.getElementById('hiddenIsActiveInput');
+
+      if (hiddenInput) hiddenInput.value = isChecked ? '1' : '0';
+
+      // Update badge optimistically
+      if (isChecked) {
+        badge.className = 'badge bg-success bg-opacity-25 text-success border border-success px-3 py-2 fs-8 fw-bold';
+        text.innerText = 'البوت مفعّل ونشط';
+        if (icon) icon.className = 'bi bi-check-circle-fill me-1';
+      } else {
+        badge.className = 'badge bg-danger bg-opacity-25 text-danger border border-danger px-3 py-2 fs-8 fw-bold';
+        text.innerText = 'البوت معطّل (إيقاف مؤقت)';
+        if (icon) icon.className = 'bi bi-pause-circle-fill me-1';
+      }
+
+      try {
+        const response = await fetch("{{ route('settings.toggle-bot') }}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({ is_active: isChecked })
+        });
+
+        const data = await response.json();
+        if (!data.success) {
+          throw new Error(data.message || 'فشل تحديث الحالة');
+        }
+      } catch (err) {
+        alert('خطأ أثناء تحديث حالة البوت: ' + err.message);
+        // Revert on error
+        checkbox.checked = !isChecked;
+        if (hiddenInput) hiddenInput.value = checkbox.checked ? '1' : '0';
+        toggleBotStatus(checkbox);
+      }
+    }
+
+    function togglePasswordVisibility(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(inputId + '_eye');
+      if (input) {
+        if (input.type === 'password') {
+          input.type = 'text';
+          if (icon) icon.className = 'bi bi-eye-slash';
+        } else {
+          input.type = 'password';
+          if (icon) icon.className = 'bi bi-eye';
+        }
       }
     }
   </script>

@@ -29,9 +29,13 @@ class Bot extends Model
     /**
      * Store the API key encrypted.
      */
-    public function setApiKeyAttribute(string $value): void
+    public function setApiKeyAttribute(?string $value): void
     {
-        $this->attributes['api_key_encrypted'] = Crypt::encryptString($value);
+        if (!empty($value)) {
+            $this->attributes['api_key_encrypted'] = Crypt::encryptString($value);
+        } else {
+            $this->attributes['api_key_encrypted'] = null;
+        }
     }
 
     /**
@@ -39,10 +43,10 @@ class Bot extends Model
      */
     public function getApiKeyAttribute(): ?string
     {
-        if (!$this->api_key_encrypted) return null;
+        if (empty($this->api_key_encrypted)) return null;
         try {
             return Crypt::decryptString($this->api_key_encrypted);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return null;
         }
     }

@@ -568,36 +568,34 @@ class RudoodPlatformTester
             'bot_tone'        => 'friendly',
             'welcome_message' => 'أهلاً بك! كيف أقدر أساعدك اليوم؟',
             'system_prompt'   => 'أنت المساعد المالي والإداري.',
+            'is_active'       => '0',
         ]);
         $settingsCtrl->saveBotSettings($botReq);
         $bot = Bot::where('workspace_id', $owner->workspace_id)->first();
         $this->assert($suite, 'SettingsController::saveBotSettings updates bot name and welcome message', 
-            $bot->welcome_message === 'أهلاً بك! كيف أقدر أساعدك اليوم؟'
+            $bot->welcome_message === 'أهلاً بك! كيف أقدر أساعدك اليوم؟' && $bot->is_active === false
         );
 
-        // 6.2 BYOK Restriction Governance
-        $ownerWs = $owner->workspace;
-        if ($ownerWs) {
-            // Lock BYOK
-            $ownerWs->update(['allow_custom_api_key' => false]);
-            $byokReq = Request::create('/settings/save-ai-key', 'POST', [
-                'ai_provider' => 'openai',
-                'ai_api_key'  => 'sk-test-key-12345',
-                'model_type'  => 'gpt-4o-mini',
-            ]);
-            $byokRes = $settingsCtrl->saveAiKey($byokReq);
-            $this->assert($suite, 'SettingsController::saveAiKey blocks custom keys when allow_custom_api_key is false', 
-                session()->has('error') && str_contains(session('error'), 'مقيد')
-            );
+        // 6.2 Toggle Bot Status Real-Time endpoint
+        $toggleReq = Request::create('/settings/toggle-bot', 'POST', ['is_active' => true]);
+        $toggleReq->headers->set('Accept', 'application/json');
+        $toggleRes = $settingsCtrl->toggleBot($toggleReq);
+        $bot->refresh();
+        $this->assert($suite, 'SettingsController::toggleBot updates bot is_active in real-time', 
+            $bot->is_active === true && $toggleRes->getData()->success === true
+        );
 
-            // Unlock BYOK
-            $ownerWs->update(['allow_custom_api_key' => true]);
-            session()->forget('error');
-            $byokRes2 = $settingsCtrl->saveAiKey($byokReq);
-            $this->assert($suite, 'SettingsController::saveAiKey allows custom keys when allow_custom_api_key is true', 
-                session()->has('status') && str_contains(session('status'), 'بنجاح')
-            );
-        }
+        // 6.3 Save AI Key directly to Database
+        $byokReq = Request::create('/settings/save-ai-key', 'POST', [
+            'ai_provider' => 'openai',
+            'ai_api_key'  => 'sk-test-key-12345',
+            'model_type'  => 'gpt-4o-mini',
+        ]);
+        $settingsCtrl->saveAiKey($byokReq);
+        $bot->refresh();
+        $this->assert($suite, 'SettingsController::saveAiKey encrypts and saves custom key to database', 
+            $bot->ai_provider === 'openai' && $bot->api_key === 'sk-test-key-12345' && !empty($bot->api_key_encrypted)
+        );
 
         // 6.3 Dynamic Model Fetcher endpoint
         $modelFetchReq = Request::create('/settings/fetch-models', 'POST', [
