@@ -150,13 +150,39 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-white small">مزود الذكاء الاصطناعي (AI Provider):</label>
-                                <select name="ai_provider" class="form-select bg-dark text-white border-secondary" required>
+                                <select name="ai_provider" id="admin_ai_provider" class="form-select bg-dark text-white border-secondary" required onchange="handleAdminProviderChange(this.value)">
                                     <option value="gemini" {{ $bot->ai_provider == 'gemini' ? 'selected' : '' }}>Google Gemini</option>
                                     <option value="openai" {{ $bot->ai_provider == 'openai' ? 'selected' : '' }}>OpenAI (ChatGPT)</option>
                                     <option value="anthropic" {{ $bot->ai_provider == 'anthropic' ? 'selected' : '' }}>Anthropic Claude</option>
                                     <option value="openai_compatible" {{ $bot->ai_provider == 'openai_compatible' ? 'selected' : '' }}>OpenAI Compatible</option>
                                 </select>
                             </div>
+                            
+                            <!-- مفتاح API الخاص بالبوت -->
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label class="form-label text-white small mb-0">مفتاح API الخاص بالبوت (AI API Key):</label>
+                                    @if($bot->api_key_encrypted)
+                                        <span class="badge bg-success bg-opacity-25 text-success border border-success fs-9">
+                                            <i class="bi bi-shield-lock-fill me-1"></i> مفتاح محفوظ ومشفّر
+                                        </span>
+                                    @else
+                                        <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fs-9">
+                                            <i class="bi bi-key me-1"></i> غير محدد
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="input-group">
+                                    <input type="password" name="api_key" id="admin_api_key" class="form-control bg-dark text-white border-secondary" 
+                                           placeholder="{{ $bot->api_key_encrypted ? '•••••••••••••••• (مفتاح محفوظ ومشفّر - املأ هنا للتحديث)' : 'أدخل مفتاح API الخاص بالمتجر هنا...' }}" autocomplete="new-password">
+                                    <button class="btn btn-outline-secondary border-secondary text-white-50" type="button" onclick="toggleAdminPassword('admin_api_key')">
+                                        <i class="bi bi-eye" id="admin_api_key_eye"></i>
+                                    </button>
+                                </div>
+                                <small class="text-white-50 fs-9"><i class="bi bi-shield-check text-gold me-1"></i>يتم تشفيره بـ AES-256 وتخزينه في جدول البوت.</small>
+                            </div>
+
+                            <!-- معرف النموذج -->
                             <div class="col-md-6">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
                                     <label class="form-label text-white small mb-0">معرف النموذج (Model ID):</label>
@@ -168,6 +194,13 @@
                                     <input type="text" name="model_type" id="admin_model_type" class="form-control bg-dark text-white border-secondary" value="{{ $bot->model_type ?? 'gemini-1.5-flash' }}" required>
                                 </div>
                             </div>
+
+                            <!-- رابط المزود Base URL -->
+                            <div class="col-12" id="adminBaseUrlGroup" style="display: {{ $bot->ai_provider === 'openai_compatible' ? 'block' : 'none' }};">
+                                <label class="form-label text-white small">رابط المزود Base URL (خاص بـ OpenAI Compatible):</label>
+                                <input type="url" name="api_base_url" id="admin_api_base_url" class="form-control bg-dark text-white border-secondary" value="{{ $bot->api_base_url }}" placeholder="https://api.your-provider.com/v1">
+                            </div>
+
                             <div class="col-md-6">
                                 <label class="form-label text-white small">نبرة الرد (Bot Tone):</label>
                                 <select name="bot_tone" class="form-select bg-dark text-white border-secondary" required>
@@ -396,11 +429,47 @@
 
 @section('scripts')
 <script>
+function handleAdminProviderChange(provider) {
+    const baseUrlGroup = document.getElementById('adminBaseUrlGroup');
+    const modelInput = document.getElementById('admin_model_type');
+    const models = {
+        openai: 'gpt-4o-mini',
+        gemini: 'gemini-1.5-flash',
+        anthropic: 'claude-3-haiku-20240307',
+        openai_compatible: 'moonshotai/Kimi-K2.6'
+    };
+
+    if (baseUrlGroup) {
+        baseUrlGroup.style.display = provider === 'openai_compatible' ? 'block' : 'none';
+    }
+    if (modelInput && models[provider]) {
+        modelInput.placeholder = models[provider];
+    }
+}
+
+function toggleAdminPassword(inputId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(inputId + '_eye');
+    if (input) {
+        if (input.type === 'password') {
+            input.type = 'text';
+            if (icon) icon.className = 'bi bi-eye-slash';
+        } else {
+            input.type = 'password';
+            if (icon) icon.className = 'bi bi-eye';
+        }
+    }
+}
+
 async function fetchAdminModels() {
-    const providerSelect = document.querySelector('select[name="ai_provider"]');
+    const providerSelect = document.getElementById('admin_ai_provider');
+    const apiKeyInput = document.getElementById('admin_api_key');
+    const baseUrlInput = document.getElementById('admin_api_base_url');
     const container = document.getElementById('adminModelInputContainer');
     const currentModel = document.getElementById('admin_model_type')?.value || '';
     const provider = providerSelect ? providerSelect.value : 'gemini';
+    const apiKey = apiKeyInput ? apiKeyInput.value : '';
+    const baseUrl = baseUrlInput ? baseUrlInput.value : '';
 
     container.innerHTML = '<div class="text-warning small py-1"><span class="spinner-border spinner-border-sm me-1"></span> جاري جلب النماذج...</div>';
 
@@ -412,7 +481,11 @@ async function fetchAdminModels() {
                 "X-CSRF-TOKEN": "{{ csrf_token() }}",
                 "Accept": "application/json"
             },
-            body: JSON.stringify({ ai_provider: provider })
+            body: JSON.stringify({ 
+                ai_provider: provider,
+                ai_api_key: apiKey,
+                api_base_url: baseUrl
+            })
         });
 
         const data = await res.json();

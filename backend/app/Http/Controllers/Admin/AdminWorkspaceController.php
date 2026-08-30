@@ -162,6 +162,8 @@ class AdminWorkspaceController extends Controller
             'name'              => 'required|string|max:255',
             'ai_provider'       => 'required|string|in:gemini,openai,anthropic,openai_compatible',
             'model_type'        => 'required|string|max:100',
+            'api_key'           => 'nullable|string|max:500',
+            'api_base_url'      => 'nullable|url',
             'temperature'       => 'required|numeric|min:0|max:1',
             'max_tokens'        => 'required|integer|min:50|max:4000',
             'bot_tone'          => 'required|string|in:friendly,formal,sales',
@@ -174,6 +176,12 @@ class AdminWorkspaceController extends Controller
         $validated['is_active'] = $request->has('is_active');
         $validated['enable_rag'] = $request->has('enable_rag');
         $validated['enable_auto_rules'] = $request->has('enable_auto_rules');
+
+        if ($request->filled('api_key')) {
+            $validated['api_key'] = trim($request->api_key);
+        } else {
+            unset($validated['api_key']);
+        }
 
         $bot->update($validated);
 
