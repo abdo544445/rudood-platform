@@ -17,10 +17,11 @@ use App\Http\Controllers\Admin\AdminWorkspaceController;
 use App\Http\Controllers\Admin\AdminSystemController;
 use App\Http\Controllers\Admin\AdminArticleController;
 use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\PlaygroundController;
 use App\Http\Controllers\Admin\AdminAuditLogController;
 use App\Http\Controllers\Admin\AdminContactMessageController;
 use App\Http\Controllers\Admin\AdminSubscriberController;
+use App\Http\Controllers\Admin\AdminDatabaseController;
+use App\Http\Controllers\PlaygroundController;
 use App\Models\ContactMessage;
 use App\Models\AuditLog;
 
@@ -133,9 +134,15 @@ Route::middleware(['auth', 'super_admin'])->prefix('admin')->name('admin.')->gro
     Route::post('/subscribers/{id}/reject', [AdminSubscriberController::class, 'reject'])->name('subscribers.reject');
     Route::delete('/subscribers/{id}', [AdminSubscriberController::class, 'destroy'])->name('subscribers.destroy');
 
-    // Infrastructure & System Health
+    // Infrastructure, Database & System Health
     Route::get('/system', [AdminSystemController::class, 'index'])->name('system.index');
     Route::post('/system/maintenance', [AdminSystemController::class, 'toggleMaintenance'])->name('system.maintenance');
+
+    // Super Admin Database Explorer & Schema Inspector
+    Route::get('/database', [AdminDatabaseController::class, 'index'])->name('database.index');
+    Route::get('/database/record/{table}/{id}', [AdminDatabaseController::class, 'getRecord'])->name('database.record');
+    Route::get('/database/export/{table}', [AdminDatabaseController::class, 'exportCsv'])->name('database.export');
+    Route::post('/database/query', [AdminDatabaseController::class, 'runQuery'])->name('database.query');
 });
 
 // Leave Impersonation (Available to authenticated users who were impersonated by an admin)

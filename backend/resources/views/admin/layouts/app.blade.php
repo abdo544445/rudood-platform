@@ -372,6 +372,11 @@
                 <span>حالة النظام والخدمات</span>
             </a>
 
+            <a href="{{ route('admin.database.index') }}" class="sidebar-link {{ request()->routeIs('admin.database.*') ? 'active' : '' }}">
+                <i class="bi bi-database-fill-gear text-gold"></i>
+                <span>مستكشف قاعدة البيانات</span>
+            </a>
+
             <a href="{{ route('admin.audit-logs.index') }}" class="sidebar-link {{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}">
                 <i class="bi bi-shield-check"></i>
                 <span>سجل تدقيق الأنشطة</span>

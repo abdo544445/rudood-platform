@@ -315,6 +315,34 @@ class RudoodPlatformTester
             \App\Models\ContactMessage::find($contact->id) === null
         );
 
+        // 2.12 Database Explorer & Schema Inspector
+        $dbCtrl = app(\App\Http\Controllers\Admin\AdminDatabaseController::class);
+        $dbView = $dbCtrl->index(Request::create('/admin/database', 'GET', ['table' => 'users']));
+        $this->assert($suite, 'AdminDatabaseController::index renders database explorer with tables and columns', 
+            $dbView instanceof \Illuminate\View\View && isset($dbView->getData()['tablesList']['users']) && count($dbView->getData()['columnNames']) > 0
+        );
+
+        $adminUser = User::where('role', 'super_admin')->first();
+        $recordRes = $dbCtrl->getRecord(Request::create('/admin/database/record/users/' . $adminUser->id, 'GET'), 'users', $adminUser->id);
+        $this->assert($suite, 'AdminDatabaseController::getRecord returns record JSON and masks password hashes', 
+            $recordRes->getData()->success === true && str_contains($recordRes->getData()->record->password, 'Bcrypt')
+        );
+
+        // 2.13 Safe Read-Only SQL Query Runner
+        $queryRes = $dbCtrl->runQuery(Request::create('/admin/database/query', 'POST', [
+            'sql' => 'SELECT id, name, email FROM users ORDER BY id DESC LIMIT 5;'
+        ]));
+        $this->assert($suite, 'AdminDatabaseController::runQuery executes read-only SELECT queries with timing', 
+            $queryRes->getData()->success === true && count($queryRes->getData()->rows) > 0 && isset($queryRes->getData()->latency_ms)
+        );
+
+        $badQueryRes = $dbCtrl->runQuery(Request::create('/admin/database/query', 'POST', [
+            'sql' => 'DROP TABLE users;'
+        ]));
+        $this->assert($suite, 'AdminDatabaseController::runQuery strictly blocks destructive queries (DROP/DELETE/ALTER)', 
+            $badQueryRes->getStatusCode() === 403 && $badQueryRes->getData()->success === false
+        );
+
         echo "\n";
     }
 
