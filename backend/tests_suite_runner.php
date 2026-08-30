@@ -216,16 +216,18 @@ class RudoodPlatformTester
                 $tunedBot->model_type === 'gemini-1.5-pro' && $tunedBot->bot_tone === 'sales' && $tunedBot->enable_rag == true
             );
 
-            // Test Instant Workspace Switcher
+            // Test Instant Workspace Switcher (session-based, not DB mutation)
             $switchReq = Request::create('/admin/workspaces/switch', 'POST', ['workspace_id' => $createdWs->id]);
             $wsCtrl->switchWorkspace($switchReq);
             $this->assert($suite, 'AdminWorkspaceController::switchWorkspace switches active workspace context', 
-                Auth::user()->fresh()->workspace_id === $createdWs->id
+                session('admin_active_workspace_id') === $createdWs->id
+                && Auth::user()->effective_workspace_id === $createdWs->id
+                && Auth::user()->fresh()->workspace_id !== $createdWs->id // DB row must NOT be mutated
             );
 
             // Cleanup
+            session()->forget('admin_active_workspace_id');
             $wsCtrl->destroy($createdWs->id);
-            Auth::user()->update(['workspace_id' => 1]); // restore
         }
 
         // 2.4 User Directory & Password Reset

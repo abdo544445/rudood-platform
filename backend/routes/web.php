@@ -62,9 +62,9 @@ Route::post('/contact', function (\Illuminate\Http\Request $request) {
     ]);
 
     AuditLog::record(
-        null,
         'contact.received',
         "تم استلام رسالة تواصل جديدة من {$contact->name} ({$contact->email})",
+        'public',
         [
             'contact_id' => $contact->id,
             'subject'    => $contact->subject,

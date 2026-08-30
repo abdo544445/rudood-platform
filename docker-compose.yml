@@ -28,7 +28,7 @@ services:
       - ./backend/.env
     environment:
       APP_ENV: production
-      APP_KEY: "base64:CclnKjMxE3v0oxY3U5xV7Q46YsAK4ZmBjWMa2NyY+uA="
+      APP_KEY: "${APP_KEY}"
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432

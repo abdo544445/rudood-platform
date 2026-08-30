@@ -63,9 +63,9 @@ class AdminContactMessageController extends Controller
         ]);
 
         AuditLog::record(
-            auth()->id(),
             'contact.status_update',
             "تم تعديل حالة رسالة التواصل #{$message->id} من [{$oldStatus}] إلى [{$request->status}]",
+            'admin',
             ['contact_id' => $message->id, 'new_status' => $request->status]
         );
 
@@ -88,9 +88,9 @@ class AdminContactMessageController extends Controller
         $message->delete();
 
         AuditLog::record(
-            auth()->id(),
             'contact.deleted',
             "تم حذف رسالة التواصل #{$id} المستلمة من ({$senderName})",
+            'admin',
             ['contact_id' => $id]
         );
 

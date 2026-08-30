@@ -40,4 +40,18 @@ class User extends Authenticatable
     {
         return $this->role === 'super_admin' || $this->role === 'admin';
     }
+
+    /**
+     * Get the effective workspace ID for this user.
+     * For Super Admins, checks session-based workspace switch first,
+     * then falls back to the DB column. This prevents permanent DB mutation
+     * when admins browse different tenant stores.
+     */
+    public function getEffectiveWorkspaceIdAttribute(): ?int
+    {
+        if ($this->isSuperAdmin() && session()->has('admin_active_workspace_id')) {
+            return (int) session('admin_active_workspace_id');
+        }
+        return $this->workspace_id;
+    }
 }

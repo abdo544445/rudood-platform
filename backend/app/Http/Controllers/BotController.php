@@ -376,7 +376,7 @@ class BotController extends Controller
         // Persist to decision log so admin stats capture playground tests too
         try {
             \App\Models\AiDecisionLog::create([
-                'conversation_id'  => 1, // Fallback or first conversation reference if exists
+                'conversation_id'  => null,
                 'message_id'       => null,
                 'trigger'          => $trigger,
                 'matched_keywords' => $matchedKeywords,

@@ -290,7 +290,8 @@ class AdminWorkspaceController extends Controller
         $user = auth()->user();
         if ($user && $user->isSuperAdmin()) {
             $workspace = Workspace::findOrFail($request->workspace_id);
-            $user->update(['workspace_id' => $workspace->id]);
+            // Store in session only — don't permanently mutate the admin's own DB row
+            session(['admin_active_workspace_id' => $workspace->id]);
             return back()->with('status', "تم تحويل مساحة العمل النشطة فورياً إلى ({$workspace->company_name}) 🏢");
         }
 

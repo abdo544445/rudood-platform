@@ -10,4 +10,16 @@ DIGITALOCEAN_GUIDE.md
 VPS_*.md
 credentials.md
 
+# Dependencies (install via composer install / npm install)
+backend/vendor/
+backend/node_modules/
+node_modules/
+
+# Redis dumps
+dump.rdb
+backend/dump.rdb
+
+# Test caches & IDE files
+backend/.phpunit.result.cache
+.phpunit.result.cache
 
