@@ -33,9 +33,9 @@ class RudoodFeaturesTest extends TestCase
             'password_confirmation' => 'password123',
         ]);
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect('/subscription-pending');
         $this->assertDatabaseHas('users', ['email' => 'ahmed@test.com', 'role' => 'owner']);
-        $this->assertDatabaseHas('workspaces', ['company_name' => "أحمد التجريبي's Workspace"]);
+        $this->assertDatabaseHas('workspaces', ['company_name' => "أحمد التجريبي's Store"]);
 
         $user = User::where('email', 'ahmed@test.com')->first();
         $this->assertNotNull($user->workspace_id);

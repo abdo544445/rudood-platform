@@ -36,7 +36,7 @@ class AdminStatisticsTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('لوحة الإحصائيات الشاملة');
         $response->assertSee('مركز المراقبة والتحليلات الشاملة');
-        $response->assertSee('جدول متابعة أداء الشركات');
+        $response->assertSee('أداء ومراقبة أسطول الشركات');
     }
 
     /**

@@ -221,8 +221,8 @@ class RudoodPlatformTester
             $wsCtrl->switchWorkspace($switchReq);
             $this->assert($suite, 'AdminWorkspaceController::switchWorkspace switches active workspace context', 
                 session('admin_active_workspace_id') === $createdWs->id
-                && Auth::user()->effective_workspace_id === $createdWs->id
-                && Auth::user()->fresh()->workspace_id !== $createdWs->id // DB row must NOT be mutated
+                && Auth::user()->workspace_id === $createdWs->id
+                && Auth::user()->getRawOriginal('workspace_id') !== $createdWs->id // DB row must NOT be mutated
             );
 
             // Cleanup

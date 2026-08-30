@@ -42,16 +42,17 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the effective workspace ID for this user.
-     * For Super Admins, checks session-based workspace switch first,
-     * then falls back to the DB column. This prevents permanent DB mutation
-     * when admins browse different tenant stores.
+     * Get the workspace ID this user is currently operating against.
+     * For Super Admins who have an active "switch workspace" session override,
+     * this returns the switched-to workspace instead of their own home workspace.
+     * IMPORTANT: reads $value directly (not $this->workspace_id) to avoid infinite
+     * recursion — this method IS the workspace_id accessor.
      */
-    public function getEffectiveWorkspaceIdAttribute(): ?int
+    public function getWorkspaceIdAttribute($value): ?int
     {
         if ($this->isSuperAdmin() && session()->has('admin_active_workspace_id')) {
             return (int) session('admin_active_workspace_id');
         }
-        return $this->workspace_id;
+        return $value !== null ? (int) $value : null;
     }
 }
