@@ -348,9 +348,14 @@ class BotController extends Controller
         $matchedKeywords = null;
         $matchedChunks   = [];
         $context         = '';
+        $enableAutoRules = ($bot->enable_auto_rules ?? true) !== false;
+        $enableRag       = ($bot->enable_rag ?? true) !== false;
 
-        // 1) Instant FAQ rule match
-        $ruleMatch = $ragService->checkAutoRules($bot->workspace_id, $question);
+        // 1) Instant FAQ rule match (only if enable_auto_rules is true)
+        $ruleMatch = null;
+        if ($enableAutoRules) {
+            $ruleMatch = $ragService->checkAutoRules($bot->workspace_id, $question);
+        }
 
         if ($ruleMatch !== null) {
             $trigger         = 'auto_rule';
@@ -359,12 +364,14 @@ class BotController extends Controller
                 ? implode(', ', array_slice($ruleMatch['keywords'], 0, 5))
                 : (string) $ruleMatch['keywords'];
         } else {
-            // 2) RAG retrieval with diagnostic scores
-            $rag           = $ragService->retrieveRelevantChunks($bot->id, $question);
-            $matchedChunks = $rag['chunks'];
-            $context       = $rag['context'];
+            // 2) RAG retrieval with diagnostic scores (only if enable_rag is true)
+            if ($enableRag) {
+                $rag           = $ragService->retrieveRelevantChunks($bot->id, $question);
+                $matchedChunks = $rag['chunks'];
+                $context       = $rag['context'];
+            }
 
-            // 3) AI call (multi-turn history = none in single playground prompt)
+            // 3) AI call (multi-turn history = none in single prompt)
             $aiService = new \App\Services\AiService($bot);
             $reply     = $aiService->generateReply($question, $context, []);
 

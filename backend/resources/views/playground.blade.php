@@ -595,6 +595,7 @@
       message: text,
       history: conversationHistory,
       enable_rag: document.getElementById('toggle_rag').checked,
+      enable_auto_rules: document.getElementById('toggle_rules').checked,
       enable_rules: document.getElementById('toggle_rules').checked,
       overrides: {
         ai_provider: document.getElementById('param_provider').value,

@@ -6,7 +6,7 @@
   <img src="https://img.shields.io/badge/PostgreSQL-16%20%2B%20pgvector-336791?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL 16" />
   <img src="https://img.shields.io/badge/Redis-Alpine-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
   <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
-  <img src="https://img.shields.io/badge/Tests-95%20Passed%20(100%25)-22C55E?style=for-the-badge&logo=checkmarx&logoColor=white" alt="Tests 100%" />
+  <img src="https://img.shields.io/badge/Tests-102%20Passed%20(100%25)-22C55E?style=for-the-badge&logo=checkmarx&logoColor=white" alt="Tests 100%" />
 </p>
 
 ---
@@ -230,8 +230,8 @@ php artisan serve
 
 | الحساب | الصلاحية | البريد الإلكتروني | كلمة المرور |
 | :--- | :--- | :--- | :--- |
-| **مدير النظام الأعلى (Super Admin)** | وصول كامل لكافة الشركات والأنشطة والرسائل | `admin@rudood.com` | `admin123456` |
-| **مالك المتجر التجريبي (Store Owner)** | إدارة متجر النخبة والمحادثات والقنوات والبوت | `owner@store.com` | `password` |
+| **مدير النظام الأعلى (Super Admin)** | وصول كامل لكافة الشركات والأنشطة وقاعدة البيانات | `admin@rudood.com` | `password123` |
+| **مالك المتجر التجريبي (Store Owner)** | إدارة متجر النخبة والمحادثات والقنوات والبوت | `owner@store.com` | `password123` |
 
 ---
 
@@ -248,6 +248,7 @@ php artisan serve
 | **مركز القنوات (Omni-Channel Hub)** | [http://localhost:8000/channels](http://localhost:8000/channels) |
 | **مختبر الذكاء الاصطناعي (AI Playground)** | [http://localhost:8000/playground](http://localhost:8000/playground) |
 | **لوحة المدير الأعلى (Super Admin)** | [http://localhost:8000/admin/dashboard](http://localhost:8000/admin/dashboard) |
+| **مستكشف قاعدة البيانات والهيكل** | [http://localhost:8000/admin/database](http://localhost:8000/admin/database) |
 | **صندوق رسائل تواصل معنا الواردة** | [http://localhost:8000/admin/contacts](http://localhost:8000/admin/contacts) |
 | **سجل تدقيق الأمان (Audit Logs)** | [http://localhost:8000/admin/audit-logs](http://localhost:8000/admin/audit-logs) |
 
@@ -255,7 +256,7 @@ php artisan serve
 
 ## 🧪 حزمة الاختبارات الآلية (Automated Test Suite)
 
-تحتوي المنصة على جناح اختبارات متكامل يشمل **50 اختباراً** آلياً بنسبة نجاح **100%**:
+تحتوي المنصة على جناح اختبارات متكامل يشمل **102 اختباراً** آلياً بنسبة نجاح **100%**:
 
 </div>
 
@@ -268,10 +269,10 @@ php tests_suite_runner.php
 🚀 STARTING RUDOOD PLATFORM COMPLETE TEST SUITE
 =========================================================
 📦 Suite 1: Authentication, Authorization & Roles (6/6 PASS)
-📦 Suite 2: Super Admin Command Center (11/11 PASS)
+📦 Suite 2: Super Admin Command Center (15/15 PASS)
 📦 Suite 3: Tenant Store Dashboard & Real-Time Chat (7/7 PASS)
 📦 Suite 4: AI Engine, RAG & Knowledge Base Services (8/8 PASS)
-📦 Suite 5: AI Playground Workbench (3/3 PASS)
+📦 Suite 5: AI Playground Workbench (6/6 PASS)
 📦 Suite 6: Settings, Channels & Webhooks (11/11 PASS)
 📦 Suite 7: Advanced High-Impact AI Capabilities (10/10 PASS)
 📦 Suite 8: WhatsApp Interactive Messages (7/7 PASS)
@@ -280,7 +281,7 @@ php tests_suite_runner.php
 🛠️ Suite 11: System Maintenance Mode & Route Protection (7/7 PASS)
 🚀 Suite 12: Subscriber Onboarding & Lead Approval Workflow (7/7 PASS)
 =========================================================
-Total Tests Run : 95 | Passed Tests : 95 | Success Rate : 100%
+Total Tests Run : 102 | Passed Tests : 102 | Success Rate : 100%
 =========================================================
 ```
 

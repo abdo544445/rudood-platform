@@ -51,6 +51,16 @@ class DashboardController extends Controller
                          AND m2.created_at < messages.created_at
                          ORDER BY m2.created_at DESC LIMIT 1)))) as avg_seconds')
                     ->value('avg_seconds');
+            } elseif ($driver === 'pgsql') {
+                $avgResponseSeconds = Message::where('sender_type', 'bot')
+                    ->whereHas('conversation', fn($q) => $q->where('workspace_id', $workspace_id))
+                    ->selectRaw('AVG(EXTRACT(EPOCH FROM (messages.created_at -
+                        (SELECT created_at FROM messages AS m2
+                         WHERE m2.conversation_id = messages.conversation_id
+                         AND m2.sender_type = \'customer\'
+                         AND m2.created_at < messages.created_at
+                         ORDER BY m2.created_at DESC LIMIT 1)))) as avg_seconds')
+                    ->value('avg_seconds');
             } else {
                 $avgResponseSeconds = Message::where('sender_type', 'bot')
                     ->whereHas('conversation', fn($q) => $q->where('workspace_id', $workspace_id))

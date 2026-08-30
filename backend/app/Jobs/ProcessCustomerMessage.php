@@ -89,8 +89,15 @@ class ProcessCustomerMessage implements ShouldQueue
         $matchedKeywords = null;
         $context = null;
 
-        // ── Step 1: Check Auto-Rules first (instant, no API call needed) ──────
-        $ruleMatch = $ragService->checkAutoRules($conversation->workspace_id, $customerMessage->content);
+        // Check if Auto-Rules & RAG are enabled (treat null as true for backward compatibility)
+        $enableAutoRules = ($bot->enable_auto_rules ?? true) !== false;
+        $enableRag       = ($bot->enable_rag ?? true) !== false;
+
+        // ── Step 1: Check Auto-Rules first (if enabled by merchant/admin) ──────
+        $ruleMatch = null;
+        if ($enableAutoRules) {
+            $ruleMatch = $ragService->checkAutoRules($conversation->workspace_id, $customerMessage->content);
+        }
 
         if ($ruleMatch !== null) {
             $trigger         = 'auto_rule';
@@ -122,8 +129,12 @@ class ProcessCustomerMessage implements ShouldQueue
 
                 $history = $allPriorMessages->slice(-6)->values()->toArray();
 
-                $ragResult = $ragService->retrieveRelevantChunks($bot->id, $customerMessage->content);
-                $context   = $ragResult['context'];
+                // ── Step 2.5: RAG Retrieval (only if enable_rag is true) ──────
+                $context = '';
+                if ($enableRag) {
+                    $ragResult = $ragService->retrieveRelevantChunks($bot->id, $customerMessage->content);
+                    $context   = $ragResult['context'];
+                }
 
                 if (!empty($conversation->context_summary)) {
                     $context = "سياق سابق للمحادثة: " . $conversation->context_summary . "\n\n" . ($context ?: '');

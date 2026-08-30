@@ -63,11 +63,12 @@ class PlaygroundController extends Controller
     public function send(Request $request, RagService $ragService)
     {
         $request->validate([
-            'message'       => 'required|string|max:2000',
-            'history'       => 'nullable|array',
-            'overrides'     => 'nullable|array',
-            'enable_rag'    => 'nullable|boolean',
-            'enable_rules'  => 'nullable|boolean',
+            'message'           => 'required|string|max:2000',
+            'history'           => 'nullable|array',
+            'overrides'         => 'nullable|array',
+            'enable_rag'        => 'nullable|boolean',
+            'enable_auto_rules' => 'nullable|boolean',
+            'enable_rules'      => 'nullable|boolean',
         ]);
 
         $bot = $this->getBot();
@@ -75,7 +76,9 @@ class PlaygroundController extends Controller
         $history = $request->input('history', []);
         $overrides = $request->input('overrides', []);
         $enableRag = $request->boolean('enable_rag', true);
-        $enableRules = $request->boolean('enable_rules', true);
+        $enableRules = $request->has('enable_auto_rules') 
+            ? $request->boolean('enable_auto_rules') 
+            : $request->boolean('enable_rules', true);
 
         $start = microtime(true);
         $trigger = 'ai_api';
