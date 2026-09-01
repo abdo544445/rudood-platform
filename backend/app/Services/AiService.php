@@ -377,6 +377,14 @@ class AiService
      */
     public function fetchAvailableModels(string $provider, ?string $apiKey = null, ?string $baseUrl = null): array
     {
+        $defaults = match ($provider) {
+            'gemini'            => ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash'],
+            'openai'            => ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-3.5-turbo'],
+            'anthropic'         => ['claude-3-5-sonnet-20240620', 'claude-3-haiku-20240307'],
+            'openai_compatible' => ['gpt-4o-mini', 'llama-3.1-70b', 'mistral-large'],
+            default             => ['gemini-1.5-flash', 'gemini-1.5-pro'],
+        };
+
         $apiKey = $apiKey ?: $this->bot->api_key;
         if (!$apiKey) {
             $apiKey = match ($provider) {
@@ -388,62 +396,48 @@ class AiService
             };
         }
 
-        if (!$apiKey && $provider !== 'openai_compatible') {
-            return [
-                'success' => false,
-                'message' => 'يرجى إدخال مفتاح الـ API أولاً لجلب النماذج.',
-                'models'  => [],
-            ];
-        }
+        if ($apiKey) {
+            try {
+                if ($provider === 'openai' || $provider === 'openai_compatible') {
+                    $base = rtrim($baseUrl ?: $this->bot->api_base_url ?: 'https://api.openai.com/v1', '/');
+                    $url  = $base . '/models';
 
-        try {
-            if ($provider === 'openai' || $provider === 'openai_compatible') {
-                $base = rtrim($baseUrl ?: $this->bot->api_base_url ?: 'https://api.openai.com/v1', '/');
-                $url  = $base . '/models';
-
-                $res = Http::withToken($apiKey)->timeout(12)->get($url);
-                if ($res->successful()) {
-                    $list = collect($res->json('data', []))->pluck('id')->filter()->values()->toArray();
-                    if (!empty($list)) {
-                        return ['success' => true, 'models' => $list];
+                    $res = Http::withToken($apiKey)->timeout(12)->get($url);
+                    if ($res->successful()) {
+                        $list = collect($res->json('data', []))->pluck('id')->filter()->values()->toArray();
+                        if (!empty($list)) {
+                            return ['success' => true, 'models' => $list];
+                        }
                     }
-                }
-            } elseif ($provider === 'gemini') {
-                $url = "https://generativelanguage.googleapis.com/v1beta/models?key={$apiKey}";
-                $res = Http::timeout(12)->get($url);
-                if ($res->successful()) {
-                    $list = collect($res->json('models', []))
-                        ->pluck('name')
-                        ->map(fn($m) => str_replace('models/', '', $m))
-                        ->filter(fn($m) => str_contains($m, 'gemini') || str_contains($m, 'flash') || str_contains($m, 'pro'))
-                        ->values()
-                        ->toArray();
-                    if (!empty($list)) {
-                        return ['success' => true, 'models' => $list];
+                } elseif ($provider === 'gemini') {
+                    $url = "https://generativelanguage.googleapis.com/v1beta/models?key={$apiKey}";
+                    $res = Http::timeout(12)->get($url);
+                    if ($res->successful()) {
+                        $list = collect($res->json('models', []))
+                            ->pluck('name')
+                            ->map(fn($m) => str_replace('models/', '', $m))
+                            ->filter(fn($m) => str_contains($m, 'gemini') || str_contains($m, 'flash') || str_contains($m, 'pro'))
+                            ->values()
+                            ->toArray();
+                        if (!empty($list)) {
+                            return ['success' => true, 'models' => $list];
+                        }
                     }
+                } elseif ($provider === 'anthropic') {
+                    return [
+                        'success' => true,
+                        'models'  => [
+                            'claude-3-5-sonnet-20240620',
+                            'claude-3-opus-20240229',
+                            'claude-3-sonnet-20240229',
+                            'claude-3-haiku-20240307',
+                        ],
+                    ];
                 }
-            } elseif ($provider === 'anthropic') {
-                return [
-                    'success' => true,
-                    'models'  => [
-                        'claude-3-5-sonnet-20240620',
-                        'claude-3-opus-20240229',
-                        'claude-3-sonnet-20240229',
-                        'claude-3-haiku-20240307',
-                    ],
-                ];
+            } catch (\Throwable $e) {
+                \Log::warning('fetchAvailableModels live query failed: ' . $e->getMessage());
             }
-        } catch (\Throwable $e) {
-            \Log::warning('fetchAvailableModels live query failed: ' . $e->getMessage());
         }
-
-        $defaults = match ($provider) {
-            'gemini'            => ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash'],
-            'openai'            => ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-3.5-turbo'],
-            'anthropic'         => ['claude-3-5-sonnet-20240620', 'claude-3-haiku-20240307'],
-            'openai_compatible' => ['gpt-4o-mini', 'llama-3.1-70b', 'mistral-large'],
-            default             => ['gemini-1.5-flash', 'gemini-1.5-pro'],
-        };
 
         return [
             'success' => true,
