@@ -164,9 +164,28 @@
             <h3 class="fw-bold text-white mb-4">أرسل لنا رسالة</h3>
             
             @if(session('success'))
-              <div class="alert alert-success bg-success bg-opacity-15 border-success text-success mb-4 rounded-3 d-flex align-items-center gap-2">
-                <i class="bi bi-check-circle-fill fs-5"></i>
-                <div>{{ session('success') }}</div>
+              <div class="alert alert-dismissible fade show p-3 mb-4 rounded-4 d-flex align-items-center gap-3 shadow-lg" role="alert" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.18) 0%, rgba(15, 23, 42, 0.95) 100%); border: 1px solid rgba(212, 175, 55, 0.55); box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 15px rgba(212, 175, 55, 0.2);">
+                <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle" style="width: 44px; height: 44px; background: rgba(212, 175, 55, 0.25); border: 1px solid var(--gold-primary); color: #f3d082;">
+                  <i class="bi bi-check2-all fs-4"></i>
+                </div>
+                <div class="flex-grow-1 text-start">
+                  <div class="fw-bold text-white fs-7 mb-1" style="color: #ffffff !important; font-weight: 800; font-size: 1rem;">تم إرسال رسالتك بنجاح! ✨</div>
+                  <div class="text-white" style="color: #f1f5f9 !important; font-size: 0.9rem; line-height: 1.45;">{{ session('success') }}</div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close" style="filter: invert(1) grayscale(100%) brightness(200%);"></button>
+              </div>
+            @endif
+
+            @if($errors->any())
+              <div class="alert alert-dismissible fade show p-3 mb-4 rounded-4 d-flex align-items-center gap-3 shadow-lg" role="alert" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(15, 23, 42, 0.95) 100%); border: 1px solid rgba(239, 68, 68, 0.5); box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
+                <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle" style="width: 44px; height: 44px; background: rgba(239, 68, 68, 0.25); border: 1px solid #ef4444; color: #fca5a5;">
+                  <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+                </div>
+                <div class="flex-grow-1 text-start">
+                  <div class="fw-bold text-white fs-7 mb-1" style="color: #ffffff !important; font-weight: 800;">تنبيه في إرسال النموذج</div>
+                  <div class="text-white" style="color: #fee2e2 !important; font-size: 0.9rem; line-height: 1.45;">{{ $errors->first() }}</div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close" style="filter: invert(1) grayscale(100%) brightness(200%);"></button>
               </div>
             @endif
 
@@ -175,22 +194,22 @@
               <div class="row g-3">
                 <div class="col-md-6 text-start">
                   <label for="senderName" class="form-label text-white-50 fs-7">الاسم الكامل</label>
-                  <input type="text" class="form-control bg-dark border-white border-opacity-10 text-white rounded-3 py-2.5" id="senderName" name="sender_name" placeholder="محمد أحمد" required>
+                  <input type="text" class="form-control bg-dark border-secondary border-opacity-50 text-white rounded-3 py-2.5" id="senderName" name="sender_name" placeholder="محمد أحمد" required>
                 </div>
 
                 <div class="col-md-6 text-start">
                   <label for="senderEmail" class="form-label text-white-50 fs-7">البريد الإلكتروني</label>
-                  <input type="email" class="form-control bg-dark border-white border-opacity-10 text-white rounded-3 py-2.5" id="senderEmail" name="sender_email" placeholder="name@example.com" required>
+                  <input type="email" class="form-control bg-dark border-secondary border-opacity-50 text-white rounded-3 py-2.5" id="senderEmail" name="sender_email" placeholder="name@example.com" required>
                 </div>
 
                 <div class="col-12 text-start">
                   <label for="subject" class="form-label text-white-50 fs-7">عنوان الرسالة</label>
-                  <input type="text" class="form-control bg-dark border-white border-opacity-10 text-white rounded-3 py-2.5" id="subject" name="subject" placeholder="استفسار عن خطط الأسعار" required>
+                  <input type="text" class="form-control bg-dark border-secondary border-opacity-50 text-white rounded-3 py-2.5" id="subject" name="subject" placeholder="استفسار عن خطط الأسعار" required>
                 </div>
 
                 <div class="col-12 text-start">
                   <label for="message" class="form-label text-white-50 fs-7">نص الرسالة</label>
-                  <textarea class="form-control bg-dark border-white border-opacity-10 text-white rounded-3" id="message" name="message" rows="5" placeholder="اكتب استفسارك هنا..." required></textarea>
+                  <textarea class="form-control bg-dark border-secondary border-opacity-50 text-white rounded-3" id="message" name="message" rows="5" placeholder="اكتب استفسارك هنا..." required></textarea>
                 </div>
 
                 <div class="col-12 mt-4 text-end">

@@ -134,8 +134,10 @@
         </div>
         @endif
         @if (session('status'))
-        <div class="alert alert-success py-2 fs-7 mb-3" role="alert">
-            {{ session('status') }}
+        <div class="alert alert-dismissible fade show p-3 mb-3 rounded-3 d-flex align-items-center gap-2" role="alert" style="background: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.5); color: #ffffff !important;">
+            <i class="bi bi-info-circle-fill text-gold fs-5"></i>
+            <div class="text-white fs-8">{{ session('status') }}</div>
+            <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         @endif
 

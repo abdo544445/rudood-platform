@@ -89,9 +89,9 @@
       @endif
 
       @if(session('success'))
-      <div class="alert alert-success border border-success border-opacity-40 bg-dark text-success fs-8 mb-4 d-flex align-items-center gap-2">
-        <i class="bi bi-check-circle-fill fs-5 flex-shrink-0"></i>
-        <div>{{ session('success') }}</div>
+      <div class="alert border border-warning border-opacity-50 text-white fs-8 mb-4 d-flex align-items-center gap-2 rounded-3 shadow-sm" style="background: rgba(212, 175, 55, 0.15);">
+        <i class="bi bi-check-circle-fill fs-5 flex-shrink-0 text-gold"></i>
+        <div class="text-white">{{ session('success') }}</div>
       </div>
       @endif
 
