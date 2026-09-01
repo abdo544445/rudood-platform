@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
             ['plan_id' => 'enterprise', 'status' => 'active']
         );
 
-        $adminUser = User::firstOrCreate(
+        $adminUser = User::updateOrCreate(
             ['email' => 'admin@rudood.com'],
             [
                 'name'         => 'مدير النظام الأعلى',
@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
             ['plan_id' => 'professional', 'status' => 'active']
         );
 
-        $storeOwner = User::firstOrCreate(
+        $storeOwner = User::updateOrCreate(
             ['email' => 'owner@store.com'],
             [
                 'name'         => 'عبدالله التميمي',
