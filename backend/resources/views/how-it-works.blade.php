@@ -14,6 +14,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   @include('layouts.partials.theme')
   <style>
+    /* Ambient Particle Canvas (Fixed in background) */
+    #ambientCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .main-page-wrapper {
+      position: relative;
+      z-index: 1;
+    }
+
     /* Live Demo Button with Pulsing Radar */
     .btn-live-demo {
       background: rgba(239, 68, 68, 0.15);

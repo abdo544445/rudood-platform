@@ -649,17 +649,20 @@
       let html = '';
       data.chunks.forEach((c, idx) => {
         const score = c.score || 10;
-        const pct = Math.min(Math.round((score / 50) * 100), 100);
+        const pct = c.similarity_pct !== undefined ? c.similarity_pct : Math.min(Math.round((score / 50) * 100), 100);
+        const fileName = c.file_name || 'مستند المعرفة';
+        const chunkIndex = c.chunk_index !== undefined ? c.chunk_index : (idx + 1);
+
         html += `
           <div class="chunk-card">
             <div class="d-flex justify-content-between align-items-center mb-1">
-              <span class="text-gold fw-bold fs-9">مقطع #${idx + 1}</span>
-              <span class="text-white-50 fs-9">درجة التطابق: <strong class="text-white">${score}</strong></span>
+              <span class="text-gold fw-bold fs-9"><i class="bi bi-file-earmark-text me-1"></i>${fileName} (مقطع #${chunkIndex})</span>
+              <span class="badge bg-dark border border-warning text-gold fs-9">تطابق: <strong>${pct}%</strong></span>
             </div>
             <div class="score-bar mb-2">
-              <div class="score-fill" style="width: ${pct}%;"></div>
+              <div class="score-fill" style="width: ${Math.max(pct, 15)}%;"></div>
             </div>
-            <p class="text-white-50 mb-0 fs-9" style="line-height: 1.4;">${c.text}</p>
+            <p class="text-white-50 mb-0 fs-9" style="line-height: 1.45; white-space: pre-line;">${c.text}</p>
           </div>
         `;
       });

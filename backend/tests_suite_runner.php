@@ -61,6 +61,7 @@ class RudoodPlatformTester
         $this->testSuite10_ConversionAnalyticsAndRoiTracking();
         $this->testSuite11_MaintenanceModeAndScheduledCountdown();
         $this->testSuite12_SubscriberOnboardingAndAgreementWorkflow();
+        $this->testSuite13_ClientFeedbackAndVectorDatabase();
 
         $this->printSummary();
 
@@ -1522,6 +1523,134 @@ class RudoodPlatformTester
             in_array($dbDriver, ['sqlite', 'mysql', 'pgsql']) &&
             !empty($appKey) &&
             str_starts_with($appKey, 'base64:')
+        );
+
+        echo "\n";
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // SUITE 13: Client Feedback Verification & PostgreSQL Vector Database
+    // ──────────────────────────────────────────────────────────────────────────
+    private function testSuite13_ClientFeedbackAndVectorDatabase(): void
+    {
+        echo "🎯 Suite 13: Client Feedback Resolution & Vector Database (pgvector)\n";
+        $suite = 'Client Feedback & Vector DB';
+
+        // 13.1 How-it-Works Canvas Background Fix (Blank screen fix)
+        $howItWorksContent = view('how-it-works')->render();
+        $this->assert($suite, 'How-It-Works view contains fixed ambient canvas CSS and renders immediately', 
+            str_contains($howItWorksContent, 'id="ambientCanvas"') &&
+            str_contains($howItWorksContent, 'position: fixed') &&
+            str_contains($howItWorksContent, 'z-index: 0')
+        );
+
+        // 13.2 Auto-Reply Toggle AJAX Endpoint (/settings/toggle-bot)
+        $owner = User::where('role', 'owner')->first();
+        Auth::login($owner);
+        $settingsCtrl = app(\App\Http\Controllers\SettingsController::class);
+        $toggleReq = Request::create('/settings/toggle-bot', 'POST', ['is_active' => false]);
+        $toggleReq->headers->set('Accept', 'application/json');
+        $toggleResp = $settingsCtrl->toggleBot($toggleReq);
+        $bot = Bot::where('workspace_id', $owner->workspace_id)->first();
+
+        $this->assert($suite, 'SettingsController::toggleBot disables bot via JSON and returns false', 
+            $toggleResp->getStatusCode() === 200 &&
+            $toggleResp->getData()->is_active === false &&
+            (bool)$bot->fresh()->is_active === false
+        );
+
+        $resumeReq = Request::create('/settings/toggle-bot', 'POST', ['is_active' => true]);
+        $resumeReq->headers->set('Accept', 'application/json');
+        $resumeResp = $settingsCtrl->toggleBot($resumeReq);
+
+        $this->assert($suite, 'SettingsController::toggleBot enables bot via JSON and returns true', 
+            $resumeResp->getStatusCode() === 200 &&
+            $resumeResp->getData()->is_active === true &&
+            (bool)$bot->fresh()->is_active === true
+        );
+
+        // 13.3 Unhandled Contact Messages Filtering (?status=new)
+        $admin = User::where('role', 'super_admin')->first();
+        Auth::login($admin);
+        $adminContactCtrl = app(\App\Http\Controllers\Admin\AdminContactMessageController::class);
+
+        // Ensure at least one new message exists
+        \App\Models\ContactMessage::create([
+            'name'       => 'سلطان القحطاني',
+            'email'      => 'sultan@test.sa',
+            'subject'    => 'استفسار غير معالج',
+            'message'    => 'أريد معرفة هل تدعمون الربط مع سلة وزد؟',
+            'status'     => 'new',
+            'ip_address' => '127.0.0.1',
+        ]);
+
+        $filterReq = Request::create('/admin/contacts', 'GET', ['status' => 'new']);
+        $filterView = $adminContactCtrl->index($filterReq);
+        $messagesData = $filterView->getData()['messages'];
+
+        $allNew = true;
+        foreach ($messagesData as $m) {
+            if ($m->status !== 'new') {
+                $allNew = false;
+                break;
+            }
+        }
+
+        $this->assert($suite, 'AdminContactMessageController::index filters unhandled messages with status=new', 
+            $filterView->getData()['stats']['new'] > 0 &&
+            $messagesData->count() > 0 &&
+            $allNew
+        );
+
+        // 13.4 Live Chat Unhandled Conversations Filter (?filter=unhandled)
+        Auth::login($owner);
+        $convCtrl = app(\App\Http\Controllers\ConversationController::class);
+        $liveChatReq = Request::create('/live-chat', 'GET', ['filter' => 'unhandled']);
+        $liveChatView = $convCtrl->index($liveChatReq);
+        $liveChatData = $liveChatView->getData();
+
+        $this->assert($suite, 'ConversationController::index filters unhandled conversations and returns filterCounts', 
+            isset($liveChatData['filterCounts']) &&
+            isset($liveChatData['filterCounts']['unhandled']) &&
+            $liveChatData['filter'] === 'unhandled'
+        );
+
+        // 13.5 KnowledgeChunk Vector Database Storage & Embedding Sync
+        $testDoc = KnowledgeBase::create([
+            'bot_id'        => $bot->id,
+            'file_name'     => 'كتالوج_منتجات_الذهب.pdf',
+            'document_text' => "سوار ذهب عيار 21 بوزن 15 جرام بسعر 4200 ريال شامل الضريبة.\n\nسياسة الشحن: التوصيل مجاني لكافة مدن المملكة للطلبات فوق 500 ريال.\n\nطرق الدفع: نقبل مدى وفيزا والتقسيط عبر تابي وتمارا.",
+            'status'        => 'processed',
+        ]);
+
+        $chunkCount = \App\Models\KnowledgeChunk::where('knowledge_base_id', $testDoc->id)->count();
+        $sampleChunk = \App\Models\KnowledgeChunk::where('knowledge_base_id', $testDoc->id)->first();
+
+        $this->assert($suite, 'KnowledgeBase automatically syncs semantic chunks and vector embeddings into knowledge_chunks table', 
+            $chunkCount >= 2 &&
+            $sampleChunk !== null &&
+            is_array($sampleChunk->embedding) &&
+            count($sampleChunk->embedding) === 64
+        );
+
+        // 13.6 RagService Hybrid Vector Search & Retrieval
+        $ragService = app(\App\Services\RagService::class);
+        $retrievalResult = $ragService->retrieveRelevantChunks($bot->id, 'كم سعر سوار الذهب وما هي طرق الدفع؟');
+
+        $this->assert($suite, 'RagService retrieves vector chunks from database with similarity scores and sources', 
+            !empty($retrievalResult['chunks']) &&
+            !empty($retrievalResult['context']) &&
+            str_contains($retrievalResult['context'], 'كتالوج_منتجات_الذهب.pdf') &&
+            str_contains($retrievalResult['context'], '4200 ريال')
+        );
+
+        // 13.7 AiService Grounded Answer Extraction from Vector Knowledge Context
+        $aiService = new \App\Services\AiService($bot);
+        $groundedReply = $aiService->getFallbackReply($retrievalResult['context'], 'كم سعر سوار الذهب؟');
+
+        $this->assert($suite, 'AiService::getFallbackReply extracts accurate answer directly from knowledge chunks context', 
+            str_contains($groundedReply, 'سوار ذهب عيار 21') ||
+            str_contains($groundedReply, '4200 ريال')
         );
 
         echo "\n";

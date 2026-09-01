@@ -111,86 +111,108 @@ class RagService
 
     /**
      * Retrieve relevant knowledge base chunks using Hybrid RAG (Vector Cosine Similarity + BM25 Keywords).
+     * Searches database `knowledge_chunks` records for the bot.
+     *
      * Returns array with:
-     *   - 'chunks'  => list of ['text' => ..., 'score' => ..., 'similarity_pct' => ...]
+     *   - 'chunks'  => list of ['text' => ..., 'score' => ..., 'similarity_pct' => ..., 'file_name' => ...]
      *   - 'context' => compiled string ready for LLM injection
      */
     public function retrieveRelevantChunks(int $botId, string $query): array
     {
-        $docs = KnowledgeBase::where('bot_id', $botId)
-                              ->whereNotNull('document_text')
-                              ->get();
+        // 1. Ensure chunks exist in knowledge_chunks table
+        $chunkCount = \App\Models\KnowledgeChunk::where('bot_id', $botId)->count();
+        if ($chunkCount === 0) {
+            $docs = KnowledgeBase::where('bot_id', $botId)->whereNotNull('document_text')->get();
+            foreach ($docs as $doc) {
+                $doc->syncChunksWithEmbeddings();
+            }
+        }
 
-        if ($docs->isEmpty()) {
+        $dbChunks = \App\Models\KnowledgeChunk::with('knowledgeBase')
+            ->where('bot_id', $botId)
+            ->get();
+
+        if ($dbChunks->isEmpty()) {
             return [
                 'chunks'  => [],
                 'context' => '',
             ];
         }
 
-        $queryLower = Str::lower($query);
+        $queryLower = Str::lower(trim($query));
         $queryTokens = array_filter(
-            preg_split('/[\s,\.؟!،]+/u', $queryLower),
+            preg_split('/[\s,\.؟!،\-_]+/u', $queryLower),
             fn($token) => mb_strlen(trim($token)) > 1
         );
 
         $queryVector = $this->generateVectorEmbedding($query);
         $scoredChunks = [];
 
-        foreach ($docs as $doc) {
-            $chunks = $doc->chunks;
-            if (empty($chunks)) {
-                $chunks = [$doc->document_text];
-            }
+        foreach ($dbChunks as $chunk) {
+            $chunkText = (string) $chunk->chunk_text;
+            $chunkLower = Str::lower($chunkText);
 
-            foreach ($chunks as $chunk) {
-                $chunkText = is_array($chunk) ? ($chunk['text'] ?? json_encode($chunk, JSON_UNESCAPED_UNICODE)) : (string)$chunk;
-                $chunkLower = Str::lower($chunkText);
-
-                // 1. Keyword overlap scoring (BM25 token match)
-                $keywordScore = 0;
-                foreach ($queryTokens as $token) {
-                    if (Str::contains($chunkLower, $token)) {
-                        $keywordScore += 15;
-                    }
-                }
-
-                // 2. Vector Cosine Similarity (Semantic Match)
-                $chunkVector = $this->generateVectorEmbedding($chunkText);
-                $cosineSim = $this->calculateCosineSimilarity($queryVector, $chunkVector); // 0.0 to 1.0
-                $vectorScore = ($cosineSim * 100); // 0 to 100
-
-                // 3. Hybrid Blended Score (60% Vector, 40% Keyword)
-                $hybridScore = ($vectorScore * 0.6) + ($keywordScore * 0.4);
-
-                if ($hybridScore > 8 || $cosineSim >= 0.4) {
-                    $scoredChunks[] = [
-                        'text'           => $chunkText,
-                        'score'          => round($hybridScore, 1),
-                        'similarity_pct' => (int) round(min(100, max(0, $cosineSim * 100))),
-                        'vector_score'   => round($vectorScore, 1),
-                    ];
+            // 1. Keyword overlap scoring (BM25 token match)
+            $keywordScore = 0;
+            foreach ($queryTokens as $token) {
+                if (Str::contains($chunkLower, $token)) {
+                    $keywordScore += 18;
                 }
             }
-        }
 
-        if (!empty($scoredChunks)) {
-            usort($scoredChunks, fn($a, $b) => $b['score'] <=> $a['score']);
-            $topChunks = array_slice($scoredChunks, 0, 4);
-            $context = implode("\n\n---\n\n", array_column($topChunks, 'text'));
+            // 2. Vector Cosine Similarity (Semantic Match from stored embedding)
+            $chunkVector = is_array($chunk->embedding) ? $chunk->embedding : $this->generateVectorEmbedding($chunkText);
+            $cosineSim = $this->calculateCosineSimilarity($queryVector, $chunkVector); // 0.0 to 1.0
+            $vectorScore = ($cosineSim * 100); // 0 to 100
 
-            return [
-                'chunks'  => $topChunks,
-                'context' => Str::limit($context, 6000, '...'),
+            // 3. Hybrid Blended Score (65% Vector, 35% Keyword)
+            $hybridScore = ($vectorScore * 0.65) + ($keywordScore * 0.35);
+
+            $fileName = $chunk->knowledgeBase?->file_name ?? ($chunk->metadata['file_name'] ?? 'مستند المعرفة');
+
+            $scoredChunks[] = [
+                'id'             => $chunk->id,
+                'chunk_index'    => $chunk->chunk_index,
+                'file_name'      => $fileName,
+                'text'           => $chunkText,
+                'score'          => round($hybridScore, 1),
+                'similarity_pct' => (int) round(min(100, max(0, $cosineSim * 100))),
+                'vector_score'   => round($vectorScore, 1),
+                'keyword_score'  => round($keywordScore, 1),
             ];
         }
 
-        // Fallback: concatenate initial portions of all documents
-        $combined = $docs->map(fn($d) => Str::limit($d->document_text, 1500))->implode("\n\n---\n\n");
+        // Sort by highest hybrid score descending
+        usort($scoredChunks, fn($a, $b) => $b['score'] <=> $a['score']);
+
+        // Filter relevant chunks (score > 5 or cosine similarity >= 0.25)
+        $relevantChunks = array_filter($scoredChunks, fn($c) => $c['score'] >= 5 || $c['similarity_pct'] >= 25);
+
+        if (!empty($relevantChunks)) {
+            $topChunks = array_slice(array_values($relevantChunks), 0, 5);
+            $contextParts = [];
+            foreach ($topChunks as $c) {
+                $contextParts[] = "[مصدر: {$c['file_name']} - مقطع رقم {$c['chunk_index']}]:\n{$c['text']}";
+            }
+            $context = implode("\n\n---\n\n", $contextParts);
+
+            return [
+                'chunks'  => $topChunks,
+                'context' => Str::limit($context, 7000, '...'),
+            ];
+        }
+
+        // Fallback: use top 3 highest scoring chunks anyway or initial document parts
+        $topChunks = array_slice($scoredChunks, 0, 3);
+        $contextParts = [];
+        foreach ($topChunks as $c) {
+            $contextParts[] = "[مصدر: {$c['file_name']}]:\n{$c['text']}";
+        }
+        $context = implode("\n\n---\n\n", $contextParts);
 
         return [
-            'chunks'  => [],
-            'context' => Str::limit($combined, 6000, '...'),
+            'chunks'  => $topChunks,
+            'context' => Str::limit($context, 7000, '...'),
         ];
     }
 }

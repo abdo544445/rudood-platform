@@ -76,30 +76,42 @@
         </div>
     </div>
 
-    <!-- Stat KPI Cards -->
+    <!-- Stat KPI Cards with 1-Click Status Filter -->
     <div class="col-sm-6 col-lg-3">
-        <div class="card-custom p-3 text-center border-start border-4 border-info">
-            <span class="text-white-50 fs-8">إجمالي الوارد</span>
+        <a href="{{ route('admin.contacts.index') }}" class="card-custom p-3 text-center border-start border-4 border-info text-decoration-none d-block transition-all {{ empty(request('status')) ? 'shadow-lg' : 'opacity-85' }}" style="{{ empty(request('status')) ? 'background: rgba(14, 165, 233, 0.12) !important; border-color: #0ea5e9 !important;' : '' }}">
+            <span class="text-white-50 fs-8 d-flex align-items-center justify-content-center gap-1">
+                <i class="bi bi-inbox-fill text-info"></i> إجمالي الوارد
+            </span>
             <h3 class="fw-bold text-white mb-0 mt-1" id="statTotal">{{ $stats['total'] }}</h3>
-        </div>
+            <small class="text-info fs-9 fw-semibold">عرض كافة الرسائل</small>
+        </a>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="card-custom p-3 text-center border-start border-4 border-danger">
-            <span class="text-white-50 fs-8">رسائل جديدة (لم تُعالج)</span>
+        <a href="{{ route('admin.contacts.index', ['status' => 'new']) }}" class="card-custom p-3 text-center border-start border-4 border-danger text-decoration-none d-block transition-all {{ request('status') === 'new' ? 'shadow-lg' : 'opacity-85' }}" style="{{ request('status') === 'new' ? 'background: rgba(239, 68, 68, 0.18) !important; border-color: #ef4444 !important;' : '' }}">
+            <span class="text-white-50 fs-8 d-flex align-items-center justify-content-center gap-1">
+                <i class="bi bi-exclamation-octagon-fill text-danger"></i> رسائل جديدة (لم تُعالج)
+            </span>
             <h3 class="fw-bold text-danger mb-0 mt-1" id="statNew">{{ $stats['new'] }}</h3>
-        </div>
+            <small class="text-danger fs-9 fw-semibold">{{ request('status') === 'new' ? '✓ التصفية نشطة' : 'انقر لعرض غير المعالجة' }}</small>
+        </a>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="card-custom p-3 text-center border-start border-4 border-warning">
-            <span class="text-white-50 fs-8">قيد المتابعة والتواصل</span>
+        <a href="{{ route('admin.contacts.index', ['status' => 'in_progress']) }}" class="card-custom p-3 text-center border-start border-4 border-warning text-decoration-none d-block transition-all {{ request('status') === 'in_progress' ? 'shadow-lg' : 'opacity-85' }}" style="{{ request('status') === 'in_progress' ? 'background: rgba(245, 158, 11, 0.18) !important; border-color: #f59e0b !important;' : '' }}">
+            <span class="text-white-50 fs-8 d-flex align-items-center justify-content-center gap-1">
+                <i class="bi bi-hourglass-split text-warning"></i> قيد المتابعة والتواصل
+            </span>
             <h3 class="fw-bold text-gold mb-0 mt-1" id="statProgress">{{ $stats['in_progress'] }}</h3>
-        </div>
+            <small class="text-warning fs-9 fw-semibold">{{ request('status') === 'in_progress' ? '✓ التصفية نشطة' : 'انقر لعرض قيد المتابعة' }}</small>
+        </a>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="card-custom p-3 text-center border-start border-4 border-success">
-            <span class="text-white-50 fs-8">تم الحل والرد</span>
+        <a href="{{ route('admin.contacts.index', ['status' => 'resolved']) }}" class="card-custom p-3 text-center border-start border-4 border-success text-decoration-none d-block transition-all {{ request('status') === 'resolved' ? 'shadow-lg' : 'opacity-85' }}" style="{{ request('status') === 'resolved' ? 'background: rgba(34, 197, 94, 0.18) !important; border-color: #22c55e !important;' : '' }}">
+            <span class="text-white-50 fs-8 d-flex align-items-center justify-content-center gap-1">
+                <i class="bi bi-check-circle-fill text-success"></i> تم الحل والرد
+            </span>
             <h3 class="fw-bold text-success mb-0 mt-1" id="statResolved">{{ $stats['resolved'] }}</h3>
-        </div>
+            <small class="text-success fs-9 fw-semibold">{{ request('status') === 'resolved' ? '✓ التصفية نشطة' : 'انقر لعرض المكتملة' }}</small>
+        </a>
     </div>
 
     <!-- Filters Card -->

@@ -1,0 +1,708 @@
+<!DOCTYPE html><html><head>
+      <title>RUDOOD_PLATFORM_BEGINNER_STUDENT_MASTER_GUIDE</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:////Users/alatrash/.antigravity-ide/extensions/shd101wyy.markdown-preview-enhanced-0.8.30-universal/crossnote/dependencies/katex/katex.min.css">
+      
+      
+      
+      <script type="text/javascript" src="file:////Users/alatrash/.antigravity-ide/extensions/shd101wyy.markdown-preview-enhanced-0.8.30-universal/crossnote/dependencies/mermaid/mermaid.min.js" charset="UTF-8"></script>
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-details{margin:0;padding:0;border:none}.markdown-preview .md-toc summary.md-toc-link-wrapper{cursor:pointer;list-style-position:outside}.markdown-preview .md-toc summary.md-toc-link-wrapper::marker{font-size:.85em}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.markdown-preview .md-toc .md-toc-link-wrapper[data-level='0']{margin-left:12px}.markdown-preview .md-toc .md-toc-link-wrapper[data-level='1']{margin-left:28px}.markdown-preview .md-toc .md-toc-link-wrapper[data-level='2']{margin-left:44px}.markdown-preview .md-toc .md-toc-link-wrapper[data-level='3']{margin-left:60px}.markdown-preview .md-toc .md-toc-link-wrapper[data-level='4']{margin-left:76px}.markdown-preview .md-toc .md-toc-link-wrapper[data-level='5']{margin-left:80px}.markdown-preview a.tag,.markdown-preview a.tag:active,.markdown-preview a.tag:link,.markdown-preview a.tag:visited,.markdown-preview span.tag:not(.token){display:inline-block;background-color:var(--vscode-badge-background,rgba(127,127,127,.18));color:var(--vscode-badge-foreground,currentColor);border-radius:2em;font-size:.85em;font-weight:500;padding:.05em .55em;line-height:1.5;white-space:nowrap;text-decoration:none;text-shadow:none;box-shadow:none;transition:background-color .12s ease,opacity .12s ease}.markdown-preview a.tag{cursor:pointer}.markdown-preview a.tag:focus,.markdown-preview a.tag:hover{background-color:var(--vscode-badge-background,rgba(127,127,127,.32));color:var(--vscode-badge-foreground,currentColor);opacity:.85;text-decoration:none;outline:0}.markdown-preview .wikilink-embed-content{border-left:3px solid var(--vscode-textBlockQuote-border,rgba(128,128,128,.3));background:var(--vscode-textBlockQuote-background,rgba(128,128,128,.05));margin:.5em 0;padding:.5em .75em;border-radius:0 3px 3px 0}.markdown-preview .wikilink-embed-content.wikilink-embed-error{border-left-color:var(--vscode-errorForeground,#cf222e);color:var(--vscode-errorForeground,#cf222e);font-style:italic;opacity:.8}.markdown-preview .wikilink-embed-content h1:first-child,.markdown-preview .wikilink-embed-content h2:first-child,.markdown-preview .wikilink-embed-content h3:first-child,.markdown-preview .wikilink-embed-content h4:first-child,.markdown-preview .wikilink-embed-content h5:first-child,.markdown-preview .wikilink-embed-content h6:first-child{margin-top:.25em}.markdown-preview .wikilink-embed-content .wikilink-embed-content{margin:.25em 0;padding:.25em .5em}.markdown-preview .block-id{display:none}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:var(--vscode-scrollbarSlider-background,rgba(150,150,150,.66));border:4px solid var(--vscode-scrollbarSlider-background,rgba(150,150,150,.66));background-clip:content-box}.scrollbar-style::-webkit-scrollbar-thumb:hover{background-color:var(--vscode-scrollbarSlider-hoverBackground,rgba(120,120,120,.66))}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:var(--vscode-scrollbarSlider-background,rgba(150,150,150,.66));border:4px solid var(--vscode-scrollbarSlider-background,rgba(150,150,150,.66));background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb:hover{background-color:var(--vscode-scrollbarSlider-hoverBackground,rgba(120,120,120,.66))}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-details{margin:0;padding:0;border:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper[data-level='0']{padding-left:0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper[data-level='1']{padding-left:16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper[data-level='2']{padding-left:32px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper[data-level='3']{padding-left:48px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper[data-level='4']{padding-left:64px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper[data-level='5']{padding-left:80px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. -->
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script>
+    </head>
+    <body for="html-export">
+      <div class="crossnote markdown-preview  ">
+      
+<div dir="rtl">
+<h1 id="-الموسوعة-التعليمية-الشاملة-لطلاب-البرمجة-وهندسة-البرمجيات--مشروع-منصة-ردود-rudood-platform">🎓 الموسوعة التعليمية الشاملة لطلاب البرمجة وهندسة البرمجيات — مشروع منصة ردود (Rudood Platform) </h1>
+<h1 id="the-ultimate-software-engineering--computer-science-student-master-guide">The Ultimate Software Engineering &amp; Computer Science Student Master Guide </h1>
+<blockquote>
+<p><strong>إعداد:</strong> الفريق الهندسي المتقدم وإدارة المعمارية التقنية للمنصة<br>
+<strong>الفئة المستهدفة:</strong> طلاب كليات علوم الحاسب، هندسة البرمجيات، ومطورو الويب المبتدئون (Junior Developers)<br>
+<strong>الهدف:</strong> الانتقال من فهم المفاهيم النظرية المجردة إلى فهم وتطبيق أنظمة الشركات الحقيقية (Enterprise Systems) المتكاملة مع قواعد البيانات، الطوابير غير المتزامنة، الذكاء الاصطناعي، والاتصال اللحظي.</p>
+</blockquote>
+<hr>
+<h2 id="-الفهرس-التفصيلي-للموسوعة-التعليمية-detailed-table-of-contents">📑 الفهرس التفصيلي للموسوعة التعليمية (Detailed Table of Contents) </h2>
+<ol>
+<li><a href="#1-%D9%85%D8%AF%D8%AE%D9%84-%D8%AA%D9%85%D9%87%D9%8A%D8%AF%D9%8A-%D9%85%D8%A7-%D9%87%D9%8A-%D9%85%D9%86%D8%B5%D8%A9-%D8%B1%D8%AF%D9%88%D8%AF-%D9%88%D9%83%D9%8A%D9%81-%D8%AA%D9%81%D9%83%D8%B1-%D9%83%D9%85%D9%87%D9%86%D8%AF%D8%B3-%D8%A8%D8%B1%D9%85%D8%AC%D9%8A%D8%A7%D8%AA">🌟 1. مدخل تمهيدي: ما هي منصة ردود؟ وكيف تفكر كمهندس برمجيات؟</a></li>
+<li><a href="#2-%D8%AC%D9%88%D9%84%D8%A9-%D8%A7%D8%B3%D8%AA%D9%83%D8%B4%D8%A7%D9%81%D9%8A%D8%A9-%D9%81%D9%8A-%D9%87%D9%8A%D9%83%D9%84-%D8%A7%D9%84%D9%85%D8%B4%D8%B1%D9%88%D8%B9-%D9%88%D9%85%D8%AC%D9%84%D8%AF%D8%A7%D8%AA-laravel-the-folder-tour">📁 2. جولة استكشافية في هيكل المشروع ومجلدات Laravel (The Folder Tour)</a></li>
+<li><a href="#3-%D8%A7%D9%84%D9%85%D9%81%D8%A7%D9%87%D9%8A%D9%85-%D8%A7%D9%84%D9%87%D9%86%D8%AF%D8%B3%D9%8A%D8%A9-%D9%88%D8%A7%D9%84%D8%A8%D8%B1%D9%85%D8%AC%D9%8A%D8%A9-%D8%A7%D9%84%D8%A3%D8%B3%D8%A7%D8%B3%D9%8A%D8%A9-%D9%85%D8%B4%D8%B1%D9%88%D8%AD%D8%A9-%D9%85%D9%86-%D8%A7%D9%84%D8%B5%D9%81%D8%B1-core-cs-concepts">🧱 3. المفاهيم الهندسية والبرمجية الأساسية مشروحة من الصفر (Core CS Concepts)</a>
+<ul>
+<li><a href="#31-%D8%A7%D9%84%D8%A8%D8%B1%D9%85%D8%AC%D8%A9-%D9%83%D8%A7%D8%A6%D9%86%D9%8A%D8%A9-%D8%A7%D9%84%D8%AA%D9%88%D8%AC%D9%87-oop-%D9%81%D9%8A-%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85-%D8%A7%D9%84%D8%AD%D9%82%D9%8A%D9%82%D9%8A">3.1 البرمجة كائنية التوجه (OOP) في العالم الحقيقي</a></li>
+<li><a href="#32-%D9%86%D9%85%D8%B7-%D8%A7%D9%84%D8%AA%D8%B5%D9%85%D9%8A%D9%85-mvc-model---view---controller">3.2 نمط التصميم MVC (Model - View - Controller)</a></li>
+<li><a href="#33-%D8%AF%D9%88%D8%B1%D8%A9-%D8%AD%D9%8A%D8%A7%D8%A9-%D8%A7%D9%84%D8%B7%D9%84%D8%A8-%D9%81%D9%8A-laravel-http-request-lifecycle">3.3 دورة حياة الطلب في Laravel (HTTP Request Lifecycle)</a></li>
+<li><a href="#34-%D9%82%D9%88%D8%A7%D8%B9%D8%AF-%D8%A7%D9%84%D8%A8%D9%8A%D8%A7%D9%86%D8%A7%D8%AA-%D8%A7%D9%84%D9%80-orm-%D9%88%D8%A7%D9%84%D8%B9%D9%84%D8%A7%D9%82%D8%A7%D8%AA-eloquent-relationships--indexes">3.4 قواعد البيانات، الـ ORM والعلاقات (Eloquent Relationships &amp; Indexes)</a></li>
+<li><a href="#35-%D8%A7%D9%84%D8%B7%D9%88%D8%A7%D8%A8%D9%8A%D8%B1-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D9%85%D8%AA%D8%B2%D8%A7%D9%85%D9%86%D8%A9-queues-%D9%88%D9%88%D8%B3%D9%8A%D8%B7-redis">3.5 الطوابير غير المتزامنة (Queues) ووسيط Redis</a></li>
+<li><a href="#36-%D8%A7%D9%84%D8%A8%D8%AB-%D8%A7%D9%84%D9%84%D8%AD%D8%B8%D9%8A-%D8%B9%D8%A8%D8%B1-websockets-%D9%88-nodejs">3.6 البث اللحظي عبر WebSockets و Node.js</a></li>
+<li><a href="#37-%D8%A7%D9%84%D8%B0%D9%83%D8%A7%D8%A1-%D8%A7%D9%84%D8%A7%D8%B5%D8%B7%D9%86%D8%A7%D8%B9%D9%8A-%D8%A7%D9%84%D9%85%D8%AA%D8%AC%D9%87%D8%A7%D8%AA-%D9%88%D8%A7%D9%84%D9%80-rag-%D9%88%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A7%D8%AA-%D9%88%D8%B1%D8%A7%D8%A1%D9%87%D8%A7">3.7 الذكاء الاصطناعي، المتجهات والـ RAG والرياضيات وراءها (Vector Embeddings &amp; Cosine Math)</a></li>
+<li><a href="#38-%D8%AA%D8%B9%D8%AF%D8%AF-%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D8%A3%D8%AC%D8%B1%D9%8A%D9%86-multi-tenancy-%D9%88%D8%B9%D8%B2%D9%84-%D8%A8%D9%8A%D8%A7%D9%86%D8%A7%D8%AA-%D8%A7%D9%84%D8%B4%D8%B1%D9%83%D8%A7%D8%AA">3.8 تعدد المستأجرين (Multi-Tenancy) وعزل بيانات الشركات</a></li>
+<li><a href="#39-%D8%A7%D9%84%D8%AD%D9%85%D8%A7%D9%8A%D8%A9-%D9%88%D8%A7%D9%84%D8%A3%D9%85%D8%A7%D9%86-security-csrf-csp-sql-injection--rate-limiting">3.9 الحماية والأمان (Security, CSRF, CSP, SQL Injection &amp; Rate Limiting)</a></li>
+</ul>
+</li>
+<li><a href="#4-%D8%B1%D8%AD%D9%84%D8%A9-%D8%A7%D9%84%D8%B1%D8%B3%D8%A7%D9%84%D8%A9-%D9%85%D8%A7%D8%B0%D8%A7-%D9%8A%D8%AD%D8%AF%D8%AB-%D9%81%D9%8A-%D8%A3%D8%AC%D8%B2%D8%A7%D8%A1-%D9%85%D9%86-%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A%D8%A9-%D8%AE%D9%84%D9%81-%D8%A7%D9%84%D9%83%D9%88%D8%A7%D9%84%D9%8A%D8%B3">🗺️ 4. رحلة الرسالة: ماذا يحدث في أجزاء من الثانية خلف الكواليس؟</a></li>
+<li><a href="#5-%D8%AA%D9%81%D9%83%D9%8A%D9%83-%D9%88%D8%AA%D8%AD%D9%84%D9%8A%D9%84-10-%D9%85%D9%8A%D8%B2%D8%A7%D8%AA-%D9%88%D8%A3%D9%86%D8%B8%D9%85%D8%A9-%D9%88%D8%A7%D9%82%D8%B9%D9%8A%D8%A9-%D9%81%D9%8A-%D8%A7%D9%84%D9%83%D9%88%D8%AF-%D8%B3%D8%B7%D8%B1%D8%A7-%D8%A8%D8%B3%D8%B7%D8%B1">🔍 5. تفكيك وتحليل 10 ميزات وأنظمة واقعية في الكود سطراً بسطر (10 Real-World Systems)</a>
+<ul>
+<li><a href="#51-%D8%A7%D9%84%D8%AA%D8%B3%D8%AC%D9%8A%D9%84-%D8%A7%D9%84%D8%B0%D8%B1%D9%8A-%D9%84%D9%84%D9%85%D8%AA%D8%AC%D8%B1-%D9%88%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D8%AE%D8%AF%D9%85-%D9%88%D8%A7%D9%84%D8%A8%D9%88%D8%AA">5.1 التسجيل الذري للمتجر والمستخدم والبوت (<code>AuthController::register</code>)</a></li>
+<li><a href="#52-%D8%A7%D8%B3%D8%AA%D9%82%D8%A8%D8%A7%D9%84-%D8%B1%D8%B3%D8%A7%D8%A6%D9%84-%D9%88%D8%A7%D8%AA%D8%B3%D8%A7%D8%A8-%D9%88%D8%A7%D9%84%D8%AA%D8%AD%D9%82%D9%82-%D9%85%D9%86-%D8%A7%D9%84%D8%AA%D9%88%D9%82%D9%8A%D8%B9">5.2 استقبال رسائل واتساب والتحقق من التوقيع (<code>WebhookController</code>)</a></li>
+<li><a href="#53-%D8%A7%D8%B3%D8%AA%D9%85%D8%A7%D8%B9-%D8%AA%D9%8A%D9%84%D9%8A%D8%AC%D8%B1%D8%A7%D9%85-%D8%A7%D9%84%D8%AA%D8%B2%D8%A7%D9%85%D9%86%D9%8A-%D8%B9%D8%A8%D8%B1-%D8%AF%D9%8A%D9%85%D9%88%D9%86-%D8%A7%D9%84%D9%83%D9%88%D9%86%D8%B3%D9%88%D9%84">5.3 استماع تيليجرام التزامني عبر ديمون الكونسول (<code>TelegramPollCommand</code>)</a></li>
+<li><a href="#54-%D9%85%D8%AD%D8%B1%D9%83-%D8%A7%D9%84%D9%82%D8%B1%D8%A7%D8%B1-%D8%A7%D9%84%D8%B0%D9%83%D9%8A-%D8%B1%D8%A8%D8%A7%D8%B9%D9%8A-%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%88%D9%8A%D8%A7%D8%AA">5.4 محرك القرار الذكي رباعي المستويات (<code>ProcessCustomerMessage</code>)</a></li>
+<li><a href="#55-%D8%A7%D9%84%D8%A8%D8%AD%D8%AB-%D8%A7%D9%84%D8%AF%D9%84%D8%A7%D9%84%D9%8A-%D8%A8%D8%A7%D9%84%D9%85%D8%AA%D8%AC%D9%87%D8%A7%D8%AA-%D9%88%D8%AA%D9%82%D8%B7%D9%8A%D8%B9-%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%86%D8%AF%D8%A7%D8%AA">5.5 البحث الدلالي بالمتجهات وتقطيع المستندات (<code>RagService</code>)</a></li>
+<li><a href="#56-%D8%A7%D9%84%D8%AA%D8%AF%D8%AE%D9%84-%D8%A7%D9%84%D8%A8%D8%B4%D8%B1%D9%8A-%D9%88%D8%A5%D9%8A%D9%82%D8%A7%D9%81-%D8%A7%D9%84%D8%A8%D9%88%D8%AA-%D9%81%D9%8A-%D8%A7%D9%84%D8%B4%D8%A7%D8%AA-%D8%A7%D9%84%D8%AD%D9%8A">5.6 التدخل البشري وإيقاف البوت في الشات الحي (<code>ConversationController::toggleBot</code>)</a></li>
+<li><a href="#57-%D8%AA%D8%B4%D9%8A%D9%8A%D8%AF-%D8%B1%D8%B3%D8%A7%D8%A6%D9%84-%D9%88%D8%A7%D8%AA%D8%B3%D8%A7%D8%A8-%D8%A7%D9%84%D8%AA%D9%81%D8%A7%D8%B9%D9%84%D9%8A%D8%A9-%D9%88%D9%83%D8%B1%D9%88%D8%AA-%D8%A7%D9%84%D9%83%D8%AA%D8%A7%D9%84%D9%88%D8%AC">5.7 تشييد رسائل واتساب التفاعلية وكروت الكتالوج (<code>WhatsAppInteractiveService</code>)</a></li>
+<li><a href="#58-%D8%A3%D8%AF%D9%88%D8%A7%D8%AA-%D8%A7%D9%84%D8%AA%D8%AC%D8%A7%D8%B1%D8%A9-%D8%A7%D9%84%D8%A5%D9%84%D9%83%D8%AA%D8%B1%D9%88%D9%86%D9%8A%D8%A9-%D9%88%D8%AA%D8%AA%D8%A8%D8%B9-%D8%A7%D9%84%D8%B4%D8%AD%D9%86%D8%A7%D8%AA">5.8 أدوات التجارة الإلكترونية وتتبع الشحنات (<code>StoreIntegrationService</code>)</a></li>
+<li><a href="#59-%D8%AA%D8%AA%D8%A8%D8%B9-%D8%A7%D9%84%D8%AA%D8%AD%D9%88%D9%8A%D9%84%D8%A7%D8%AA-%D9%88%D8%AD%D8%B3%D8%A7%D8%A8-%D8%A7%D9%84%D8%B9%D8%A7%D8%A6%D8%AF-%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A-%D9%88%D8%A7%D9%84%D9%80-roi">5.9 تتبع التحويلات وحساب العائد المالي والـ ROI (<code>ConversionTrackingService</code>)</a></li>
+<li><a href="#510-%D8%A7%D9%86%D8%AA%D8%AD%D8%A7%D9%84-%D8%AC%D9%84%D8%B3%D8%A9-%D8%A7%D9%84%D9%85%D8%AA%D8%AC%D8%B1-%D9%88%D8%B3%D8%AC%D9%84-%D8%A7%D9%84%D8%AA%D8%AF%D9%82%D9%8A%D9%82-%D8%A7%D9%84%D8%A3%D9%85%D9%86%D9%8A">5.10 انتحال جلسة المتجر وسجل التدقيق الأمني (<code>Impersonation &amp; AuditLog</code>)</a></li>
+</ul>
+</li>
+<li><a href="#6-%D9%85%D8%B3%D8%A7%D8%B1-%D8%A7%D9%84%D8%AA%D8%B7%D8%A8%D9%8A%D9%82-%D8%A7%D9%84%D8%B9%D9%85%D9%84%D9%8A-10-%D8%AA%D9%85%D8%A7%D8%B1%D9%8A%D9%86-%D8%A8%D8%B1%D9%85%D8%AC%D9%8A%D8%A9-%D9%85%D8%B9-%D8%A7%D9%84%D8%AD%D9%84%D9%88%D9%84-%D8%A7%D9%84%D9%83%D8%A7%D9%85%D9%84%D8%A9">🛠️ 6. مسار التطبيق العملي: 10 تمارين برمجية مع الحلول الكاملة (10 Student Challenges)</a></li>
+<li><a href="#7-%D8%AF%D9%84%D9%8A%D9%84-%D8%A7%D9%83%D8%AA%D8%B4%D8%A7%D9%81-%D8%A7%D9%84%D8%A3%D8%AE%D8%B7%D8%A7%D8%A1-%D9%88%D8%AA%D8%B5%D8%AD%D9%8A%D8%AD%D9%87%D8%A7-%D9%84%D9%84%D9%85%D8%A8%D8%AA%D8%AF%D8%A6%D9%8A%D9%86-debugging--troubleshooting-guide">🐞 7. دليل اكتشاف الأخطاء وتصحيحها للمبتدئين (Debugging &amp; Troubleshooting Guide)</a></li>
+<li><a href="#8-%D8%AE%D8%B7%D9%88%D8%A7%D8%AA-%D8%AA%D8%AB%D8%A8%D9%8A%D8%AA-%D9%88%D8%AA%D8%B4%D8%BA%D9%8A%D9%84-%D8%A7%D9%84%D9%85%D8%B4%D8%B1%D9%88%D8%B9-%D9%85%D8%AD%D9%84%D9%8A%D8%A7-%D9%85%D9%86-%D8%A7%D9%84%D8%B5%D9%81%D8%B1-setup-guide">🚀 8. خطوات تثبيت وتشغيل المشروع محلياً من الصفر (Setup Guide)</a></li>
+<li><a href="#9-%D9%82%D8%A7%D9%85%D9%88%D8%B3-%D8%A7%D9%84%D9%85%D8%B5%D8%B7%D9%84%D8%AD%D8%A7%D8%AA-%D8%A7%D9%84%D8%A8%D8%B1%D9%85%D8%AC%D9%8A%D8%A9-%D8%A7%D9%84%D8%B4%D8%A7%D9%85%D9%84-comprehensive-glossary">📖 9. قاموس المصطلحات البرمجية الشامل (Comprehensive Glossary)</a></li>
+</ol>
+<hr>
+<h1 id="1--مدخل-تمهيدي-ما-هي-منصة-ردود-وكيف-تفكر-كمهندس-برمجيات">1. 🌟 مدخل تمهيدي: ما هي منصة ردود؟ وكيف تفكر كمهندس برمجيات؟ </h1>
+<h2 id="أ-القصة-والمشكلة-الحقيقية">أ) القصة والمشكلة الحقيقية: </h2>
+<p>تخيّل أنك مالك متجر إلكتروني يبيع منتجات ذكية وعطوراً، ولديك <strong>10,000 عميل</strong> يراسلونك يومياً عبر:</p>
+<ul>
+<li>تطبيق <strong>WhatsApp</strong>.</li>
+<li>بوت <strong>Telegram</strong>.</li>
+<li>رسائل وتعليقات <strong>Instagram</strong>.</li>
+<li>ودجت الدردشة المباشرة على متجرك الإلكتروني.</li>
+</ul>
+<p>أكثر من <strong>85%</strong> من هذه الرسائل تدور حول أسئلة مكررة:</p>
+<ol>
+<li><em>"أين طلبي رقم 1002؟"</em></li>
+<li><em>"كم سعر الشحن لجدة؟ وما هي مدة التوصيل؟"</em></li>
+<li><em>"هل سماعات النخبة Pro مقاومة للماء؟"</em></li>
+<li><em>"أريد استبدال منتج وصلني."</em></li>
+</ol>
+<h3 id="ما-المشكلة-في-الحل-التقليدي">ما المشكلة في الحل التقليدي؟ </h3>
+<p>لو وظفت 10 موظفي خدمة عملاء:</p>
+<ul>
+<li>ستدفع رواتب شهرية تفوق 40,000 ريال.</li>
+<li>الموظفون يتأخرون في الرد بالدقائق والساعات.</li>
+<li>في الليل وأيام العطلات يتوقف الرد تماماً وتضيع المبيعات.</li>
+<li>قد يخطئ الموظف في إعطاء معلومة غير صحيحة عن سياسة الاسترجاع.</li>
+</ul>
+<h3 id="الحل-الهندسي-منصة-ردود">الحل الهندسي (منصة ردود): </h3>
+<p>قمنا ببناء منصة سحابية مؤتمتة تعمل كـ <strong>"عقل ذكي وموظف فائق السرعة"</strong> يقوم بما يلي:</p>
+<ol>
+<li><strong>الرد خلال أقل من 1.2 ثانية</strong> فور وصول الرسالة.</li>
+<li><strong>فهم اللهجات العربية المختلفة</strong> (سعودي، مصري، كويتي، مغربي، شامي) إلى جانب الفصحى والإنجليزية.</li>
+<li><strong>قراءة كتيبات المتجر (ملفات PDF/Word)</strong> وتوليد إجابات دقيقة موثوقة 100% دون أي هلوسة (RAG).</li>
+<li><strong>الاتصال بقاعدة بيانات الطلبات</strong> لاستخراج مسار الشحنات ورقم البوليصة وموعد الوصول.</li>
+<li><strong>التعرف على العميل الغاضب فوراً</strong> والتنبيه عليه وتصعيد المحادثة لموظف بشري مع جرس إنذار أحمر.</li>
+<li><strong>حساب المبيعات المتحققة</strong> وساعات العمل التي وفرها البوت للمتجر شهرياً بالريال السعودي.</li>
+</ol>
+<hr>
+<h2 id="ب-كيف-يفكر-مهندس-البرمجيات-عند-بناء-هذا-المشروع">ب) كيف يفكر مهندس البرمجيات عند بناء هذا المشروع؟ </h2>
+<p>عندما يُطلب منك بناء نظام ضخم كهذا، لا تبدأ بكتابة الكود فوراً! بل تقسم المشكلة إلى طبقات (Layers):</p>
+<ol>
+<li><strong>طبقة الاستقبال (Ingestion Layer):</strong> كيف نستقبل الرسائل من واتساب وتيليجرام وإنستغرام والويب؟ ➔ الحل: <strong>Webhooks &amp; APIs</strong>.</li>
+<li><strong>طبقة الطوابير (Queue Layer):</strong> كيف نمنع بطء أو تعليق الخادم أثناء تفكير الذكاء الاصطناعي؟ ➔ الحل: <strong>Redis &amp; Background Jobs</strong>.</li>
+<li><strong>طبقة المعالجة والذكاء (AI Engine Layer):</strong> كيف يقرر النظام الإجابة الصحيحة بأقل تكلفة وسرعة فائقة؟ ➔ الحل: <strong>Multi-Tier Pipeline &amp; Hybrid RAG</strong>.</li>
+<li><strong>طبقة البيانات (Persistence Layer):</strong> أين نخزن الرسائل والمتاجر والعملاء والمتجهات؟ ➔ الحل: <strong>PostgreSQL 16 + pgvector</strong>.</li>
+<li><strong>طبقة البث اللحظي (Real-Time Broadcast Layer):</strong> كيف يرى موظف الدعم الرسائل فوراً على شاشته دون تحديث الصفحة؟ ➔ الحل: <strong>Node.js + <a href="http://Socket.IO">Socket.IO</a></strong>.</li>
+</ol>
+<hr>
+<h1 id="2--2-جولة-استكشافية-في-هيكل-المشروع-ومجلدات-laravel-the-folder-tour">2. 📁 2. جولة استكشافية في هيكل المشروع ومجلدات Laravel (The Folder Tour) </h1>
+<p>عندما تفتح مجلد <code>backend/</code> في المشروع، ستجد بنية منظمة وموحدة عالمياً. إليك وظيفة كل مجلد:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>rudood-platform/
+├── backend/                     # تطبيق Laravel الأساسي
+│   ├── app/                     # قلب المنطق البرمجي (Core Business Logic)
+│   │   ├── Console/Commands/    # أوامر موجه الأوامر المخصصة (مثل ديمون تيليجرام)
+│   │   ├── Http/
+│   │   │   ├── Controllers/     # المتحكمات التي تستقبل الطلبات وتعيد الردود
+│   │   │   │   └── Admin/       # متحكمات لوحة الإدارة العليا (Super Admin)
+│   │   │   └── Middleware/      # حراس الأمان والتحقق من الصلاحيات ووضع الصيانة
+│   │   ├── Jobs/                # الوظائف الخلفية غير المتزامنة (مثل ProcessCustomerMessage)
+│   │   ├── Models/              # نماذج البيانات والعلاقات مع جداول PostgreSQL (19 Model)
+│   │   ├── Providers/           # مزودات الخدمات وتهيئة إطار العمل
+│   │   └── Services/            # كلاسات الخدمات والعمليات الذكية والرياضية (AI &amp; RAG)
+│   ├── bootstrap/               # إقلاع وتشغيل التطبيق (bootstrap/app.php)
+│   ├── config/                  # ملفات الإعدادات (قواعد البيانات، الطوابير، الكاش، الجلسات)
+│   ├── database/
+│   │   ├── migrations/          # نصوص إنشاء وتعديل جداول قاعدة البيانات برمجياً
+│   │   └── seeders/             # نصوص تعبئة البيانات التجريبية والحسابات الأولية
+│   ├── public/                  # الملفات العامة (index.php, CSS, JS, widget.js, الصور)
+│   ├── resources/
+│   │   └── views/               # قوالب واجهات المستخدم المبنية بـ Blade و Bootstrap
+│   ├── routes/
+│   │   ├── web.php              # مسارات واجهات الويب ولوحات التحكم
+│   │   ├── api.php              # مسارات الـ Webhooks والـ Widget وفحص الصحة
+│   │   └── console.php          # مسارات أوامر الكونسول والجدولة
+│   ├── storage/                 # الملفات المرفوعة، ملفات الكاش، وسجلات الأخطاء (logs)
+│   ├── tests/                   # حزم الاختبارات الآلية (Unit &amp; Feature Tests)
+│   ├── websocket/               # خادم الويب سوكت المستقل (Node.js + Socket.IO)
+│   │   └── server.js            # كود استقبال رسائل Redis وبثها للمتصفحات
+│   ├── Dockerfile               # تعليمات بناء حاوية الـ PHP-FPM و Nginx
+│   └── tests_suite_runner.php   # مشغل الاختبارات الشامل المخصص (102 اختبار)
+├── Caddyfile                    # خادم الويب المتقدم والبروكسي العكسي وإدارة الـ SSL
+├── docker-compose.yml           # ملف تشغيل الحاويات الخمسة معاً بضغطة زر
+└── README.md                    # التوثيق والتعريف بالمنصة
+</code></pre><hr>
+<h1 id="3--3-المفاهيم-الهندسية-والبرمجية-الأساسية-مشروحة-من-الصفر-core-cs-concepts">3. 🧱 3. المفاهيم الهندسية والبرمجية الأساسية مشروحة من الصفر (Core CS Concepts) </h1>
+<h2 id="31-البرمجة-كائنية-التوجه-oop-في-العالم-الحقيقي">3.1 البرمجة كائنية التوجه (OOP) في العالم الحقيقي </h2>
+<p>البرمجة كائنية التوجه ليست مجرد نظريات للامتحانات، بل هي العمود الفقري لهذا المشروع:</p>
+<ol>
+<li>
+<p><strong>التغليف (Encapsulation):</strong><br>
+حماية المتغيرات داخل الكلاس وتوفير دوال للتحكم بها.</p>
+<ul>
+<li><em>مثال في ردود:</em> في <a href="./backend/app/Services/AiService.php"><code>AiService.php</code></a>، المتغير <code>$overrides</code> والمتغير <code>$lastError</code> معرفان كـ <code>private</code>، ولا يمكن قراءتهما أو تعديلهما من الخارج إلا عبر دوال مخصصة مثل <code>getLastError()</code> و <code>setOverrides()</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>الوراثة (Inheritance):</strong></p>
+<ul>
+<li><em>مثال في ردود:</em> كل نموذج (مثل <code>Workspace</code> و <code>Bot</code> و <code>Message</code>) يرث من كلاس <code>Illuminate\Database\Eloquent\Model</code>، مما يعطيه تلقائياً القدرة على تنفيذ استعلامات مثل <code>Workspace::find(1)</code> و <code>Bot::where(...)</code>.</li>
+<li>كلاس <a href="./backend/app/Jobs/ProcessCustomerMessage.php"><code>ProcessCustomerMessage</code></a> يرث خصائص الطوابير عبر الـ Traits: <code>Queueable</code>, <code>InteractsWithQueue</code>, <code>SerializesModels</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>تعدد الأشكال ونمط الاستراتيجية (Polymorphism &amp; Strategy Pattern):</strong></p>
+<ul>
+<li>في <a href="./backend/app/Services/AiService.php"><code>AiService</code></a>، نستخدم واجهة موحدة <code>generateReply()</code> بغض النظر عما إذا كان المزود هو Gemini أو OpenAI أو Claude. الكود يختار الخوارزمية المناسبة أثناء التشغيل ديناميكياً.</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="32-نمط-التصميم-mvc-model---view---controller">3.2 نمط التصميم MVC (Model - View - Controller) </h2>
+</div>
+<div class="mermaid">graph TD
+    User([المستخدم / العميل]) --&gt;|1. زيارة الرابط GET /live-chat| Route[ملف المسارات routes/web.php]
+    Route --&gt;|2. توجيه الطلب| Controller[المتحكم ConversationController@index]
+    Controller --&gt;|3. استعلام البيانات| Model[الموديل Conversation::with customer]
+    Model --&gt;|4. جلب السجلات| DB[(قاعدة بيانات PostgreSQL)]
+    DB --&gt;|5. إعادة البيانات| Model
+    Model --&gt;|6. كائنات البيانات| Controller
+    Controller --&gt;|7. تمرير البيانات للقالب| View[واجهة العرض live-chat.blade.php]
+    View --&gt;|8. كود HTML النهائي| User
+</div><div dir="rtl">
+<hr>
+<h2 id="33-دورة-حياة-الطلب-في-laravel-http-request-lifecycle">3.3 دورة حياة الطلب في Laravel (HTTP Request Lifecycle) </h2>
+<p>ماذا يحدث بالتحديد من لحظة طلب صفحة حتى ظهورها على شاشة المستخدم؟</p>
+<ol>
+<li>يدخل الطلب عبر خادم الويب (Nginx / Caddy) ويصل إلى الملف العام الوحيد: <code>public/index.php</code>.</li>
+<li>يتم تشغيل نواة إطار العمل (Kernel Bootstrap) وتحميل الـ Service Providers والإعدادات.</li>
+<li>يمر الطلب بسلسلة <strong>البرمجيات الوسيطة (Middleware Pipeline)</strong> للتأكد من:
+<ul>
+<li>هل التطبيق في وضع الصيانة؟ (<code>CheckMaintenanceMode</code>).</li>
+<li>هل المستخدم مسجل دخوله؟ (<code>auth</code>).</li>
+<li>هل حساب الشركة نشط ولديه رصيد؟ (<code>EnsureWorkspaceIsActive</code>).</li>
+<li>حماية رؤوس الأمان (<code>ContentSecurityPolicy</code>).</li>
+</ul>
+</li>
+<li>يبحث نظام التوجيه (<strong>Routing Engine</strong>) في <code>routes/web.php</code> أو <code>routes/api.php</code> عن الدالة المناسبة.</li>
+<li>ينفذ الـ <strong>Controller</strong> العمليات المطلوبة، ويستدعي الـ <strong>Services</strong> والـ <strong>Models</strong>.</li>
+<li>يتم توليد الاستجابة (<strong>HTTP Response</strong>) إما كـ HTML View أو JSON وإرجاعها للمتصفح.</li>
+</ol>
+<hr>
+<h2 id="34-قواعد-البيانات-الـ-orm-والعلاقات-eloquent-relationships--indexes">3.4 قواعد البيانات، الـ ORM والعلاقات (Eloquent Relationships &amp; Indexes) </h2>
+<p>في المشاريع الكبرى، لا نكتب استعلامات SQL نصية متناثرة، بل نستخدم <strong>Eloquent ORM</strong> (Object-Relational Mapping):</p>
+<h3 id="أنواع-العلاقات-المطبقة-في-المنصة">أنواع العلاقات المطبقة في المنصة: </h3>
+<ol>
+<li><strong>علاقة واحد لمتعدد (One-to-Many):</strong>
+<ul>
+<li>المتجر الواحد لديه عدة محادثات:</li>
+</ul>
+</li>
+</ol>
+</div>
+<pre data-role="codeBlock" data-info="php" class="language-php php"><code><span class="token comment">// في موديل Workspace.php</span>
+<span class="token keyword keyword-public">public</span> <span class="token keyword keyword-function">function</span> <span class="token function-definition function">conversations</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token class-name return-type">HasMany</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword keyword-return">return</span> <span class="token this keyword">$this</span><span class="token operator">-&gt;</span><span class="token function">hasMany</span><span class="token punctuation">(</span><span class="token scope">Conversation<span class="token punctuation">::</span></span><span class="token keyword keyword-class">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre><div dir="rtl">
+<ul>
+<li>المحادثة الواحدة تنتمي لمتجر محدد:</li>
+</ul>
+</div>
+<pre data-role="codeBlock" data-info="php" class="language-php php"><code><span class="token comment">// في موديل Conversation.php</span>
+<span class="token keyword keyword-public">public</span> <span class="token keyword keyword-function">function</span> <span class="token function-definition function">workspace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token class-name return-type">BelongsTo</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword keyword-return">return</span> <span class="token this keyword">$this</span><span class="token operator">-&gt;</span><span class="token function">belongsTo</span><span class="token punctuation">(</span><span class="token scope">Workspace<span class="token punctuation">::</span></span><span class="token keyword keyword-class">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre><div dir="rtl">
+<ol start="2">
+<li><strong>علاقة واحد لواحد (One-to-One):</strong>
+<ul>
+<li>المتجر له بوت افتراضي نشط واحد:</li>
+</ul>
+</li>
+</ol>
+</div>
+<pre data-role="codeBlock" data-info="php" class="language-php php"><code><span class="token comment">// في موديل Workspace.php</span>
+<span class="token keyword keyword-public">public</span> <span class="token keyword keyword-function">function</span> <span class="token function-definition function">defaultBot</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token class-name return-type">HasOne</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword keyword-return">return</span> <span class="token this keyword">$this</span><span class="token operator">-&gt;</span><span class="token function">hasOne</span><span class="token punctuation">(</span><span class="token scope">Bot<span class="token punctuation">::</span></span><span class="token keyword keyword-class">class</span><span class="token punctuation">)</span><span class="token operator">-&gt;</span><span class="token function">where</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'is_active'</span><span class="token punctuation">,</span> <span class="token constant boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre><div dir="rtl">
+<h3 id="حل-مشكلة-n1-query-عبر-eager-loading">حل مشكلة N+1 Query عبر Eager Loading: </h3>
+<p>إذا أردنا عرض 50 محادثة مع أسماء عملائها:</p>
+<ul>
+<li><strong>الطريقة الخاطئة:</strong> جلب الـ 50 محادثة، ثم في حلقة تكرار استعلام اسم العميل لكل محادثة (ينتج عنها 51 استعلام لقاعدة البيانات ويصبح الموقع بطيئاً جداً!).</li>
+<li><strong>الحل الذكي في ردود (Eager Loading):</strong> نستخدم <code>with('customer')</code>، فيقوم Laravel بجلب كل المحادثات والعملاء في استعلامين سريعين فقط:</li>
+</ul>
+</div>
+<pre data-role="codeBlock" data-info="php" class="language-php php"><code><span class="token variable">$conversations</span> <span class="token operator">=</span> <span class="token scope">Conversation<span class="token punctuation">::</span></span><span class="token function">with</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'customer'</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'workspace'</span><span class="token punctuation">)</span>
+    <span class="token operator">-&gt;</span><span class="token function">where</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'workspace_id'</span><span class="token punctuation">,</span> <span class="token variable">$workspaceId</span><span class="token punctuation">)</span>
+    <span class="token operator">-&gt;</span><span class="token function">latest</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'last_message_at'</span><span class="token punctuation">)</span>
+    <span class="token operator">-&gt;</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><div dir="rtl">
+<hr>
+<h2 id="35-الطوابير-غير-المتزامنة-queues-ووسيط-redis">3.5 الطوابير غير المتزامنة (Queues) ووسيط Redis </h2>
+<p>لماذا نحتاج الـ Queues في تطبيقات الذكاء الاصطناعي؟</p>
+<ul>
+<li>الاتصال بنماذج الذكاء الاصطناعي (مثل Gemini أو OpenAI) قد يستغرق <strong>1.5 إلى 3 ثوانٍ</strong>.</li>
+<li>إذا جعلنا المستخدم ينتظر في المتصفح أثناء هذا الاتصال، ستتجمد الصفحة، وإذا أرسلت Meta رسالة Webhook ستعتبر الخادم معطلاً إذا لم يرد خلال ثانيتين.</li>
+<li><strong>الحل:</strong> نضع المهمة في طابور <strong>Redis</strong> في ذاكرة الرام خلال <strong>0.005 ثانية</strong>، ونرد على Meta فوراً.</li>
+<li>يقوم كلاس <a href="./backend/app/Jobs/ProcessCustomerMessage.php"><code>ProcessCustomerMessage</code></a> بتنفيذ الاتصال بالذكاء الاصطناعي في الخلفية دون أي تعطيل للموقع.</li>
+</ul>
+<hr>
+<h2 id="36-البث-اللحظي-عبر-websockets-و-nodejs">3.6 البث اللحظي عبر WebSockets و Node.js </h2>
+</div>
+<div class="mermaid">flowchart LR
+    A[Laravel Backend PHP] --&gt;|1. نشر الرسالة Redis::publish| B[(Redis Pub/Sub)]
+    B --&gt;|2. التقاط فوري للحدث| C[Node.js WebSocket Server :3000]
+    C --&gt;|3. بث الرسالة لغرفة المتجر io.to| D[متصفح موظف الدعم Live Chat]
+</div><div dir="rtl">
+<p>عند حفظ رد البوت في قاعدة البيانات، ينفذ Laravel السطر التالي:</p>
+</div>
+<pre data-role="codeBlock" data-info="php" class="language-php php"><code><span class="token scope">Redis<span class="token punctuation">::</span></span><span class="token function">publish</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'rudood_chat_channel'</span><span class="token punctuation">,</span> <span class="token function">json_encode</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    <span class="token string single-quoted-string">'conversation_id'</span> <span class="token operator">=&gt;</span> <span class="token variable">$conversation</span><span class="token operator">-&gt;</span><span class="token property">id</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'workspace_id'</span>    <span class="token operator">=&gt;</span> <span class="token variable">$conversation</span><span class="token operator">-&gt;</span><span class="token property">workspace_id</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'sender_type'</span>     <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'bot'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'content'</span>         <span class="token operator">=&gt;</span> <span class="token variable">$botMessage</span><span class="token operator">-&gt;</span><span class="token property">content</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'time'</span>            <span class="token operator">=&gt;</span> <span class="token variable">$botMessage</span><span class="token operator">-&gt;</span><span class="token property">created_at</span><span class="token operator">-&gt;</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'H:i'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><div dir="rtl">
+<p>ويقوم خادم Node.js في <code>backend/websocket/server.js</code> باستلامه فوراً وإرساله للمتصفح عبر <a href="http://Socket.IO">Socket.IO</a>.</p>
+<hr>
+<h2 id="37-الذكاء-الاصطناعي-المتجهات-والـ-rag-والرياضيات-وراءها">3.7 الذكاء الاصطناعي، المتجهات والـ RAG والرياضيات وراءها </h2>
+<h3 id="ما-هو-الـ-vector-embedding-رياضياً">ما هو الـ Vector Embedding رياضياً؟ </h3>
+<p>هو تحويل النص اللغوي إلى مصفوفة أرقام عشرية تمثل إحداثيات موقع الجملة في "فضاء المعاني" (Semantic Space):</p>
+<ul>
+<li>الجملتان: <em>"كم سعر التوصيل؟"</em> و <em>"ما هي تكلفة الشحن؟"</em> تختلفان تماماً في الحروف، لكن لهما نفس المتجه الرياضي تقريباً!</li>
+</ul>
+<h3 id="حساب-تشابه-جيب-التمام-cosine-similarity-formula">حساب تشابه جيب التمام (Cosine Similarity Formula): </h3>
+<p>لقياس مدى تطابق سؤال العميل مع قطعة في مستند المتجر، نستخدم قانون الزاوية بين متجهين:</p>
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>Cosine&nbsp;Similarity</mtext><mo stretchy="false">(</mo><mover accent="true"><mi>A</mi><mo>⃗</mo></mover><mo separator="true">,</mo><mover accent="true"><mi>B</mi><mo>⃗</mo></mover><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>A</mi><mi>i</mi></msub><msub><mi>B</mi><mi>i</mi></msub></mrow><mrow><msqrt><mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msubsup><mi>A</mi><mi>i</mi><mn>2</mn></msubsup></mrow></msqrt><msqrt><mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msubsup><mi>B</mi><mi>i</mi><mn>2</mn></msubsup></mrow></msqrt></mrow></mfrac></mrow><annotation encoding="application/x-tex">\text{Cosine Similarity}(\vec{A}, \vec{B}) = \frac{\sum_{i=1}^{n} A_i B_i}{\sqrt{\sum_{i=1}^{n} A_i^2} \sqrt{\sum_{i=1}^{n} B_i^2}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2163em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">Cosine&nbsp;Similarity</span></span><span class="mopen">(</span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9663em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.0966em;"><span class="overlay" style="height:0.714em;width:0.471em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.471em" height="0.714em" style="width:0.471em" viewBox="0 0 471 714" preserveAspectRatio="xMinYMin"><path d="M377 20c0-5.333 1.833-10 5.5-14S391 0 397 0c4.667 0 8.667 1.667 12 5
+3.333 2.667 6.667 9 10 19 6.667 24.667 20.333 43.667 41 57 7.333 4.667 11
+10.667 11 18 0 6-1 10-3 12s-6.667 5-14 9c-28.667 14.667-53.667 35.667-75 63
+-1.333 1.333-3.167 3.5-5.5 6.5s-4 4.833-5 5.5c-1 .667-2.5 1.333-4.5 2s-4.333 1
+-7 1c-4.667 0-9.167-1.833-13.5-5.5S337 184 337 178c0-12.667 15.667-32.333 47-59
+H213l-171-1c-8.667-6-13-12.333-13-19 0-4.667 4.333-11.333 13-20h359
+c-16-25.333-24-45-24-59z"></path></svg></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9663em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.0502em;">B</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1522em;"><span class="overlay" style="height:0.714em;width:0.471em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.471em" height="0.714em" style="width:0.471em" viewBox="0 0 471 714" preserveAspectRatio="xMinYMin"><path d="M377 20c0-5.333 1.833-10 5.5-14S391 0 397 0c4.667 0 8.667 1.667 12 5
+3.333 2.667 6.667 9 10 19 6.667 24.667 20.333 43.667 41 57 7.333 4.667 11
+10.667 11 18 0 6-1 10-3 12s-6.667 5-14 9c-28.667 14.667-53.667 35.667-75 63
+-1.333 1.333-3.167 3.5-5.5 6.5s-4 4.833-5 5.5c-1 .667-2.5 1.333-4.5 2s-4.333 1
+-7 1c-4.667 0-9.167-1.833-13.5-5.5S337 184 337 178c0-12.667 15.667-32.333 47-59
+H213l-171-1c-8.667-6-13-12.333-13-19 0-4.667 4.333-11.333 13-20h359
+c-16-25.333-24-45-24-59z"></path></svg></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.624em;vertical-align:-1.13em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.494em;"><span style="top:-2.1727em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9373em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8043em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7959em;"><span style="top:-2.4231em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span><span style="top:-3.0448em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2769em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.8973em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.28em" viewBox="0 0 400000 1296" preserveAspectRatio="xMinYMin slice"><path d="M263,681c0.7,0,18,39.7,52,119
+c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
+c340,-704.7,510.7,-1060.3,512,-1067
+l0 -0
+c4.7,-7.3,11,-11,19,-11
+H40000v40H1012.3
+s-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232
+c-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1
+s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
+c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
+M1001 80h400000v40h-400000z"></path></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3027em;"><span></span></span></span></span></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9373em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8043em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0502em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7959em;"><span style="top:-2.4231em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span><span style="top:-3.0448em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2769em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.8973em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.28em" viewBox="0 0 400000 1296" preserveAspectRatio="xMinYMin slice"><path d="M263,681c0.7,0,18,39.7,52,119
+c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
+c340,-704.7,510.7,-1060.3,512,-1067
+l0 -0
+c4.7,-7.3,11,-11,19,-11
+H40000v40H1012.3
+s-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232
+c-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1
+s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
+c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
+M1001 80h400000v40h-400000z"></path></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3027em;"><span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.6897em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8043em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0502em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.13em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span><ul>
+<li>إذا كانت النتيجة <strong>1.0</strong> فهذا يعني تطابقاً دلالياً تاماً.</li>
+<li>إذا كانت النتيجة <strong>0.0</strong> فلا توجد أي علاقة بين الجملتين.</li>
+</ul>
+<hr>
+<h2 id="38-تعدد-المستأجرين-multi-tenancy-وعزل-بيانات-الشركات">3.8 تعدد المستأجرين (Multi-Tenancy) وعزل بيانات الشركات </h2>
+<p>في منصة ردود، يتم تطبيق مفهوم <strong>Shared Database, Shared Schema with Tenant Scoping</strong>:</p>
+<ul>
+<li>جميع المتاجر تستخدم نفس الجداول، ولكن كل صف يحتوي على <code>workspace_id</code>.</li>
+<li>كل عملية جلب أو تعديل تتأكد برمجياً من رقم الشركة الحالي:</li>
+</ul>
+</div>
+<pre data-role="codeBlock" data-info="php" class="language-php php"><code><span class="token variable">$user</span> <span class="token operator">=</span> <span class="token function">auth</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-&gt;</span><span class="token function">user</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$workspaceId</span> <span class="token operator">=</span> <span class="token variable">$user</span><span class="token operator">-&gt;</span><span class="token property">workspace_id</span><span class="token punctuation">;</span>
+
+<span class="token comment">// استعلام معزول ومحمي 100%</span>
+<span class="token variable">$bots</span> <span class="token operator">=</span> <span class="token scope">Bot<span class="token punctuation">::</span></span><span class="token function">where</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'workspace_id'</span><span class="token punctuation">,</span> <span class="token variable">$workspaceId</span><span class="token punctuation">)</span><span class="token operator">-&gt;</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><div dir="rtl">
+<hr>
+<h2 id="39-الحماية-والأمان-security-csrf-csp-sql-injection--rate-limiting">3.9 الحماية والأمان (Security, CSRF, CSP, SQL Injection &amp; Rate Limiting) </h2>
+<ol>
+<li><strong>الحماية من هجمات XSS وحقن النصوص الخبيثة:</strong>
+<ul>
+<li>تطبيق وسيط <code>ContentSecurityPolicy</code> الذي يقيد مصادر تشغيل الجافاسكريبت.</li>
+<li>استخدام محرك Blade الذي يقوم بتطهير المتغيرات تلقائياً عبر <code>{{ $message }}</code> (Htmlspecialchars).</li>
+</ul>
+</li>
+<li><strong>الحماية من هجمات SQL Injection:</strong>
+<ul>
+<li>استخدام Eloquent ORM و PDO Prepared Statements، حيث يتم إرسال القيم كـ Parameters مفصولة عن هيكل استعلام الـ SQL.</li>
+</ul>
+</li>
+<li><strong>الحماية من هجمات التخمين (Rate Limiting):</strong>
+<ul>
+<li>مسار تسجيل الدخول محمي بـ <code>throttle:login</code> (5 محاولات في الدقيقة فقط).</li>
+<li>مسارات الـ Webhooks محمية بـ <code>throttle:webhook</code> (60 طلباً في الدقيقة لمنع إغراق الخادم هجمات DDoS).</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h1 id="4-️-4-رحلة-الرسالة-ماذا-يحدث-في-أجزاء-من-الثانية-خلف-الكواليس">4. 🗺️ 4. رحلة الرسالة: ماذا يحدث في أجزاء من الثانية خلف الكواليس؟ </h1>
+</div>
+<div class="mermaid">flowchart TD
+    Start([📩 وصول رسالة العميل عبر أي قناة]) --&gt; Step1[1. استقبال Webhook وتسجيل رسالة العميل في DB]
+    Step1 --&gt; Step2[2. وضع مهمة ProcessCustomerMessage في طابور Redis]
+    Step2 --&gt; Step3[3. التقاط المهمة بالخلفية وفحص هل البوت مفعل؟]
+    
+    Step3 -- معطل / موظف مستلم الشات --&gt; End1([توقف البوت وعدم الرد ⏸️])
+    Step3 -- مفعل --&gt; Step4[4. تحليل مشاعر العميل Sentiment Analysis]
+    
+    Step4 --&gt; CheckRule{5. هل تطابقت كلمة مفتاحية فورية؟}
+    CheckRule -- نعم --&gt; ReplyFast[⚡ رد فوري Auto-Rule زمن 0ms وبدون استهلاك توكنز]
+    
+    CheckRule -- لا --&gt; CheckTool{6. هل يوجد استفسار طلب أو مخزون؟}
+    CheckTool -- نعم --&gt; ReplyTool[🛍️ استدعاء أدوات المتجر وجلب بيانات الشحنة]
+    
+    CheckTool -- لا --&gt; RAG[7. استرجاع قطع المعرفة المطابقة Hybrid RAG]
+    RAG --&gt; LLM[8. توليد الرد الذكي عبر Gemini / OpenAI مع الذاكرة المحادثية]
+    
+    ReplyFast --&gt; Save[9. حفظ رد البوت في قاعدة البيانات]
+    ReplyTool --&gt; Save
+    LLM --&gt; Save
+    
+    Save --&gt; Broadcast[10. نشر الرسالة لـ Redis ➔ Socket.IO ➔ شاشة الشات المباشر]
+    Save --&gt; Outgoing[11. إرسال الرد لهاتف العميل عبر WhatsApp/Telegram API]
+    Save --&gt; Log[12. توثيق زمن الاستجابة والتيليمتري في AiDecisionLog]
+    
+    Outgoing --&gt; Done([🏁 اكتمال المعالجة خلال أقل من ثانية 🚀])
+</div><div dir="rtl">
+<hr>
+<h1 id="5--5-تفكيك-وتحليل-10-ميزات-وأنظمة-واقعية-في-الكود-سطراً-بسطر">5. 🔍 5. تفكيك وتحليل 10 ميزات وأنظمة واقعية في الكود سطراً بسطر </h1>
+<h2 id="51-التسجيل-الذري-للمتجر-والمستخدم-والبوت">5.1 التسجيل الذري للمتجر والمستخدم والبوت </h2>
+<p>في ملف <a href="./backend/app/Http/Controllers/AuthController.php"><code>AuthController.php</code></a>:</p>
+<ul>
+<li>نستخدم <code>DB::transaction</code> لضمان أنه إذا فشل إنشاء أي جزء (مثلاً فشل إنشاء البوت)، يتم التراجع عن إنشاء المتجر والمستخدم تلقائياً (All or Nothing) لمنع وجود بيانات يتيمة مشوهة.</li>
+</ul>
+<h2 id="52-استقبال-رسائل-واتساب-والتحقق-من-التوقيع">5.2 استقبال رسائل واتساب والتحقق من التوقيع </h2>
+<p>في ملف <a href="./backend/app/Http/Controllers/WebhookController.php"><code>WebhookController.php</code></a>:</p>
+<ul>
+<li>التحقق من <code>hub.verify_token</code> الذي ترسله Meta للتأكد من هوية المرسل.</li>
+<li>استخراج رقم المرسل ونص الرسالة ونوعها (نص عادي أو ضغطة زر تفاعلي).</li>
+</ul>
+<h2 id="53-استماع-تيليجرام-التزامني-عبر-ديمون-الكونسول">5.3 استماع تيليجرام التزامني عبر ديمون الكونسول </h2>
+<p>في ملف <a href="./backend/app/Console/Commands/TelegramPollCommand.php"><code>TelegramPollCommand.php</code></a>:</p>
+<ul>
+<li>تشغيل حلقة تكرارية مستمرة <code>while (true)</code> تستعلم عن التحديثات عبر دالة <code>getUpdates</code> مع استخدام بارامتر <code>offset</code> لتأكيد استلام الرسائل السابقة وعدم تكرارها.</li>
+</ul>
+<h2 id="54-محرك-القرار-الذكي-رباعي-المستويات">5.4 محرك القرار الذكي رباعي المستويات </h2>
+<p>في ملف <a href="./backend/app/Jobs/ProcessCustomerMessage.php"><code>ProcessCustomerMessage.php</code></a>:</p>
+<ul>
+<li>يطبق مبدأ التوفير والسرعة: (1. قواعد فورية مجانية ➔ 2. أدوات حية ➔ 3. RAG مستندي ➔ 4. LLM ذكي).</li>
+</ul>
+<h2 id="55-البحث-الدلالي-بالمتجهات-وتقطيع-المستندات">5.5 البحث الدلالي بالمتجهات وتقطيع المستندات </h2>
+<p>في ملف <a href="./backend/app/Services/RagService.php"><code>RagService.php</code></a>:</p>
+<ul>
+<li>حساب الـ Cosine Similarity ودمج درجات البحث الدلالي مع مطابقة الكلمات المفتاحية (60% Vector + 40% Keyword).</li>
+</ul>
+<h2 id="56-التدخل-البشري-وإيقاف-البوت-في-الشات-الحي">5.6 التدخل البشري وإيقاف البوت في الشات الحي </h2>
+<p>في ملف <a href="./backend/app/Http/Controllers/ConversationController.php"><code>ConversationController.php</code></a>:</p>
+<ul>
+<li>تعديل حقل <code>is_bot_paused = true</code> لمنع البوت من مقاطعة حديث الموظف البشري مع العميل.</li>
+</ul>
+<h2 id="57-تشييد-رسائل-واتساب-التفاعلية-وكروت-الكتالوج">5.7 تشييد رسائل واتساب التفاعلية وكروت الكتالوج </h2>
+<p>في ملف <a href="./backend/app/Services/WhatsAppInteractiveService.php"><code>WhatsAppInteractiveService.php</code></a>:</p>
+<ul>
+<li>بناء هياكل JSON المعقدة لأزرار الرد السريع وقوائم الأقسام المتوافقة مع Meta Graph API v19.0.</li>
+</ul>
+<h2 id="58-أدوات-التجارة-الإلكترونية-وتتبع-الشحنات">5.8 أدوات التجارة الإلكترونية وتتبع الشحنات </h2>
+<p>في ملف <a href="./backend/app/Services/StoreIntegrationService.php"><code>StoreIntegrationService.php</code></a>:</p>
+<ul>
+<li>تنظيف أرقام الشحنات والبحث في جدول <code>mock_orders</code> وإرجاع تفاصيل شركة الشحن والمسار.</li>
+</ul>
+<h2 id="59-تتبع-التحويلات-وحساب-العائد-المالي-والـ-roi">5.9 تتبع التحويلات وحساب العائد المالي والـ ROI </h2>
+<p>في ملف <a href="./backend/app/Services/ConversionTrackingService.php"><code>ConversionTrackingService.php</code></a>:</p>
+<ul>
+<li>ربط عمليات الشراء التي تمت خلال <strong>72 ساعة</strong> بمحادثة البوت، وحساب ساعات العمل الموفرة (0.17 ساعة لكل محادثة) ومعدل التوفير بالريال.</li>
+</ul>
+<h2 id="510-انتحال-جلسة-المتجر-وسجل-التدقيق-الأمني">5.10 انتحال جلسة المتجر وسجل التدقيق الأمني </h2>
+<p>في ملف <a href="./backend/app/Http/Controllers/Admin/AdminWorkspaceController.php"><code>AdminWorkspaceController.php</code></a>:</p>
+<ul>
+<li>تخزين معرف الـ Super Admin في <code>session('impersonated_by')</code> والدخول كمالك المتجر لمعاينة مشكلته وحلها بضغطة زر واحدة.</li>
+</ul>
+<hr>
+<h1 id="6-️-6-مسار-التطبيق-العملي-10-تمارين-برمجية-مع-الحلول-الكاملة-10-student-challenges">6. 🛠️ 6. مسار التطبيق العملي: 10 تمارين برمجية مع الحلول الكاملة (10 Student Challenges) </h1>
+<p>إليك 10 تحديات برمجية متدرجة من البسيط إلى المتقدم لتتدرب عليها بيدك في الكود:</p>
+<hr>
+<h3 id="-التمرين-1-إضافة-فاحص-كود-الخصم-coupon-validator-tool">🔹 التمرين 1: إضافة فاحص كود الخصم (Coupon Validator Tool) </h3>
+<p><strong>المطلوب:</strong> في ملف <code>StoreIntegrationService.php</code>، أضف دالة تقبل كود الخصم وتتأكد هل هو صالح أم لا:</p>
+</div>
+<pre data-role="codeBlock" data-info="php" class="language-php php"><code><span class="token keyword keyword-public">public</span> <span class="token keyword keyword-function">function</span> <span class="token function-definition function">checkCoupon</span><span class="token punctuation">(</span><span class="token keyword type-hint keyword-string">string</span> <span class="token variable">$code</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token keyword return-type keyword-array">array</span>
+<span class="token punctuation">{</span>
+    <span class="token variable">$coupons</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token string single-quoted-string">'START2026'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span><span class="token string single-quoted-string">'discount'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'20%'</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'min'</span> <span class="token operator">=&gt;</span> <span class="token number">150</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'FREE_SHIP'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span><span class="token string single-quoted-string">'discount'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'شحن مجاني'</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'min'</span> <span class="token operator">=&gt;</span> <span class="token number">200</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token variable">$clean</span> <span class="token operator">=</span> <span class="token function">strtoupper</span><span class="token punctuation">(</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token variable">$code</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword keyword-if">if</span> <span class="token punctuation">(</span><span class="token keyword keyword-isset">isset</span><span class="token punctuation">(</span><span class="token variable">$coupons</span><span class="token punctuation">[</span><span class="token variable">$clean</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword keyword-return">return</span> <span class="token punctuation">[</span><span class="token string single-quoted-string">'valid'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'desc'</span> <span class="token operator">=&gt;</span> <span class="token string double-quoted-string">"كود فعال يمنحك <span class="token interpolation"><span class="token punctuation">{</span><span class="token variable">$coupons</span><span class="token punctuation">[</span><span class="token variable">$clean</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'discount'</span><span class="token punctuation">]</span><span class="token punctuation">}</span></span>"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword keyword-return">return</span> <span class="token punctuation">[</span><span class="token string single-quoted-string">'valid'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">false</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'desc'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'كود غير صالح'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre><div dir="rtl">
+<hr>
+<h3 id="-التمرين-2-إضافة-قاعدة-رد-فوري-لساعات-العمل">🔹 التمرين 2: إضافة قاعدة رد فوري لساعات العمل </h3>
+<p><strong>المطلوب:</strong> في لوحة تحكم المتجر <code>/ai-manage</code>، أضف قاعدة رد فوري:</p>
+<ul>
+<li><strong>الكلمات المفتاحية:</strong> <code>أوقات العمل, ساعات العمل, متى تفتحون, الدوام</code>.</li>
+<li><strong>نص الرد:</strong> <em>"أهلاً بك! نسعد بخدمتكم يومياً من السبت إلى الخميس من 9 صباحاً حتى 10 مساءً، والجمعة من 2 ظهراً حتى 10 مساءً."</em></li>
+</ul>
+<hr>
+<h3 id="-التمرين-3-إضافة-فحص-لكلمات-الغضب-الشديد">🔹 التمرين 3: إضافة فحص لكلمات الغضب الشديد </h3>
+<p><strong>المطلوب:</strong> في ملف <code>AiService.php</code> داخل مصفوفة <code>$angryKeywords</code>، أضف كلمات إضافية مثل <code>'غش', 'خداع', 'بلاغ'</code>.</p>
+<hr>
+<h3 id="-التمرين-4-إنشاء-اختصار-رد-سريع-جديد-slash-canned-reply">🔹 التمرين 4: إنشاء اختصار رد سريع جديد (Slash Canned Reply) </h3>
+<p><strong>المطلوب:</strong> في ملف <code>ConversationController.php</code> أو من شاشة الشات المباشر، أنشئ اختصار <code>/return</code> ليرسل سياسة الاستبدال خلال 14 يوماً.</p>
+<hr>
+<h3 id="-التمرين-5-إضافة-مؤشر-جديد-في-لوحة-تحكم-التاجر">🔹 التمرين 5: إضافة مؤشر جديد في لوحة تحكم التاجر </h3>
+<p><strong>المطلوب:</strong> في ملف <code>DashboardController.php</code>، احسب عدد الرسائل الواردة اليوم فقط وعرضها كبطاقة إحصائية جديدة:</p>
+</div>
+<pre data-role="codeBlock" data-info="php" class="language-php php"><code><span class="token variable">$todayMessages</span> <span class="token operator">=</span> <span class="token scope">Message<span class="token punctuation">::</span></span><span class="token function">whereHas</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'conversation'</span><span class="token punctuation">,</span> <span class="token keyword keyword-function">function</span><span class="token punctuation">(</span><span class="token variable">$q</span><span class="token punctuation">)</span> <span class="token keyword keyword-use">use</span> <span class="token punctuation">(</span><span class="token variable">$workspaceId</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token variable">$q</span><span class="token operator">-&gt;</span><span class="token function">where</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'workspace_id'</span><span class="token punctuation">,</span> <span class="token variable">$workspaceId</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token operator">-&gt;</span><span class="token function">whereDate</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'created_at'</span><span class="token punctuation">,</span> <span class="token function">today</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">-&gt;</span><span class="token function">count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><div dir="rtl">
+<hr>
+<h3 id="-التمرين-6-تخصيص-لون-زر-ودجت-الموقع">🔹 التمرين 6: تخصيص لون زر ودجت الموقع </h3>
+<p><strong>المطلوب:</strong> في ملف <code>backend/public/widget.js</code>، جرب تغيير لون التدرج اللوني الأساسي للزر الدائري إلى الأزرق النيلي <code>#2563eb</code>.</p>
+<hr>
+<h3 id="-التمرين-7-كتابة-اختبار-وحدة-رياضي-لحساب-التشابه-unit-test">🔹 التمرين 7: كتابة اختبار وحدة رياضي لحساب التشابه (Unit Test) </h3>
+<p><strong>المطلوب:</strong> في مجلد <code>backend/tests/Unit/</code>، أنشئ اختباراً يتأكد أن حساب جيب التمام لمتجهين متطابقين يعطي النتيجة <code>1.0</code>:</p>
+</div>
+<pre data-role="codeBlock" data-info="php" class="language-php php"><code><span class="token keyword keyword-public">public</span> <span class="token keyword keyword-function">function</span> <span class="token function-definition function">test_identical_vectors_have_cosine_similarity_of_one</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token keyword return-type keyword-void">void</span>
+<span class="token punctuation">{</span>
+    <span class="token variable">$rag</span> <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name class-name-fully-qualified"><span class="token punctuation">\</span>App<span class="token punctuation">\</span>Services<span class="token punctuation">\</span>RagService</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$vecA</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0.5</span><span class="token punctuation">,</span> <span class="token number">0.5</span><span class="token punctuation">,</span> <span class="token number">0.5</span><span class="token punctuation">,</span> <span class="token number">0.5</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token variable">$sim</span> <span class="token operator">=</span> <span class="token variable">$rag</span><span class="token operator">-&gt;</span><span class="token function">calculateCosineSimilarity</span><span class="token punctuation">(</span><span class="token variable">$vecA</span><span class="token punctuation">,</span> <span class="token variable">$vecA</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token this keyword">$this</span><span class="token operator">-&gt;</span><span class="token function">assertEquals</span><span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">,</span> <span class="token variable">$sim</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre><div dir="rtl">
+<hr>
+<h3 id="-التمرين-8-اختبار-نقطة-فحص-الصحة-التشغيلية-feature-test">🔹 التمرين 8: اختبار نقطة فحص الصحة التشغيلية (Feature Test) </h3>
+<p><strong>المطلوب:</strong> كتابة اختبار يتأكد أن الرابط <code>/health</code> يرجع حالة <code>healthy</code> وكود <code>200</code>:</p>
+</div>
+<pre data-role="codeBlock" data-info="php" class="language-php php"><code><span class="token keyword keyword-public">public</span> <span class="token keyword keyword-function">function</span> <span class="token function-definition function">test_health_check_returns_ok</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token keyword return-type keyword-void">void</span>
+<span class="token punctuation">{</span>
+    <span class="token variable">$response</span> <span class="token operator">=</span> <span class="token this keyword">$this</span><span class="token operator">-&gt;</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'/health'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$response</span><span class="token operator">-&gt;</span><span class="token function">assertStatus</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$response</span><span class="token operator">-&gt;</span><span class="token function">assertJson</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'status'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'healthy'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre><div dir="rtl">
+<hr>
+<h3 id="-التمرين-9-تفعيل-وتعطيل-قناة-تواصل-برمجياً">🔹 التمرين 9: تفعيل وتعطيل قناة تواصل برمجياً </h3>
+<p><strong>المطلوب:</strong> في <code>ChannelController.php</code>، جرب فحص دالة <code>toggleChannel()</code> وفهم كيف يتم عكس قيمة <code>is_active</code>.</p>
+<hr>
+<h3 id="-التمرين-10-إنشاء-أمر-كونسول-artisan-مخصص-لتنظيف-السجلات-القديمة">🔹 التمرين 10: إنشاء أمر كونسول Artisan مخصص لتنظيف السجلات القديمة </h3>
+<p><strong>المطلوب:</strong> إنشاء أمر كونسول <code>php artisan logs:clean</code> يقوم بحذف سجلات التيليمتري الأقدم من 90 يوماً:</p>
+</div>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>php artisan make:command CleanOldDecisionLogs
+</code></pre><div dir="rtl">
+<hr>
+<h1 id="7--7-دليل-اكتشاف-الأخطاء-وتصحيحها-للمبتدئين-debugging--troubleshooting-guide">7. 🐞 7. دليل اكتشاف الأخطاء وتصحيحها للمبتدئين (Debugging &amp; Troubleshooting Guide) </h1>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">رمز الخطأ / المشكلة</th>
+<th style="text-align:left">السبب المحتمل في هندسة النظام</th>
+<th style="text-align:left">الحل البرمجي السريع</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>419 Page Expired</code></strong></td>
+<td style="text-align:left">إرسال نموذج POST بدون حقل توكن الحماية CSRF.</td>
+<td style="text-align:left">أضف <code>@csrf</code> داخل وسم <code>&lt;form&gt;</code> في ملف الـ Blade.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>500 Internal Server Error</code></strong></td>
+<td style="text-align:left">خطأ غير معالج في كود PHP أو غياب مفتاح التطبيق.</td>
+<td style="text-align:left">شغّل <code>php artisan key:generate</code> وافحص ملف <code>storage/logs/laravel.log</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>SQLSTATE[HY000]: Connection refused</code></strong></td>
+<td style="text-align:left">خادم قاعدة البيانات PostgreSQL أو SQLite غير مشغل.</td>
+<td style="text-align:left">تأكد من تشغيل حاوية الدوكر <code>docker compose up -d</code> أو وجود ملف <code>database.sqlite</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>Redis connection refused</code></strong></td>
+<td style="text-align:left">خادم Redis غير متصل أو المنفذ 6379 مغلق.</td>
+<td style="text-align:left">تأكد من تشغيل Redis عبر <code>redis-server</code> أو عبر Docker.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>عدم تحديث الشات الحي فورياً</strong></td>
+<td style="text-align:left">خادم Node.js الويب سوكت غير مشغل.</td>
+<td style="text-align:left">شغّل خادم الويب سوكت: <code>node backend/websocket/server.js</code>.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1 id="8--8-خطوات-تثبيت-وتشغيل-المشروع-محلياً-من-الصفر-setup-guide">8. 🚀 8. خطوات تثبيت وتشغيل المشروع محلياً من الصفر (Setup Guide) </h1>
+<h3 id="الطريقة-الموصى-بها-عبر-docker-تعمل-على-mac-windows-linux">الطريقة الموصى بها عبر Docker (تعمل على Mac, Windows, Linux): </h3>
+</div>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token comment"># 1. استنساخ المستودع</span>
+<span class="token function">git</span> clone https://github.com/abdo544445/rudood-platform.git
+<span class="token builtin class-name">cd</span> rudood-platform
+
+<span class="token comment"># 2. إنشاء ملف البيئة</span>
+<span class="token function">cp</span> backend/.env.example backend/.env
+
+<span class="token comment"># 3. تشغيل الحاويات بالكامل في الخلفية</span>
+<span class="token function">docker</span> compose up <span class="token parameter variable">-d</span> <span class="token parameter variable">--build</span>
+
+<span class="token comment"># 4. توليد المفتاح وتشغيل الهجرات والبيانات التجريبية</span>
+<span class="token function">docker</span> compose <span class="token builtin class-name">exec</span> app php artisan key:generate
+<span class="token function">docker</span> compose <span class="token builtin class-name">exec</span> app php artisan migrate <span class="token parameter variable">--seed</span>
+</code></pre><div dir="rtl">
+<p>افتح متصفحك على: <strong><a href="http://localhost:8000">http://localhost:8000</a></strong></p>
+<hr>
+<h1 id="9--9-قاموس-المصطلحات-البرمجية-الشامل-comprehensive-glossary">9. 📖 9. قاموس المصطلحات البرمجية الشامل (Comprehensive Glossary) </h1>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">المصطلح بالإنجليزية</th>
+<th style="text-align:left">المصطلح بالعربية</th>
+<th style="text-align:left">الشرح الهندسي المبسط</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Architecture</strong></td>
+<td style="text-align:left">المعمارية البرمجية</td>
+<td style="text-align:left">الهيكل العام والتصميم المنطقي لتوزيع كود ومكونات النظام.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Multi-Tenancy</strong></td>
+<td style="text-align:left">تعدد المستأجرين</td>
+<td style="text-align:left">معمارية تتيح لتطبيق واحد خدمة مئات الشركات مع عزل تام لبيانات كل شركة.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>ORM (Eloquent)</strong></td>
+<td style="text-align:left">محول الكائنات العلائقية</td>
+<td style="text-align:left">تقنية للتعامل مع جداول قواعد البيانات كأنها كائنات برمجية (Objects).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Queue Worker</strong></td>
+<td style="text-align:left">عامل معالجة الطوابير</td>
+<td style="text-align:left">عملية برمجية خلفية تراقب طابور المهام وتنفذها بالترتيب دون تعطيل المستخدم.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Pub/Sub</strong></td>
+<td style="text-align:left">النشر والاشتراك</td>
+<td style="text-align:left">نمط تصميم يقوم فيه مرسل بنشر رسالة ويلتقطها كل المشتركين بقناته لحظياً.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>RAG</strong></td>
+<td style="text-align:left">توليد المعرفة بالاسترجاع</td>
+<td style="text-align:left">تزويد الذكاء الاصطناعي بنصوص وكتيبات مخصصة ليجيب منها بدقة دون تأليف.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Cosine Similarity</strong></td>
+<td style="text-align:left">تشابه جيب التمام</td>
+<td style="text-align:left">مقياس رياضي يقيس الزاوية بين متجهين لمعرفة مدى تشابه معانيهما.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Webhook</strong></td>
+<td style="text-align:left">خطاف الويب الفوري</td>
+<td style="text-align:left">رابط HTTP يستقبل إشعارات فورية من خدمات خارجية (مثل رسائل واتساب).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Impersonation</strong></td>
+<td style="text-align:left">الانتحال الآمن</td>
+<td style="text-align:left">دخول مدير النظام لحساب عميل لمعاينة مشكلته وحلها دون معرفة كلمة مروره.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Automated Testing</strong></td>
+<td style="text-align:left">الاختبارات الآلية</td>
+<td style="text-align:left">نصوص برمجية تفحص صحة ووظائف الكود وتتأكد من خلوه من العيوب بنسبة 100%.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p align="center">
+  <b>تم بحمد الله إعداد وتدقيق هذه الموسوعة التعليمية الشاملة لتكون المرجع الأول لطلاب البرمجة ومطوري المستقبل 🚀🎓</b><br>
+  <i>منصة ردود للذكاء الاصطناعي — نحو تمكين جيل مهندسي البرمجيات القادم</i>
+</p>
+</div>
+
+      </div>
+      
+      
+    
+    
+    <script type="module">
+// TODO: If ZenUML gets integrated into mermaid in the future,
+//      we can remove the following lines.
+
+
+var MERMAID_CONFIG = ({"startOnLoad":false});
+if (typeof MERMAID_CONFIG !== 'undefined') {
+  MERMAID_CONFIG.startOnLoad = false
+  MERMAID_CONFIG.cloneCssStyles = false
+  MERMAID_CONFIG.theme = "default"
+}
+
+mermaid.initialize(MERMAID_CONFIG || {})
+if (typeof(window['Reveal']) !== 'undefined') {
+  function mermaidRevealHelper(event) {
+    var currentSlide = event.currentSlide
+    var diagrams = currentSlide.querySelectorAll('div.mermaid')
+    for (var i = 0; i < diagrams.length; i++) {
+      var diagram = diagrams[i]
+      if (!diagram.hasAttribute('data-processed')) {
+        mermaid.init(null, diagram, ()=> {
+          Reveal.slide(event.indexh, event.indexv)
+        })
+      }
+    }
+  }
+  Reveal.addEventListener('slidetransitionend', mermaidRevealHelper)
+  Reveal.addEventListener('ready', mermaidRevealHelper)
+  await mermaid.run({
+    nodes: document.querySelectorAll('div.mermaid')
+  })
+} else {
+  await mermaid.run({
+    nodes: document.querySelectorAll('div.mermaid')
+  })
+}
+</script>
+    
+    
+    
+  
+    </body></html>

@@ -24,14 +24,50 @@ class ConversationController extends Controller
     public function index(Request $request)
     {
         $workspace_id = $this->workspaceId();
+        $filter = $request->get('filter', 'all');
 
-        // All conversations in sidebar (with last message preview)
-        $conversations = Conversation::with(['customer', 'messages' => function ($q) {
+        $query = Conversation::with(['customer', 'messages' => function ($q) {
                 $q->latest()->limit(1);
             }])
-            ->where('workspace_id', $workspace_id)
-            ->orderByDesc('updated_at')
-            ->get();
+            ->where('workspace_id', $workspace_id);
+
+        if ($filter === 'unhandled' || $filter === 'open') {
+            $query->where(function ($q) {
+                $q->where('status', 'open')
+                  ->orWhere('status', 'human_handling')
+                  ->orWhere('is_escalated', true)
+                  ->orWhere('is_bot_paused', true);
+            });
+        } elseif ($filter === 'escalated') {
+            $query->where(function ($q) {
+                $q->where('is_escalated', true)
+                  ->orWhere('is_bot_paused', true)
+                  ->orWhere('status', 'human_handling');
+            });
+        } elseif ($filter === 'resolved') {
+            $query->where('status', 'resolved');
+        }
+
+        $conversations = $query->orderByDesc('updated_at')->get();
+
+        // Calculate counts for filter pills
+        $filterCounts = [
+            'all'       => Conversation::where('workspace_id', $workspace_id)->count(),
+            'unhandled' => Conversation::where('workspace_id', $workspace_id)
+                ->where(function ($q) {
+                    $q->where('status', 'open')
+                      ->orWhere('status', 'human_handling')
+                      ->orWhere('is_escalated', true)
+                      ->orWhere('is_bot_paused', true);
+                })->count(),
+            'escalated' => Conversation::where('workspace_id', $workspace_id)
+                ->where(function ($q) {
+                    $q->where('is_escalated', true)
+                      ->orWhere('is_bot_paused', true)
+                      ->orWhere('status', 'human_handling');
+                })->count(),
+            'resolved'  => Conversation::where('workspace_id', $workspace_id)->where('status', 'resolved')->count(),
+        ];
 
         // Active conversation from query param or first one
         $activeId = $request->get('conversation', $conversations->first()?->id);
@@ -75,7 +111,7 @@ class ConversationController extends Controller
             $cannedReplies = \App\Models\CannedReply::where('workspace_id', $workspace_id)->get();
         }
 
-        return view('live-chat', compact('conversations', 'active', 'messages', 'cannedReplies'));
+        return view('live-chat', compact('conversations', 'active', 'messages', 'cannedReplies', 'filter', 'filterCounts'));
     }
 
     /**

@@ -67,8 +67,8 @@ class AiService
         }
 
         if (!$apiKey) {
-            $this->lastError = "مفتاح API الخاص بمزود الذكاء الاصطناعي غير متوفر.";
-            return $this->getFallbackReply();
+            $this->lastError = "مفتاح API الخاص بمزود الذكاء الاصطناعي غير متوفر أو لم يتم تعيينه بعد.";
+            return $this->getFallbackReply($context, $userMessage);
         }
 
         $normalizedHistory = $this->normalizeHistory($history);
@@ -84,7 +84,7 @@ class AiService
         } catch (\Exception $e) {
             $this->lastError = $e->getMessage();
             \Log::error('AI Service Error: ' . $e->getMessage());
-            return $this->getFallbackReply();
+            return $this->getFallbackReply($context, $userMessage);
         }
     }
 
@@ -244,10 +244,10 @@ class AiService
             default    => 'يجب أن تكون ردودك ودودة وترحيبية.',
         };
 
-        $prompt = "{$persona}\n\n{$tone}\n\nأجب دائماً باللغة العربية ما لم يكتب العميل بلغة أخرى.";
+        $prompt = "{$persona}\n\n{$tone}\n\nأجب دائماً باللغة العربية بأسلوب متقن ومباشر.";
 
         if ($context) {
-            $prompt .= "\n\n--- معلومات عن المتجر / الشركة (استخدمها للرد) ---\n{$context}";
+            $prompt .= "\n\n=== قاعدة معرفة ومعلومات المتجر المعتمدة (يجب استخراج الرد الدقيق منها مباشرة) ===\n{$context}\n\nتعليمات ملزمة:\n1. اعتمد بدقة واحترافية على معلومات المتجر المسترجعة أعلاه للإجابة على استفسار العميل.\n2. أجب مباشرة على سؤال العميل بالمعلومات المطلوبة (مثل الأسعار، التوصيل، تفاصيل المنتجات، وسياسات المتجر).\n3. لا تبتكر معلومات أو أسعار غير موجودة في قاعدة المعرفة المرفقة أعلاه.";
         }
 
         return $prompt;
@@ -454,9 +454,47 @@ class AiService
 
     /**
      * Fallback reply when API key is missing or call fails.
+     * If knowledge base context is available, performs semantic excerpt extraction so bot answers with real data.
      */
-    public function getFallbackReply(): string
+    public function getFallbackReply(string $context = '', string $query = ''): string
     {
+        if (!empty(trim($context))) {
+            // Find most relevant lines/sentences matching the query
+            $lines = array_filter(preg_split('/\n+|\.\s+/u', $context), fn($l) => mb_strlen(trim($l)) > 15);
+            $queryTokens = array_filter(preg_split('/[\s,\.؟!،\-_]+/u', mb_strtolower($query)), fn($t) => mb_strlen(trim($t)) > 1);
+            
+            $bestLines = [];
+            foreach ($lines as $line) {
+                $cleanLine = trim(preg_replace('/\[مصدر:.*?\]:?\s*/u', '', $line));
+                if (empty($cleanLine) || mb_strlen($cleanLine) < 10) continue;
+
+                $lineLower = mb_strtolower($cleanLine);
+                $matchCount = 0;
+                foreach ($queryTokens as $t) {
+                    if (str_contains($lineLower, $t)) {
+                        $matchCount++;
+                    }
+                }
+                if ($matchCount > 0) {
+                    $bestLines[] = ['text' => $cleanLine, 'score' => $matchCount];
+                }
+            }
+
+            if (!empty($bestLines)) {
+                usort($bestLines, fn($a, $b) => $b['score'] <=> $a['score']);
+                $extracted = implode("\n• ", array_slice(array_column($bestLines, 'text'), 0, 3));
+                return "بناءً على معلومات متجرنا المعتمدة:\n• {$extracted}\n\nيسعدنا تزويدك بأي تفاصيل إضافية!";
+            }
+
+            // Return first meaningful excerpt of context
+            $cleanContext = trim(preg_replace('/\[مصدر:.*?\]:?\s*/u', '', $context));
+            $paragraphs = array_filter(explode("\n\n", $cleanContext), fn($p) => mb_strlen(trim($p)) > 20);
+            $firstParagraph = reset($paragraphs);
+            if (!empty($firstParagraph)) {
+                return "إليك الإجابة من واقع مستندات المتجر:\n" . Str::limit(trim($firstParagraph), 350) . "\n\nيسعدنا خدمتك دائماً!";
+            }
+        }
+
         return $this->bot->welcome_message
             ?? 'شكراً لتواصلك معنا. سيقوم فريقنا بالرد عليك في أقرب وقت ممكن.';
     }

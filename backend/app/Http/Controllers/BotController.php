@@ -398,12 +398,20 @@ class BotController extends Controller
             // non-fatal
         }
 
-        return back()->with('playground', [
+        $payload = [
+            'success'          => true,
             'question'         => $question,
             'reply'            => $reply,
             'trigger'          => $trigger,
             'matched_keywords' => $matchedKeywords,
             'chunks'           => $matchedChunks,
-        ]);
+            'context'          => $context,
+        ];
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json($payload);
+        }
+
+        return back()->with('playground', $payload);
     }
 }

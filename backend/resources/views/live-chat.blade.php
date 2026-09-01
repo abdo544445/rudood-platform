@@ -146,7 +146,23 @@
       <!-- 1. القائمة الجانبية للمحادثات (Left Sidebar) -->
       <div class="chat-sidebar">
         <div class="p-2 border-bottom border-secondary border-opacity-25">
-          <input type="text" id="conversationSearch" class="form-control custom-chat-input fs-8" placeholder="🔍 بحث بالاسم أو الهاتف...">
+          <input type="text" id="conversationSearch" class="form-control custom-chat-input fs-8 mb-2" placeholder="🔍 بحث بالاسم أو الهاتف...">
+          
+          <!-- Status Filter Tabs -->
+          <div class="d-flex gap-1 overflow-x-auto pb-1" style="scrollbar-width: none;">
+            <a href="{{ url('/live-chat?filter=all') }}" class="btn btn-sm py-1 px-2 fs-9 rounded-pill {{ ($filter ?? 'all') === 'all' ? 'btn-gold' : 'btn-outline-secondary text-white-50 border-0' }}" title="عرض كافة المحادثات">
+              الكل ({{ $filterCounts['all'] ?? count($conversations) }})
+            </a>
+            <a href="{{ url('/live-chat?filter=unhandled') }}" class="btn btn-sm py-1 px-2 fs-9 rounded-pill {{ ($filter ?? '') === 'unhandled' ? 'btn-danger' : 'btn-outline-danger border-0 text-white-50' }}" title="المحادثات المفتوحة والتي بانتظار رد">
+              غير معالجة ({{ $filterCounts['unhandled'] ?? 0 }})
+            </a>
+            <a href="{{ url('/live-chat?filter=escalated') }}" class="btn btn-sm py-1 px-2 fs-9 rounded-pill {{ ($filter ?? '') === 'escalated' ? 'btn-warning text-dark' : 'btn-outline-warning border-0 text-white-50' }}" title="محادثات استلمها موظف أو متصعدة">
+              تدخل بشري ({{ $filterCounts['escalated'] ?? 0 }})
+            </a>
+            <a href="{{ url('/live-chat?filter=resolved') }}" class="btn btn-sm py-1 px-2 fs-9 rounded-pill {{ ($filter ?? '') === 'resolved' ? 'btn-success' : 'btn-outline-success border-0 text-white-50' }}" title="المحادثات المنتهية">
+              مكتملة ({{ $filterCounts['resolved'] ?? 0 }})
+            </a>
+          </div>
         </div>
         <div class="chat-list" id="conversationList">
           @forelse ($conversations as $conv)

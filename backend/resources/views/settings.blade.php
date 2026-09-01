@@ -339,16 +339,20 @@
 
       if (hiddenInput) hiddenInput.value = isChecked ? '1' : '0';
 
-      // Update badge optimistically
-      if (isChecked) {
-        badge.className = 'badge bg-success bg-opacity-25 text-success border border-success px-3 py-2 fs-8 fw-bold';
-        text.innerText = 'البوت مفعّل ونشط';
-        if (icon) icon.className = 'bi bi-check-circle-fill me-1';
-      } else {
-        badge.className = 'badge bg-danger bg-opacity-25 text-danger border border-danger px-3 py-2 fs-8 fw-bold';
-        text.innerText = 'البوت معطّل (إيقاف مؤقت)';
-        if (icon) icon.className = 'bi bi-pause-circle-fill me-1';
+      function updateUI(active) {
+        if (active) {
+          badge.className = 'badge bg-success bg-opacity-25 text-success border border-success px-3 py-2 fs-8 fw-bold';
+          text.innerText = 'البوت مفعّل ونشط';
+          if (icon) icon.className = 'bi bi-check-circle-fill me-1';
+        } else {
+          badge.className = 'badge bg-danger bg-opacity-25 text-danger border border-danger px-3 py-2 fs-8 fw-bold';
+          text.innerText = 'البوت معطّل (إيقاف مؤقت)';
+          if (icon) icon.className = 'bi bi-pause-circle-fill me-1';
+        }
       }
+
+      // Update badge optimistically
+      updateUI(isChecked);
 
       try {
         const response = await fetch("{{ route('settings.toggle-bot') }}", {
@@ -365,12 +369,16 @@
         if (!data.success) {
           throw new Error(data.message || 'فشل تحديث الحالة');
         }
+
+        updateUI(data.is_active);
+        if (hiddenInput) hiddenInput.value = data.is_active ? '1' : '0';
+        checkbox.checked = data.is_active;
       } catch (err) {
         alert('خطأ أثناء تحديث حالة البوت: ' + err.message);
-        // Revert on error
+        // Revert on error without recursive call
         checkbox.checked = !isChecked;
         if (hiddenInput) hiddenInput.value = checkbox.checked ? '1' : '0';
-        toggleBotStatus(checkbox);
+        updateUI(checkbox.checked);
       }
     }
 

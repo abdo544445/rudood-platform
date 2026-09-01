@@ -43,6 +43,22 @@ body {
   direction: rtl;
 }
 
+/* Ambient Particle Canvas Global */
+#ambientCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.main-page-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
 /* 2. الهيدر وشعار الصورة جهة اليسار */
 .navbar-rodood {
   background-color: rgba(8, 13, 25, 0.75);
