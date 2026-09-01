@@ -119,18 +119,18 @@
         <div class="card-custom p-3">
             <form method="GET" action="{{ route('admin.contacts.index') }}" class="row g-2 align-items-center">
                 <div class="col-md-4">
-                    <input type="text" name="search" class="form-control" placeholder="بحث بالاسم، البريد، العنوان، أو المحتوى..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="form-control bg-dark text-white border-secondary border-opacity-50" placeholder="بحث بالاسم، البريد، العنوان، أو المحتوى..." value="{{ request('search') }}">
                 </div>
                 <div class="col-md-3">
-                    <select name="status" class="form-select">
-                        <option value="">جميع الحالات</option>
-                        <option value="new" {{ request('status') == 'new' ? 'selected' : '' }}>جديدة (New)</option>
-                        <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>قيد المتابعة (In Progress)</option>
-                        <option value="resolved" {{ request('status') == 'resolved' ? 'selected' : '' }}>تم الحل (Resolved)</option>
+                    <select name="status" class="form-select bg-dark text-white border-secondary border-opacity-50">
+                        <option value="" class="text-white bg-dark">جميع الحالات</option>
+                        <option value="new" {{ request('status') == 'new' ? 'selected' : '' }} class="text-white bg-dark">جديدة (New)</option>
+                        <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }} class="text-white bg-dark">قيد المتابعة (In Progress)</option>
+                        <option value="resolved" {{ request('status') == 'resolved' ? 'selected' : '' }} class="text-white bg-dark">تم الحل (Resolved)</option>
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <input type="date" name="date_from" class="form-control" placeholder="من تاريخ" value="{{ request('date_from') }}">
+                    <input type="date" name="date_from" class="form-control bg-dark text-white border-secondary border-opacity-50" placeholder="من تاريخ" value="{{ request('date_from') }}">
                 </div>
                 <div class="col-md-3 d-flex gap-2">
                     <button type="submit" class="btn btn-gold flex-grow-1"><i class="bi bi-funnel-fill me-1"></i> تصفية</button>
@@ -194,9 +194,9 @@
                                             default       => 'bi-circle',
                                         };
                                     @endphp
-                                    <button class="btn btn-sm dropdown-toggle rounded-pill px-3 py-1 fs-9 status-toggle-btn status-btn-{{ $msg->id }} {{ $badgeClass }}" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="انقر لتعديل الحالة فورياً">
-                                        <i class="bi {{ $iconClass }} me-1 status-icon-{{ $msg->id }}"></i>
-                                        <span class="status-text-{{ $msg->id }}">{{ $msg->status_label }}</span>
+                                    <button class="btn btn-sm dropdown-toggle rounded-pill px-3 py-1 fs-9 text-white fw-bold status-toggle-btn status-btn-{{ $msg->id }} {{ $badgeClass }}" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="انقر لتعديل الحالة فورياً" style="color: #ffffff !important; font-weight: 700 !important;">
+                                        <i class="bi {{ $iconClass }} me-1 status-icon-{{ $msg->id }} text-white"></i>
+                                        <span class="status-text-{{ $msg->id }} text-white" style="color: #ffffff !important;">{{ $msg->status_label }}</span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow-lg border border-secondary border-opacity-25 rounded-3 fs-9 p-1">
                                         <li>
@@ -366,10 +366,12 @@ async function quickUpdateContactStatus(msgId, newStatus, newLabel, badgeClass, 
 
         if (data.success) {
             // Update button styling classes
-            btn.className = `btn btn-sm dropdown-toggle rounded-pill px-3 py-1 fs-9 status-toggle-btn status-btn-${msgId} ${badgeClass}`;
+            btn.className = `btn btn-sm dropdown-toggle rounded-pill px-3 py-1 fs-9 text-white fw-bold status-toggle-btn status-btn-${msgId} ${badgeClass}`;
+            btn.style.color = '#ffffff';
             textSpan.textContent = newLabel;
+            textSpan.style.color = '#ffffff';
             if (iconEl) {
-                iconEl.className = `bi ${iconClass} me-1 status-icon-${msgId}`;
+                iconEl.className = `bi ${iconClass} me-1 status-icon-${msgId} text-white`;
             }
         } else {
             alert('تعذر تحديث الحالة: ' + (data.message || 'حدث خطأ غير متوقع'));

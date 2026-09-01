@@ -302,6 +302,8 @@
             border-radius: 6px;
         }
     </style>
+    @yield('styles')
+    @stack('styles')
 </head>
 <body>
 
